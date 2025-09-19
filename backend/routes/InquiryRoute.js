@@ -22,6 +22,24 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+//edit
+router.put("/:id", async (req, res) => {
+  try {
+    const updated = await InquiryStaff.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body }, // update only provided fields
+      { new: true, runValidators: true } // return updated doc, apply validation
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Staff member not found" });
+    }
+
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
 // Delete a staff member by ID
 router.delete("/:id", async (req, res) => {

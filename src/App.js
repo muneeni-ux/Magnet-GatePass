@@ -13,12 +13,16 @@ import AdminDashboard from "./Admin/AdminDashboard";
 import ProtectedRoute from "./Admin/ProtectedRoute";
 import VisitordsDetails from './Admin/VisitordsDetails';
 import AdminOccurrence from './Admin/AdminOccurrence';
+import AdminFAQs from './Admin/AdminFAQs';
+// User components
 import Home from './pages/Home';
 import About from './pages/About';
 import Occurrence from './pages/Occurrence';
 import NotFound from './pages/NotFound';
 import Form from './pages/VisitorForm';
 import History from './pages/VisitorHistory';
+import FAQs from './pages/FAQs';
+import AdminInquiry from './Admin/AdminInquiry';
 
 const App = () => {
   const location = useLocation();
@@ -67,6 +71,7 @@ const App = () => {
             <Route path="/history" element={<History />} />
             <Route path="/about" element={<About />} />
             <Route path="/occurrence" element={<Occurrence />} />
+            <Route path="/faq" element={<FAQs />} />
           </>
         )}
 
@@ -85,6 +90,8 @@ const App = () => {
           <Route path="usersignup" element={<Signup />} />
           <Route path="visitorsdetails" element={<VisitordsDetails />} />
            <Route path="occurrence" element={<AdminOccurrence />} />
+           <Route path="faq" element={<AdminFAQs />} />
+           <Route path="inquiry" element={<AdminInquiry />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

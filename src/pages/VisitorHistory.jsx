@@ -114,7 +114,7 @@ export default function VisitorHistory() {
     });
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto mt-20 md:mt-36 bg-white shadow-md rounded-xl">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto mt-16 md:mt-24 bg-white shadow-md rounded-xl">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
         <h2 className="text-3xl font-bold text-indigo-800">
           📋 Visitor History

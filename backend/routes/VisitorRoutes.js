@@ -69,23 +69,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// TIMEOUT - PUT /api/visitors/:id/timeout
-// router.put("/visitors/:id/timeout", async (req, res) => {
-//   try {
-//     const visitor = await Visitor.findByIdAndUpdate(
-//       req.params.id,
-//       { timeOut: new Date() },
-//       { new: true }
-//     );
-//     if (!visitor) {
-//       return res.status(404).json({ message: "Visitor not found" });
-//     }
-//     res.json(visitor);
-//   } catch (err) {
-//     console.error("Time out error:", err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
 
 router.put("/visitors/:id/timeout", async (req, res) => {
   try {

@@ -7,14 +7,14 @@ const Occurrence = () => {
   const [form, setForm] = useState({
     gate: "",
     endTime: "",
-    premise: "",
-    disarmedBy: "",
-    disarmTime: "",
+    // premise: "",
+    // disarmedBy: "",
+    // disarmTime: "",
     // parkingOpeningTime: '',
     // parkingClosingTime: '',
-    phonesLeftWith: "",
-    armedBy: "",
-    armTime: "",
+    // phonesLeftWith: "",
+    // armedBy: "",
+    // armTime: "",
     unusualOccurrence: "No",
     unusualDescription: "",
     remarks: "",
@@ -57,7 +57,7 @@ const Occurrence = () => {
   };
 
   return (
-    <div className="min-h-screen from-indigo-200 via-blue-100 to-yellow-50 text-gray-900 font-sans flex items-center justify-center p-4 mt-12 md:mt-36">
+    <div className="min-h-screen from-indigo-200 via-blue-100 to-yellow-50 text-gray-900 font-sans flex items-center justify-center p-4 mt-12 md:mt-24">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-2xl bg-white rounded-lg shadow-md p-6 space-y-6"
@@ -83,7 +83,6 @@ const Occurrence = () => {
             </option>
             <option value="Gate One">Gate 1</option>
             <option value="Gate Two">Gate 2</option>
-            <option value="Godown 14">Godown 14</option>
           </select>
         </div>
 
@@ -102,82 +101,6 @@ const Occurrence = () => {
           />
         </div>
 
-        {/* Condition of the Premise */}
-        <div>
-          <label className="block text-sm font-medium text-blue-700 mb-1">
-            Select the Premise
-          </label>
-          <select
-            name="premise"
-            value={form.premise}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-blue-300 rounded-md"
-          >
-            <option value="">-- Select Area --</option>
-            <option value="administration">ADMISTRATION WING</option>
-            <option value="factorywing">FACTORY WING</option>
-            <option value="godown14">GODOWN 14</option>
-          </select>
-        </div>
-
-        {/* Disarm Time */}
-        <div>
-          <label className="block text-sm font-medium text-blue-700 mb-1">
-            What Time Was the Premise Disarmed?
-          </label>
-          <input
-            name="disarmTime"
-            value={form.disarmTime}
-            onChange={handleChange}
-            type="time"
-            className="w-full p-2 border border-blue-300 rounded-md"
-          />
-        </div>
-
-        {/* Disarmed By */}
-        <div>
-          <label className="block text-sm font-medium text-blue-700 mb-1">
-            Who Disarmed the Premises?
-          </label>
-          <input
-            name="disarmedBy"
-            value={form.disarmedBy}
-            onChange={handleChange}
-            type="text"
-            className="w-full p-2 border border-blue-300 rounded-md"
-            placeholder="Enter name or N/A"
-          />
-        </div>
-
-        {/* Arm Time */}
-        <div>
-          <label className="block text-sm font-medium text-blue-700 mb-1">
-            What Time Was the Premise Armed?
-          </label>
-          <input
-            name="armTime"
-            value={form.armTime}
-            onChange={handleChange}
-            type="time"
-            className="w-full p-2 border border-blue-300 rounded-md"
-          />
-        </div>
-
-        {/* Armed By */}
-        <div>
-          <label className="block text-sm font-medium text-blue-700 mb-1">
-            Who Armed the Premise?
-          </label>
-          <input
-            name="armedBy"
-            value={form.armedBy}
-            onChange={handleChange}
-            type="text"
-            className="w-full p-2 border border-blue-300 rounded-md"
-            placeholder="Enter name or N/A"
-          />
-        </div>
         {/* Unusual Occurrence */}
         <div>
           <label className="block text-sm font-medium text-blue-700 mb-1">
@@ -210,31 +133,6 @@ const Occurrence = () => {
             />
           </div>
         )}
-        {/* Parking Opening Time */}
-        {/* <div>
-          <label className="block text-sm font-medium text-blue-700 mb-1">Parking Opening Time</label>
-          <input name="parkingOpeningTime" value={form.parkingOpeningTime} onChange={handleChange} type="time" className="w-full p-2 border border-blue-300 rounded-md" />
-        </div> */}
-
-        {/* Phones Left With */}
-        <div>
-          <label className="block text-sm font-medium text-blue-700 mb-1">
-            Who Was Left with Phone 1 and 2 and Their Chargers?
-          </label>
-          <input
-            name="phonesLeftWith"
-            value={form.phonesLeftWith}
-            onChange={handleChange}
-            type="text"
-            className="w-full p-2 border border-blue-300 rounded-md"
-          />
-        </div>
-
-        {/* Parking Closing Time */}
-        {/* <div>
-          <label className="block text-sm font-medium text-blue-700 mb-1">Parking Closing Time</label>
-          <input name="parkingClosingTime" value={form.parkingClosingTime} onChange={handleChange} type="time" className="w-full p-2 border border-blue-300 rounded-md" />
-        </div> */}
 
         {/* Remarks */}
         <div>

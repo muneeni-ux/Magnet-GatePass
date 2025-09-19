@@ -2,8 +2,8 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-const TEXTSMS_API_KEY = process.env.TEXTSMS_API_KEY || "40aa6910e451602cf5bb9d30ffb23a07";
-const PARTNER_ID      = process.env.PARTNER_ID      || "13603";
+const TEXTSMS_API_KEY = process.env.TEXTSMS_API_KEY;
+const PARTNER_ID      = process.env.PARTNER_ID      || "14661";
 const SENDER_ID       = process.env.SENDER_ID       || "TextSMS";
 
 // POST /api/sms/send-sms

@@ -75,6 +75,7 @@ app.use("/api/visitors", visitor); // Only authenticated users can track
 app.use("/api/occurrences", occurrence);
 app.use("/api/auth", auth); // Authentication routes
 app.use("/api/inquiry-staff", inquiryStaffRoutes);
+app.use("/api/upload", Uploads); // Image upload route
 
 // Graceful Shutdown
 process.on("SIGINT", () => {
