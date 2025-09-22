@@ -32,11 +32,9 @@ const Login = ({ onLogin }) => {
         throw new Error(data.message || "Login failed");
       }
 
-      // ✅ Store token & user data in localStorage
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // ✅ Redirect based on role
       if (data.user?.isAdmin) {
         onLogin();
         navigate("/magnet/admin/dashboard/users");
@@ -56,13 +54,18 @@ const Login = ({ onLogin }) => {
       className="min-h-screen flex flex-col bg-cover bg-center"
       style={{
         backgroundImage:
-          "linear-gradient(to bottom right, rgba(0,0,0,0.7), rgba(0,0,50,0.7)), url('https://thenambalemagnetschool.sc.ke/wp-content/uploads/2020/02/arl.jpg')",
+          "linear-gradient(to bottom right, rgba(0,0,0,0.7), rgba(0,0,50,0.7)), url('https://scontent.fnbo8-1.fna.fbcdn.net/v/t39.30808-6/481762043_10162240028196885_4978525648961950555_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=4-tO02Ofj04Q7kNvwGWdHSN&_nc_oc=AdlfKzeS2TPjq9TVouTKx0kVjgZGz5K_q4ikjXdD4DMyWTAzCxaq2W4-2TME2S8oH3s&_nc_zt=23&_nc_ht=scontent.fnbo8-1.fna&_nc_gid=-vENll-7IAl4b5Ejj6yr6A&oh=00_Afaq62IARHThjPn1hTF1fi0QzKbDLdZgYoZZshzpVG0M4A&oe=68D6E365')",
       }}
     >
       <main className="flex-grow flex items-center justify-center px-4 py-10 animate-fade-in">
         <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
           {/* Logo / Title */}
           <div className="flex flex-col items-center mb-8">
+            <img
+              src="https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/10/The-Nambale-Magnet-School.png"
+              alt="Nambale Magnet School Logo"
+              className="h-20 w-auto mb-4 drop-shadow-lg"
+            />
             <LockKeyhole className="h-14 w-14 text-blue-300 mb-3" />
             <h2 className="text-3xl font-extrabold text-white drop-shadow-lg">
               Gate Pass Login
@@ -83,7 +86,7 @@ const Login = ({ onLogin }) => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Username */}
             <div>
-              <label className="block text-sm font-medium mb-1 text-white">
+              <label className="block text-lg font-semibold mb-2 text-white">
                 Username
               </label>
               <input
@@ -98,7 +101,7 @@ const Login = ({ onLogin }) => {
 
             {/* Password with eye toggle */}
             <div>
-              <label className="block text-sm font-medium mb-1 text-white">
+              <label className="block text-lg font-semibold mb-2 text-white">
                 Password
               </label>
               <div className="relative">
@@ -113,7 +116,7 @@ const Login = ({ onLogin }) => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-300 hover:text-white focus:outline-none"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
