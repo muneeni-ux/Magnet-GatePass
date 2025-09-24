@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  User,
-  IdCard,
-  Car,
-  Phone,
-  BookOpen,
-} from "lucide-react";
+import { User, IdCard, Car, Phone, BookOpen } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -56,7 +50,10 @@ export default function VisitorForm() {
       // 2) Find department phone
       const officePhone = departmentPhones[formData.department];
       if (!officePhone) {
-        console.warn("No phone number mapped for department:", formData.department);
+        console.warn(
+          "No phone number mapped for department:",
+          formData.department
+        );
       }
 
       // 3) Compose SMS message
@@ -126,15 +123,20 @@ Purpose: ${formData.purpose}`;
                 type="text"
                 name="name"
                 value={formData.name}
-                onChange={handleChange}
+                onChange={(e) => {
+                  // Allow only letters, spaces, and basic punctuation
+                  const value = e.target.value.replace(/[0-9]/g, "");
+                  setFormData({ ...formData, name: value });
+                }}
                 placeholder="Full Name"
                 required
+                pattern="[A-Za-z\s]+"
                 className="w-full pl-10 border-2 border-indigo-400 p-3 rounded-lg bg-white focus:ring-2 focus:ring-indigo-600"
               />
             </div>
 
             {/* ID Number */}
-            <div className="relative">
+            {/* <div className="relative">
               <IdCard className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600" />
               <input
                 type="text"
@@ -143,6 +145,26 @@ Purpose: ${formData.purpose}`;
                 onChange={handleChange}
                 placeholder="ID Number"
                 required
+                className="w-full pl-10 border-2 border-indigo-400 p-3 rounded-lg bg-white focus:ring-2 focus:ring-indigo-600"
+              />
+            </div> */}
+            {/* ID Number */}
+            <div className="relative">
+              <IdCard className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600" />
+              <input
+                type="text"
+                name="idNumber"
+                value={formData.idNumber}
+                onChange={(e) => {
+                  // Allow only digits and max length 12
+                  const value = e.target.value.replace(/\D/g, "").slice(0, 12);
+                  setFormData({ ...formData, idNumber: value });
+                }}
+                placeholder="ID Number"
+                required
+                maxLength={12}
+                inputMode="numeric"
+                pattern="\d{1,12}"
                 className="w-full pl-10 border-2 border-indigo-400 p-3 rounded-lg bg-white focus:ring-2 focus:ring-indigo-600"
               />
             </div>
@@ -154,9 +176,15 @@ Purpose: ${formData.purpose}`;
                 type="tel"
                 name="phone"
                 value={formData.phone}
-                onChange={handleChange}
-                placeholder="Phone Number"
                 required
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+                  setFormData({ ...formData, phone: value });
+                }}
+                placeholder="Phone Number"
+                maxLength={12}
+                inputMode="numeric"
+                pattern="\d{1,12}"
                 className="w-full pl-10 border-2 border-indigo-400 p-3 rounded-lg bg-white focus:ring-2 focus:ring-indigo-600"
               />
             </div>
