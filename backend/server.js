@@ -29,7 +29,7 @@ app.set('trust proxy', 1);
 const allowedOrigins = [
   "http://localhost:3000", // For development
   "http://localhost:3001", // For development
-  "https://ultrasecurity.co.ke",
+  "https://magnet-gatepass.onrender.com",
   "http://192.168.103.20:3000", // For local network access
 ];
 
