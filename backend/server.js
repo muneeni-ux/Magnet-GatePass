@@ -16,6 +16,7 @@ const visitor = require("./routes/VisitorRoutes.js");
 const occurrence = require("./routes/OccurenceRoute.js");
 const auth = require("./routes/LoginSignup.js");
 const inquiryStaffRoutes = require("./routes/InquiryRoute.js");
+const faqRoutes = require("./routes/FAQRoute.js");
 const errorHandler = require("./middleware/Errorhandler.js");
 
 dotenv.config();
@@ -76,6 +77,7 @@ app.use("/api/occurrences", occurrence);
 app.use("/api/auth", auth); // Authentication routes
 app.use("/api/inquiry-staff", inquiryStaffRoutes);
 app.use("/api/upload", Uploads); // Image upload route
+app.use("/api/faq", faqRoutes); // FAQ routes
 
 // Graceful Shutdown
 process.on("SIGINT", () => {
