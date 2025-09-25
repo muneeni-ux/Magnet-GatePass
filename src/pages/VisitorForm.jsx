@@ -6,12 +6,12 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 // Map each department to the office’s phone number (format: 2547XXXXXXXX)
 const departmentPhones = {
-  "Dean of Students": "254745096003",
-  "Head Teacher": "254745096003",
-  Farm: "254745096003",
-  Finance: "254745096003",
-  "Social Worker": "254745096003",
-  "Directors Office": "254745096003",
+  "Dean of Students": "254702563223",
+  "Head Teacher": "254727768331",
+  Farm: "254702031959",
+  Finance: "254727768331",
+  "Social Worker": "254721137324",
+  "Directors Office": "254727768331",
 };
 
 export default function VisitorForm() {
