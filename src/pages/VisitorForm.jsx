@@ -9,7 +9,7 @@ const departmentPhones = {
   "Dean of Students": "254702563223",
   "Head Teacher": "254727768331",
   Farm: "254702031959",
-  Finance: "254727768331",
+  Finance: "254745096003",
   "Social Worker": "254721137324",
   "Directors Office": "254727768331",
 };
