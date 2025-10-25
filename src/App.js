@@ -6,8 +6,8 @@ import Login from './components/Login';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollTop';
 import { Toaster } from 'react-hot-toast';
-import Signup from './components/SignUp';
 // Admin components
+import Signup from './components/SignUp';
 import UsersDetails from "./Admin/UserDetails";
 import AdminDashboard from "./Admin/AdminDashboard";
 import ProtectedRoute from "./Admin/ProtectedRoute";
