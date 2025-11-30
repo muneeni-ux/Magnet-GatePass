@@ -3,11 +3,37 @@ const router = express.Router();
 const Visitor = require("../models/Visitor");
 
 // CREATE - POST /api/visitors
+// router.post("/", async (req, res) => {
+//   try {
+//     const visitor = new Visitor(req.body);
+//     const savedVisitor = await visitor.save();
+//     res.status(201).json(savedVisitor);
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
+// CREATE - POST /api/visitors
 router.post("/", async (req, res) => {
   try {
-    const visitor = new Visitor(req.body);
+    const visitor = new Visitor(req.body); // formData already includes gate & nature
     const savedVisitor = await visitor.save();
     res.status(201).json(savedVisitor);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// UPDATE - PUT /api/visitors/:id
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedVisitor = await Visitor.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedVisitor)
+      return res.status(404).json({ error: "Visitor not found" });
+    res.json(updatedVisitor);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -54,20 +80,20 @@ router.get("/:id", async (req, res) => {
 });
 
 // UPDATE - PUT /api/visitors/:id
-router.put("/:id", async (req, res) => {
-  try {
-    const updatedVisitor = await Visitor.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!updatedVisitor)
-      return res.status(404).json({ error: "Visitor not found" });
-    res.json(updatedVisitor);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+// router.put("/:id", async (req, res) => {
+//   try {
+//     const updatedVisitor = await Visitor.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true }
+//     );
+//     if (!updatedVisitor)
+//       return res.status(404).json({ error: "Visitor not found" });
+//     res.json(updatedVisitor);
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
 
 
 router.put("/visitors/:id/timeout", async (req, res) => {

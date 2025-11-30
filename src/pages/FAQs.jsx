@@ -25,7 +25,7 @@ function FAQs() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50 px-6 py-20 sm:px-12 lg:px-24 font-sans text-gray-800 mt-0 md:mt-16">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50 px-6 py-20 sm:px-12 lg:px-24 font-sans text-gray-800 mt-0 md:mt-4">
 
       {/* Heading */}
       <div className="max-w-4xl mx-auto text-center mb-14">

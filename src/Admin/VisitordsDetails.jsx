@@ -8,7 +8,6 @@ import { saveAs } from "file-saver";
 import format from "date-fns/format";
 import isWithinInterval from "date-fns/isWithinInterval";
 
-
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const VisitorsDetails = () => {
@@ -68,12 +67,11 @@ const VisitorsDetails = () => {
 
   const filteredVisitors = visitors.filter((visitor) => {
     const nameMatch = visitor.name?.toLowerCase().includes(filterText.toLowerCase());
-    const purposeMatch = visitor.purpose?.toLowerCase().includes(filterText.toLowerCase());
     const todayMatch = todayOnly ? isToday(visitor.createdAt) : true;
     const departmentMatch = department ? visitor.department === department : true;
     const dateMatch = filterByDate(visitor);
 
-    return (nameMatch || purposeMatch) && todayMatch && departmentMatch && dateMatch;
+    return nameMatch && todayMatch && departmentMatch && dateMatch;
   });
 
   const filteredExportData = filteredVisitors.map(
@@ -92,7 +90,8 @@ const VisitorsDetails = () => {
     { name: "Phone", selector: (row) => row.phone, sortable: true },
     { name: "Vehicle Reg", selector: (row) => row.vehicleReg || "-", sortable: true },
     { name: "Department", selector: (row) => row.department, sortable: true },
-    { name: "Purpose", selector: (row) => row.purpose, sortable: true },
+    { name: "Gate", selector: (row) => row.gate, sortable: true },
+    { name: "Nature", selector: (row) => row.nature, sortable: true },
     {
       name: "Check In",
       selector: (row) => format(new Date(row.createdAt), "dd/MM/yyyy HH:mm"),
@@ -128,7 +127,7 @@ const VisitorsDetails = () => {
   const handlePrint = () => {
     const theadTh = `
       <th>Name</th><th>ID No</th><th>Phone</th>
-      <th>Vehicle</th><th>Department</th><th>Purpose</th>
+      <th>Vehicle</th><th>Department</th><th>Gate</th><th>Nature</th>
       <th>Time In</th><th>Time Out</th>
     `;
 
@@ -140,7 +139,8 @@ const VisitorsDetails = () => {
           <td>${v.phone}</td>
           <td>${v.vehicleReg || "-"}</td>
           <td>${v.department}</td>
-          <td>${v.purpose}</td>
+          <td>${v.gate}</td>
+          <td>${v.nature}</td>
           <td>${format(new Date(v.createdAt), "dd/MM/yyyy HH:mm")}</td>
           <td>${v.timeOut ? format(new Date(v.timeOut), "dd/MM/yyyy HH:mm") : "—"}</td>
         </tr>`
@@ -206,7 +206,7 @@ const VisitorsDetails = () => {
             <input
               type="text"
               className="border border-gray-300 rounded px-4 py-2 pl-10"
-              placeholder="Search name or purpose"
+              placeholder="Search name"
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
             />

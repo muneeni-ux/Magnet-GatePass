@@ -36,7 +36,7 @@ const About = () => {
       >
         <div className="bg-black bg-opacity-60 p-8 rounded-2xl shadow-lg">
           <h1 className="text-3xl sm:text-4xl md:text-5xl text-white font-bold mb-3 animate-fadeIn">
-            About Nambale Magnet School Visitors System
+            About Nambale Magnet School Visitors System(MagTrack)
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-200 max-w-3xl mx-auto animate-fadeInDelay">
             A modern, secure and efficient system to record, monitor, and manage

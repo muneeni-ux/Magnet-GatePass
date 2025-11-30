@@ -143,7 +143,7 @@ const AdminDashboard = () => {
 
           {/* Title */}
           <h1 className="text-lg font-semibold text-gray-800 md:ml-20">
-            Nambale Magnet School — Admin Dashboard
+            MagTrack — Admin Dashboard
           </h1>
 
           {/* Profile placeholder */}

@@ -11,7 +11,7 @@ function Footer() {
         {/* About */}
         <div className="text-center sm:text-left">
           <h2 className="text-lg font-bold mb-3 text-yellow-400">
-            Magnet Nambale Gate-Pass Records
+            MagTrack
           </h2>
           <p className="text-white/80 text-sm leading-relaxed italic">
             A modern system for efficient visitor management.  

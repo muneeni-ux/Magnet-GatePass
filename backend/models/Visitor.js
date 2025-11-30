@@ -6,24 +6,13 @@ const visitorSchema = new mongoose.Schema(
     idNumber: { type: String, required: true },
     phone: { type: String, required: true },
     vehicleReg: { type: String },
-    department: {
-      type: String,
-      enum: [
-        "Dean of Students",
-        "Head Teacher",
-        "Farm",
-        "Finance",
-        "Social Worker",
-        "Directors Office",
-      ],
-      required: true,
-    },
-    purpose: { type: String, required: true },
-    timeOut: { type: Date }, // <-- Add this line
+    department: { type: String, required: true }, // allow any string
+    gate: { type: String, enum: ["Gate A-official", "Gate B-mauzo"], required: true },
+    nature: { type: String, enum: ["official", "personal"], required: true },
+    timeOut: { type: Date },
     duration: { type: String }, // e.g., "1h 25m"
-
   },
-  { timestamps: true } // This adds createdAt and updatedAt automatically
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Visitor", visitorSchema);

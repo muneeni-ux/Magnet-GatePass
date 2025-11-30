@@ -171,7 +171,7 @@ export default function VisitorHistory() {
 
       <div className="overflow-x-auto rounded-lg border border-gray-200">
         <table className="min-w-full bg-white text-sm md:text-base">
-          <thead className="bg-indigo-100 text-indigo-800">
+          {/* <thead className="bg-indigo-100 text-indigo-800">
             <tr>
               <th className="p-3 border">Name</th>
               <th className="p-3 border">Department</th>
@@ -219,7 +219,54 @@ export default function VisitorHistory() {
                 </tr>
               ))
             )}
-          </tbody>
+          </tbody> */}
+          <thead className="bg-indigo-100 text-indigo-800">
+  <tr>
+    <th className="p-3 border">Name</th>
+    <th className="p-3 border">Department</th>
+    <th className="p-3 border">Gate</th>
+    <th className="p-3 border">Nature</th>
+    <th className="p-3 border">Time In</th>
+    <th className="p-3 border">Time Out</th>
+    <th className="p-3 border">Duration</th>
+    <th className="p-3 border">Action</th>
+  </tr>
+</thead>
+
+<tbody>
+  {filteredVisitors.length === 0 ? (
+    <tr>
+      <td colSpan="9" className="text-center text-gray-500 p-6">
+        No matching visitors found.
+      </td>
+    </tr>
+  ) : (
+    filteredVisitors.map((visitor) => (
+      <tr key={visitor._id} className="text-center hover:bg-gray-50">
+        <td className="p-3 border">{visitor.name}</td>
+        <td className="p-3 border">{visitor.department}</td>
+        <td className="p-3 border">{visitor.gate}</td>
+        <td className="p-3 border">{visitor.nature}</td>
+        <td className="p-3 border">{new Date(visitor.createdAt).toLocaleString()}</td>
+        <td className="p-3 border">
+          {visitor.timeOut ? new Date(visitor.timeOut).toLocaleString() : "—"}
+        </td>
+        <td className="p-3 border">{visitor.duration || "—"}</td>
+        <td className="p-3 border">
+          {!visitor.timeOut && (
+            <button
+              onClick={() => handleTimeOut(visitor._id)}
+              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            >
+              Time Out
+            </button>
+          )}
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
+
         </table>
       </div>
     </div>

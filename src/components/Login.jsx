@@ -68,7 +68,7 @@ const Login = ({ onLogin }) => {
             />
             <LockKeyhole className="h-14 w-14 text-blue-300 mb-3" />
             <h2 className="text-3xl font-extrabold text-white drop-shadow-lg">
-              Gate Pass Login
+              MagTrack Login
             </h2>
             <p className="text-sm text-blue-200 mt-1">
               Authorized Personnel Only

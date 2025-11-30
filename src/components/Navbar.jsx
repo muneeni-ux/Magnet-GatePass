@@ -72,7 +72,7 @@ const Navbar = ({ setIsLoggedIn }) => {
             className="w-10 h-10 object-cover rounded-full border-2 border-white shadow hover:scale-105 transition-transform duration-300"
           />
           <h1 className="text-lg font-bold text-white tracking-wide">
-            Nambale Magnet Visitors Pass
+            MagTrack
           </h1>
         </div>
 
@@ -148,7 +148,7 @@ const Navbar = ({ setIsLoggedIn }) => {
             alt="Institution Logo"
             className="w-12 h-12 object-cover rounded-full border-2 border-white shadow"
           />
-          <h1 className="text-lg font-extrabold">Nambale Magnet</h1>
+          <h1 className="text-lg font-extrabold">MagTrack</h1>
         </div>
 
         <ul className="mt-4">
