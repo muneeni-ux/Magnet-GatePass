@@ -6,7 +6,7 @@
 
 // // Map each department to the office’s phone number (format: 2547XXXXXXXX)
 // const departmentPhones = {
-//   Administration: "254743072126",
+//   Administration: "254111949314",
 //   Academics: "254743072126",
 //   Farm: "254743072126",
 //   Kitchen: "254743072126",
@@ -252,7 +252,6 @@
 //     </div>
 //   );
 // }
-
 import React, { useState } from "react";
 import { User, IdCard, Car, Phone, BookOpen } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -261,12 +260,12 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 // Map each department to the office’s phone number
 const departmentPhones = {
-  Administration: "254743072126",
-  Academics: "254743072126",
-  Farm: "254743072126",
-  Kitchen: "254743072126",
-  "House Keeping": "254743072126",
-  Other: "254743072126", // default for 'Other'
+  Administration: "254111949314",
+  Academics: "254111949314",
+  Farm: "254111949314",
+  Kitchen: "254111949314",
+  "House Keeping": "254111949314",
+  Other: "254111949314",
 };
 
 export default function VisitorForm() {
@@ -282,9 +281,21 @@ export default function VisitorForm() {
   });
   const [loading, setLoading] = useState(false);
 
+  // Handle field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // If gate changes to Gate B-mauzo, clear department fields
+    if (name === "gate" && value === "Gate B-mauzo") {
+      setFormData((prev) => ({
+        ...prev,
+        gate: value,
+        department: "",
+        specificDepartment: "",
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -294,7 +305,11 @@ export default function VisitorForm() {
     try {
       // Prepare department for SMS
       const deptForSMS =
-        formData.department === "Other" ? formData.specificDepartment : formData.department;
+        formData.gate === "Gate B-mauzo"
+          ? "N/A"
+          : formData.department === "Other"
+          ? formData.specificDepartment
+          : formData.department;
 
       // Save the visitor record
       const response = await fetch(`${SERVER_URL}/api/visitors`, {
@@ -308,8 +323,11 @@ export default function VisitorForm() {
       const savedVisitor = await response.json();
       console.log("Visitor saved:", savedVisitor);
 
-      // Find department phone
-      const officePhone = departmentPhones[formData.department] || departmentPhones["Other"];
+      // Find department phone (skip if Gate B-mauzo)
+      const officePhone =
+        formData.gate === "Gate B-mauzo"
+          ? null
+          : departmentPhones[formData.department] || departmentPhones["Other"];
 
       // Compose SMS message
       const smsMessage = `New Visitor Alert:
@@ -321,15 +339,12 @@ Department: ${deptForSMS}
 Gate: ${formData.gate}
 Nature of Visit: ${formData.nature}`;
 
-      // Send SMS
+      // Send SMS if applicable
       if (officePhone) {
         const smsResponse = await fetch(`${SERVER_URL}/api/sms/send-sms`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            phone: officePhone,
-            message: smsMessage,
-          }),
+          body: JSON.stringify({ phone: officePhone, message: smsMessage }),
         });
 
         if (!smsResponse.ok) {
@@ -339,7 +354,7 @@ Nature of Visit: ${formData.nature}`;
           toast.success("Visitor registered and officer notified via SMS!");
         }
       } else {
-        toast.success("Visitor registered (no SMS sent: no phone mapped).");
+        toast.success("Visitor registered!");
       }
 
       // Reset form
@@ -454,12 +469,12 @@ Nature of Visit: ${formData.nature}`;
                 className="w-full pl-3 border-2 border-indigo-400 p-3 rounded-lg bg-white focus:ring-2 focus:ring-indigo-600"
               >
                 <option value="">Select Gate</option>
-                <option value="Gate A-official">Gate A-official</option>
+                <option value="Gate A">Gate A</option>
                 <option value="Gate B-mauzo">Gate B-mauzo</option>
               </select>
             </div>
 
-            {/* Nature of Visit Dropdown */}
+            {/* Nature of Visit */}
             <div className="relative">
               <select
                 name="nature"
@@ -474,28 +489,30 @@ Nature of Visit: ${formData.nature}`;
               </select>
             </div>
 
-            {/* Department */}
-            <div className="relative">
-              <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600" />
-              <select
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                required
-                className="w-full pl-10 border-2 border-indigo-400 p-3 rounded-lg bg-white focus:ring-2 focus:ring-indigo-600"
-              >
-                <option value="">Select Department</option>
-                <option value="Administration">Administration</option>
-                <option value="Academics">Academics</option>
-                <option value="Farm">Farm</option>
-                <option value="Kitchen">Kitchen</option>
-                <option value="House Keeping">House Keeping</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
+            {/* Department – only show if Gate A */}
+            {formData.gate === "Gate A" && (
+              <div className="relative">
+                <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-600" />
+                <select
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                  required
+                  className="w-full pl-10 border-2 border-indigo-400 p-3 rounded-lg bg-white focus:ring-2 focus:ring-indigo-600"
+                >
+                  <option value="">Select Department</option>
+                  <option value="Administration">Administration</option>
+                  <option value="Academics">Academics</option>
+                  <option value="Farm">Farm</option>
+                  <option value="Kitchen">Kitchen</option>
+                  <option value="House Keeping">House Keeping</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            )}
 
-            {/* Specific Department if 'Other' */}
-            {formData.department === "Other" && (
+            {/* Specific Department if 'Other' and Gate A */}
+            {formData.department === "Other" && formData.gate === "Gate A" && (
               <div className="relative sm:col-span-2">
                 <input
                   type="text"
@@ -508,7 +525,8 @@ Nature of Visit: ${formData.nature}`;
                 />
               </div>
             )}
-            {/* Submit */}
+
+            {/* Submit Button */}
             <div className="flex justify-center sm:col-span-2 mt-6">
               <button
                 type="submit"
