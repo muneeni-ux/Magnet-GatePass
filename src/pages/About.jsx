@@ -31,12 +31,12 @@ const About = () => {
         className="w-full min-h-[50vh] bg-cover bg-center flex items-center justify-center text-center px-4"
         style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=1000&q=80')",
+            "url('https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/08/The-Nambale-Magnet-School-Students-tuition-fees.jpg')",
         }}
       >
         <div className="bg-black bg-opacity-60 p-8 rounded-2xl shadow-lg">
           <h1 className="text-3xl sm:text-4xl md:text-5xl text-white font-bold mb-3 animate-fadeIn">
-            About Nambale Magnet School Visitors System(MagTrack)
+            About MagTrack
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-200 max-w-3xl mx-auto animate-fadeInDelay">
             A modern, secure and efficient system to record, monitor, and manage
@@ -50,7 +50,7 @@ const About = () => {
       <section className="w-full py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-indigo-800 animate-fadeIn">
-            Why Our Visitor Management System?
+            Why MagTrack?
           </h2>
           <p className="text-base text-gray-700 mb-12 text-center leading-relaxed max-w-3xl mx-auto animate-fadeInDelay">
             At <strong>Nambale Magnet School</strong>, the safety of our students
