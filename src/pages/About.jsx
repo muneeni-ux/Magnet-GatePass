@@ -143,7 +143,7 @@ const About = () => {
 
       {/* Floating WhatsApp Button */}
       <a
-        href="https://wa.me/254738380692?text=Hello%20Nambale%20Magnet%20School%20Support"
+        href="https://wa.me/254743072126?text=Hello%20Nambale%20Magnet%20School%20Support"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center animate-bounce transition-all duration-300 z-10"
