@@ -219,12 +219,12 @@ const VisitorsDetails = () => {
             onChange={(e) => setDepartment(e.target.value)}
           >
             <option value="">All Departments</option>
-            <option value="Dean of Students">Dean of Students</option>
-            <option value="Head Teacher">Head Teacher</option>
+            <option value="Administration">Administration</option>
+            <option value="Academics">Academics</option>
             <option value="Farm">Farm</option>
-            <option value="Finance">Finance</option>
-            <option value="Social Worker">Social Worker</option>
-            <option value="Directors Office">Directors Office</option>
+            <option value="Kitchen">Kitchen</option>
+            <option value="House Keeping">House Keeping</option>
+            <option value="Other">Other</option>
           </select>
 
           <label className="text-sm">
