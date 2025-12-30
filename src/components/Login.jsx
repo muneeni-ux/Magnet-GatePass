@@ -479,14 +479,14 @@ const Login = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
-      {/* 🔵 Blue Gradient Background */}
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900" />
       <div className="absolute inset-0 bg-black/30" />
 
-      {/* 🪟 Glass Card */}
+      {/* Glass Card */}
       <div className="relative z-10 w-full max-w-5xl min-h-[560px] rounded-3xl bg-white/20 backdrop-blur-xl shadow-2xl border border-white/20 grid grid-cols-1 md:grid-cols-2 overflow-hidden">
 
-        {/* LEFT — SCHOOL BRAND */}
+        {/* LEFT SIDE */}
         <div className="hidden md:flex flex-col justify-center items-center bg-blue-900/30 px-12">
           <img
             src="https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/10/The-Nambale-Magnet-School.png"
@@ -501,12 +501,12 @@ const Login = ({ onLogin }) => {
           </p>
         </div>
 
-        {/* RIGHT — LOGIN FORM */}
+        {/* RIGHT SIDE — LOGIN */}
         <div className="flex flex-col justify-center px-10 md:px-14 py-12 text-left">
-          <LockKeyhole className="h-10 w-10 text-amber-400 mb-6" 
-          />
 
-          <h2 className="text-3xl font-bold text-white mb-2">
+          {/* HEADING WITH ICON ON THE LEFT */}
+          <h2 className="flex items-center text-3xl font-bold text-white mb-2">
+            <LockKeyhole className="h-8 w-8 text-amber-400 mr-3" />
             MagTrack Login
           </h2>
 
