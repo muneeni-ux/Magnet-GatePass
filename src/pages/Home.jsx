@@ -88,8 +88,6 @@
 
 // export default Home;
 
-
-
 // /neww
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -100,7 +98,7 @@ import {
   Clock,
   LayoutDashboard,
 } from "lucide-react";
-import { motion } from "framer-motion";
+// framer-motion removed temporarily to avoid runtime hook issues
 
 const Home = () => {
   const navigate = useNavigate();
@@ -140,74 +138,44 @@ const Home = () => {
 
   return (
     <div className="relative min-h-screen px-6 py-16 flex items-center justify-center text-white bg-gradient-to-br from-indigo-900 via-indigo-800 to-black overflow-hidden">
-
       {/* Floating particles */}
       <div className="absolute inset-0 -z-10 opacity-50">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, y: [-8, 8, -8] }}
-          transition={{ duration: 6, repeat: Infinity }}
-          className="absolute w-2 h-2 bg-white rounded-full top-16 left-24"
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.9, y: [8, -8, 8] }}
-          transition={{ duration: 8, repeat: Infinity }}
-          className="absolute w-2 h-2 bg-white rounded-full bottom-20 right-32"
-        />
+        <div className="absolute w-2 h-2 bg-white rounded-full top-16 left-24" />
+        <div className="absolute w-2 h-2 bg-white rounded-full bottom-20 right-32" />
       </div>
 
       <div className="max-w-5xl text-center">
-
         {/* TITLE */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-6xl font-extrabold drop-shadow-2xl"
-        >
+        <h1 className="text-6xl font-extrabold drop-shadow-2xl">
           MagTrack
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">
             Smart, Secure & Modern
           </span>
-        </motion.h1>
+        </h1>
 
         {/* SUBTITLE */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="mt-4 text-lg opacity-90"
-        >
-          Designed to enhance professionalism, safety, and seamless digital record-keeping at every step.
-        </motion.p>
+        <p className="mt-4 text-lg opacity-90">
+          Designed to enhance professionalism, safety, and seamless digital
+          record-keeping at every step.
+        </p>
 
         {/* CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-14 px-4">
-
           {steps.map((step, i) => {
             const Icon = step.icon;
             return (
-              <motion.div
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.2 }}
-                whileHover={{ scale: 1.07, rotate: 1 }}
                 className={`relative p-8 rounded-3xl bg-gradient-to-br ${step.colors}
                 shadow-2xl backdrop-blur-xl border border-white/10 cursor-pointer`}
               >
-
                 {/* ICON */}
-                <motion.div
-                  initial={{ rotate: 0 }}
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 1 }}
+                <div
                   className="w-16 h-16 mx-auto flex items-center justify-center
                   rounded-2xl bg-black/20 shadow-inner mb-4"
                 >
                   <Icon className="w-9 h-9 text-white drop-shadow animate-pulse" />
-                </motion.div>
+                </div>
 
                 {/* TITLE */}
                 <h3 className="text-2xl font-bold tracking-wide drop-shadow-md text-white">
@@ -215,41 +183,34 @@ const Home = () => {
                 </h3>
 
                 {/* DESC */}
-                <p className="opacity-95 mt-2 font-medium">
-                  {step.desc}
-                </p>
+                <p className="opacity-95 mt-2 font-medium">{step.desc}</p>
 
                 {/* STEP NUMBER */}
                 <span className="absolute top-4 right-6 text-sm opacity-70 font-bold">
                   Step {i + 1}
                 </span>
-
-              </motion.div>
+              </div>
             );
           })}
-
         </div>
 
         {/* CTA BUTTON */}
-        <motion.button
+        <button
           onClick={handleGetStarted}
-          whileTap={{ scale: 0.95 }}
           disabled={loading}
           className={`
             mt-16 px-16 py-4 text-xl font-extrabold rounded-full
             shadow-2xl flex items-center gap-3 mx-auto transition-all duration-300
-            ${loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-yellow-400 to-yellow-500 hover:scale-110"}
+            ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-yellow-400 to-yellow-500 hover:scale-110"
+            }
           `}
         >
           {/* loader spinner */}
           {loading && (
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity }}
-              className="w-6 h-6 border-4 border-white border-t-transparent rounded-full"
-            />
+            <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
           )}
 
           {loading ? "Loading..." : "Get Started"}
@@ -257,12 +218,11 @@ const Home = () => {
           {!loading && (
             <ArrowRight className="w-7 h-7 group-hover:translate-x-2 transition-transform duration-300" />
           )}
-        </motion.button>
+        </button>
 
         <p className="mt-4 text-sm opacity-90 font-medium drop-shadow">
           Faster. Smarter. Safer digital visitor management.
         </p>
-
       </div>
     </div>
   );
