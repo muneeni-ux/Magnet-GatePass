@@ -146,12 +146,17 @@ const Home = () => {
 
       <div className="max-w-5xl text-center">
         {/* TITLE */}
-        <h1 className="text-6xl font-extrabold drop-shadow-2xl">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-6xl font-extrabold mt-12 pt-4 drop-shadow-2xl"
+        >
           MagTrack
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">
             Smart, Secure & Modern
           </span>
-        </h1>
+        </motion.h1>
 
         {/* SUBTITLE */}
         <p className="mt-4 text-lg opacity-90">

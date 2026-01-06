@@ -26,6 +26,7 @@ const About = () => {
 
   return (
     <div className="relative flex flex-col min-h-screen overflow-x-hidden font-sans animate-fadeIn mt-12 md:mt-16">
+      
       {/* Hero Section */}
       <div
         className="w-full min-h-[50vh] bg-cover bg-center flex items-center justify-center text-center px-4"
@@ -39,14 +40,14 @@ const About = () => {
             About MagTrack
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-200 max-w-3xl mx-auto animate-fadeInDelay">
-            A modern, secure and efficient system to record, monitor, and manage
-            visitors coming into our school – ensuring safety, accountability,
-            and professionalism.
+            A modern, secure visitor access management system designed to record,
+            monitor, and control all school visits — enhancing student safety,
+            staff accountability, and professional engagement.
           </p>
         </div>
       </div>
 
-      {/* Mission Section */}
+      {/* Why MagTrack Section */}
       <section className="w-full py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-indigo-800 animate-fadeIn">
@@ -54,41 +55,120 @@ const About = () => {
           </h2>
           <p className="text-base text-gray-700 mb-12 text-center leading-relaxed max-w-3xl mx-auto animate-fadeInDelay">
             At <strong>Nambale Magnet School</strong>, the safety of our students
-            and staff is our top priority. This system allows us to keep
-            accurate records of visitors, their purpose, and their time of entry
-            and exit.
+            and staff is our top priority. MagTrack provides a structured and
+            reliable way to manage visitors, ensuring that every individual in school is properly recorded, verified, and monitored.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 animate-fadeInDelay2">
             <div className="bg-indigo-50 p-6 rounded-xl shadow-md text-center hover:scale-105 transition duration-300">
               <Handshake size={40} className="text-indigo-700 mb-3 mx-auto" />
               <h3 className="text-lg font-semibold text-indigo-800">
-                Welcoming Environment
+                Professional Reception
               </h3>
               <p className="text-sm text-gray-600 mt-2">
-                Visitors are received professionally while ensuring safety.
+                Visitors are welcomed respectfully while maintaining strict
+                access control.
               </p>
             </div>
+
             <div className="bg-indigo-50 p-6 rounded-xl shadow-md text-center hover:scale-105 transition duration-300">
               <Clock size={40} className="text-indigo-700 mb-3 mx-auto" />
               <h3 className="text-lg font-semibold text-indigo-800">
                 Time Tracking
               </h3>
               <p className="text-sm text-gray-600 mt-2">
-                Automatically records check-in and check-out times for every
-                visitor.
+                Automatically logs entry and exit times for accurate monitoring.
               </p>
             </div>
+
             <div className="bg-indigo-50 p-6 rounded-xl shadow-md text-center hover:scale-105 transition duration-300">
-              <ClipboardList
-                size={40}
-                className="text-indigo-700 mb-3 mx-auto"
-              />
+              <ClipboardList size={40} className="text-indigo-700 mb-3 mx-auto" />
               <h3 className="text-lg font-semibold text-indigo-800">
-                Organized Records
+                Centralized Records
               </h3>
               <p className="text-sm text-gray-600 mt-2">
-                Easily manage and access visitor logs for accountability.
+                Easily access historical visitor data for audits and reviews.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="w-full py-16 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-indigo-800 animate-fadeIn">
+            How MagTrack Works
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 animate-fadeInDelay">
+            {[
+              {
+                step: "1",
+                title: "Visitor Check-In",
+                desc: "Visitors provide their details and reason for visit at the entrance desk.",
+              },
+              {
+                step: "2",
+                title: "Verification",
+                desc: "Visitor information is verified and securely stored in the system.",
+              },
+              {
+                step: "3",
+                title: "Live Monitoring",
+                desc: "Staff can see who is currently in school at any time.",
+              },
+              {
+                step: "4",
+                title: "Check-Out",
+                desc: "Exit time is recorded to complete the visit log.",
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-xl shadow-md text-center"
+              >
+                <div className="text-4xl font-bold text-indigo-700 mb-3">
+                  {item.step}
+                </div>
+                <h3 className="font-semibold text-indigo-800">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-gray-600 mt-2">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Security Section */}
+      <section className="w-full py-16 px-6 bg-white">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-indigo-800 mb-8 animate-fadeIn">
+            Security & Data Protection
+          </h2>
+          <p className="text-gray-700 text-base leading-relaxed max-w-3xl mx-auto animate-fadeInDelay">
+            MagTrack is built with security at its core. All visitor data is
+            protected and accessible only to authorized school staff, ensuring
+            privacy, compliance, and accountability.
+          </p>
+
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 animate-fadeInDelay2">
+            <div className="bg-indigo-50 p-6 rounded-xl shadow-sm">
+              <h3 className="font-semibold text-indigo-800 mb-2">
+                Controlled Access
+              </h3>
+              <p className="text-sm text-gray-600">
+                Only approved personnel can view, edit, or manage visitor data.
+              </p>
+            </div>
+
+            <div className="bg-indigo-50 p-6 rounded-xl shadow-sm">
+              <h3 className="font-semibold text-indigo-800 mb-2">
+                Audit & Accountability
+              </h3>
+              <p className="text-sm text-gray-600">
+                Detailed logs support investigations, reporting, and compliance.
               </p>
             </div>
           </div>
@@ -99,7 +179,7 @@ const About = () => {
       <section className="w-full py-16 px-6 bg-indigo-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-indigo-800 mb-12 animate-fadeIn">
-            Inquiry & Support Staff
+            Inquiry & Support Desk
           </h2>
 
           {loading ? (
@@ -125,7 +205,7 @@ const About = () => {
                   </h3>
                   <p className="text-sm text-gray-600 mt-1">{profile.role}</p>
 
-                  <div className="mt-4 space-y-2">
+                  <div className="mt-4">
                     <a
                       href={`tel:${profile.phone}`}
                       className="flex justify-center items-center gap-2 text-sm text-indigo-700 hover:underline"
@@ -143,7 +223,7 @@ const About = () => {
 
       {/* Floating WhatsApp Button */}
       <a
-        href="https://wa.me/254738380692?text=Hello%20Nambale%20Magnet%20School%20Support"
+        href="https://wa.me/254743072126?text=Hello%20Nambale%20Magnet%20School%20Support"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center animate-bounce transition-all duration-300 z-10"

@@ -1,153 +1,152 @@
-import React, { useState } from "react";
-import { LockKeyhole, Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+// import React, { useState } from "react";
+// import { LockKeyhole, Eye, EyeOff } from "lucide-react";
+// import { useNavigate } from "react-router-dom";
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+// const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
-const Login = ({ onLogin }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const navigate = useNavigate();
+// const Login = ({ onLogin }) => {
+//   const [username, setUsername] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [loading, setLoading] = useState(false);
+//   const [errorMsg, setErrorMsg] = useState("");
+//   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrorMsg("");
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+//     setErrorMsg("");
 
-    try {
-      const res = await fetch(`${SERVER_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+//     try {
+//       const res = await fetch(`${SERVER_URL}/api/auth/login`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ username, password }),
+//       });
 
-      const data = await res.json();
+//       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+//       if (!res.ok) {
+//         throw new Error(data.message || "Login failed");
+//       }
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+//       localStorage.setItem("token", data.token);
+//       localStorage.setItem("user", JSON.stringify(data.user));
 
-      if (data.user?.isAdmin) {
-        onLogin();
-        navigate("/magnet/admin/dashboard/users");
-      } else {
-        onLogin();
-        navigate("/home");
-      }
-    } catch (error) {
-      setErrorMsg(error.message || "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
+//       if (data.user?.isAdmin) {
+//         onLogin();
+//         navigate("/magnet/admin/dashboard/users");
+//       } else {
+//         onLogin();
+//         navigate("/home");
+//       }
+//     } catch (error) {
+//       setErrorMsg(error.message || "An error occurred");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-  return (
-    <div
-      className="min-h-screen flex flex-col bg-cover bg-center"
-      style={{
-        backgroundImage:
-          "linear-gradient(to bottom right, rgba(0,0,0,0.7), rgba(0,0,50,0.7)), url('https://scontent.fnbo8-1.fna.fbcdn.net/v/t39.30808-6/481762043_10162240028196885_4978525648961950555_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=4-tO02Ofj04Q7kNvwGWdHSN&_nc_oc=AdlfKzeS2TPjq9TVouTKx0kVjgZGz5K_q4ikjXdD4DMyWTAzCxaq2W4-2TME2S8oH3s&_nc_zt=23&_nc_ht=scontent.fnbo8-1.fna&_nc_gid=-vENll-7IAl4b5Ejj6yr6A&oh=00_Afaq62IARHThjPn1hTF1fi0QzKbDLdZgYoZZshzpVG0M4A&oe=68D6E365')",
-      }}
-    >
-      <main className="flex-grow flex items-center justify-center px-4 py-10 animate-fade-in">
-        <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
-          {/* Logo / Title */}
-          <div className="flex flex-col items-center mb-8">
-            <img
-              src="https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/10/The-Nambale-Magnet-School.png"
-              alt="Nambale Magnet School Logo"
-              className="h-20 w-auto mb-4 drop-shadow-lg"
-            />
-            <LockKeyhole className="h-14 w-14 text-blue-300 mb-3" />
-            <h2 className="text-3xl font-extrabold text-white drop-shadow-lg">
-              MagTrack Login
-            </h2>
-            <p className="text-sm text-blue-200 mt-1">
-              Authorized Personnel Only
-            </p>
-          </div>
+//   return (
+//     <div
+//       className="min-h-screen flex flex-col bg-cover bg-center"
+//       style={{
+//         backgroundImage:
+//           "linear-gradient(to bottom right, rgba(0,0,0,0.7), rgba(0,0,50,0.7)), url('https://scontent.fnbo8-1.fna.fbcdn.net/v/t39.30808-6/481762043_10162240028196885_4978525648961950555_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=4-tO02Ofj04Q7kNvwGWdHSN&_nc_oc=AdlfKzeS2TPjq9TVouTKx0kVjgZGz5K_q4ikjXdD4DMyWTAzCxaq2W4-2TME2S8oH3s&_nc_zt=23&_nc_ht=scontent.fnbo8-1.fna&_nc_gid=-vENll-7IAl4b5Ejj6yr6A&oh=00_Afaq62IARHThjPn1hTF1fi0QzKbDLdZgYoZZshzpVG0M4A&oe=68D6E365')",
+//       }}
+//     >
+//       <main className="flex-grow flex items-center justify-center px-4 py-10 animate-fade-in">
+//         <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
+//           {/* Logo / Title */}
+//           <div className="flex flex-col items-center mb-8">
+//             <img
+//               src="https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/10/The-Nambale-Magnet-School.png"
+//               alt="Nambale Magnet School Logo"
+//               className="h-20 w-auto mb-4 drop-shadow-lg"
+//             />
+//             <LockKeyhole className="h-14 w-14 text-blue-300 mb-3" />
+//             <h2 className="text-3xl font-extrabold text-white drop-shadow-lg">
+//               MagTrack Login
+//             </h2>
+//             <p className="text-sm text-blue-200 mt-1">
+//               Authorized Personnel Only
+//             </p>
+//           </div>
 
-          {/* Error */}
-          {errorMsg && (
-            <div className="mb-4 text-sm text-red-200 bg-red-800/30 px-4 py-2 rounded-md border border-red-400/30">
-              {errorMsg}
-            </div>
-          )}
+//           {/* Error */}
+//           {errorMsg && (
+//             <div className="mb-4 text-sm text-red-200 bg-red-800/30 px-4 py-2 rounded-md border border-red-400/30">
+//               {errorMsg}
+//             </div>
+//           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Username */}
-            <div>
-              <label className="block text-lg font-semibold mb-2 text-white">
-                Username
-              </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/40 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter username"
-              />
-            </div>
+//           {/* Form */}
+//           <form onSubmit={handleSubmit} className="space-y-5">
+//             {/* Username */}
+//             <div>
+//               <label className="block text-lg font-semibold mb-2 text-white">
+//                 Username
+//               </label>
+//               <input
+//                 type="text"
+//                 value={username}
+//                 onChange={(e) => setUsername(e.target.value)}
+//                 required
+//                 className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/40 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+//                 placeholder="Enter username"
+//               />
+//             </div>
 
-            {/* Password with eye toggle */}
-            <div>
-              <label className="block text-lg font-semibold mb-2 text-white">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/40 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
-                  placeholder="Enter password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-3 flex items-center text-gray-300 hover:text-white focus:outline-none"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-            </div>
+//             {/* Password with eye toggle */}
+//             <div>
+//               <label className="block text-lg font-semibold mb-2 text-white">
+//                 Password
+//               </label>
+//               <div className="relative">
+//                 <input
+//                   type={showPassword ? "text" : "password"}
+//                   value={password}
+//                   onChange={(e) => setPassword(e.target.value)}
+//                   required
+//                   className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/40 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+//                   placeholder="Enter password"
+//                 />
+//                 <button
+//                   type="button"
+//                   onClick={() => setShowPassword(!showPassword)}
+//                   className="absolute inset-y-0 right-3 flex items-center text-gray-300 hover:text-white focus:outline-none"
+//                 >
+//                   {showPassword ? (
+//                     <EyeOff className="h-5 w-5" />
+//                   ) : (
+//                     <Eye className="h-5 w-5" />
+//                   )}
+//                 </button>
+//               </div>
+//             </div>
 
-            {/* Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full transition duration-300 font-semibold py-2 rounded-lg shadow-md ${
-                loading
-                  ? "bg-blue-500/70 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700 active:scale-95"
-              } text-white`}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </form>
-        </div>
-      </main>
-    </div>
-  );
-};
+//             {/* Button */}
+//             <button
+//               type="submit"
+//               disabled={loading}
+//               className={`w-full transition duration-300 font-semibold py-2 rounded-lg shadow-md ${
+//                 loading
+//                   ? "bg-blue-500/70 cursor-not-allowed"
+//                   : "bg-blue-600 hover:bg-blue-700 active:scale-95"
+//               } text-white`}
+//             >
+//               {loading ? "Logging in..." : "Login"}
+//             </button>
+//           </form>
+//         </div>
+//       </main>
+//     </div>
+//   );
+// };
 
-export default Login;
-
+// export default Login;
 
 // // Updated Login component with nms2.jpg background
 // import React, { useState } from "react";
@@ -302,3 +301,279 @@ export default Login;
 // };
 
 // export default Login;
+
+
+// import React, { useState } from "react";
+// import { LockKeyhole, Eye, EyeOff } from "lucide-react";
+// import { useNavigate } from "react-router-dom";
+
+// const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
+// const Login = ({ onLogin }) => {
+//   const [username, setUsername] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [loading, setLoading] = useState(false);
+//   const [errorMsg, setErrorMsg] = useState("");
+//   const navigate = useNavigate();
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+//     setErrorMsg("");
+
+//     try {
+//       const res = await fetch(`${SERVER_URL}/api/auth/login`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ username, password }),
+//       });
+
+//       const data = await res.json();
+
+//       if (!res.ok) throw new Error(data.message || "Login failed");
+
+//       localStorage.setItem("token", data.token);
+//       localStorage.setItem("user", JSON.stringify(data.user));
+
+//       onLogin();
+//       navigate(data.user?.isAdmin ? "/magnet/admin/dashboard/users" : "/home");
+//     } catch (error) {
+//       setErrorMsg(error.message || "An error occurred");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div
+//       className="min-h-screen flex items-center justify-center"
+//       style={{
+//         background: "linear-gradient(to bottom right, #e0f2ff, #60a5fa)",
+//       }}
+//     >
+//       <main className="w-full max-w-md p-8 rounded-3xl bg-white/70 backdrop-blur-md shadow-2xl">
+//         {/* Logo / Title */}
+//         <div className="flex flex-col items-center mb-8">
+//           <img
+//             src="https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/10/The-Nambale-Magnet-School.png"
+//             alt="Nambale Magnet School Logo"
+//             className="h-20 w-auto mb-4 drop-shadow-lg"
+//           />
+//           <LockKeyhole className="h-14 w-14 text-blue-600 mb-3" />
+//           <h2 className="text-3xl font-extrabold text-blue-800 drop-shadow-md">
+//             MagTrack Login
+//           </h2>
+//           <p className="text-sm text-blue-700 mt-1">
+//             Authorized Personnel Only
+//           </p>
+//         </div>
+
+//         {/* Error */}
+//         {errorMsg && (
+//           <div className="mb-4 text-sm text-red-700 bg-red-100 px-4 py-2 rounded-md border border-red-300">
+//             {errorMsg}
+//           </div>
+//         )}
+
+//         {/* Form */}
+//         <form onSubmit={handleSubmit} className="space-y-5">
+//           {/* Username */}
+//           <div>
+//             <label className="block text-lg font-semibold mb-2 text-blue-800">
+//               Username
+//             </label>
+//             <input
+//               type="text"
+//               value={username}
+//               onChange={(e) => setUsername(e.target.value)}
+//               required
+//               className="w-full px-4 py-2 rounded-lg border border-blue-300 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80"
+//               placeholder="Enter username"
+//             />
+//           </div>
+
+//           {/* Password */}
+//           <div>
+//             <label className="block text-lg font-semibold mb-2 text-blue-800">
+//               Password
+//             </label>
+//             <div className="relative">
+//               <input
+//                 type={showPassword ? "text" : "password"}
+//                 value={password}
+//                 onChange={(e) => setPassword(e.target.value)}
+//                 required
+//                 className="w-full px-4 py-2 rounded-lg border border-blue-300 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10 bg-white/80"
+//                 placeholder="Enter password"
+//               />
+//               <button
+//                 type="button"
+//                 onClick={() => setShowPassword(!showPassword)}
+//                 className="absolute inset-y-0 right-3 flex items-center text-blue-500 hover:text-blue-700 focus:outline-none"
+//               >
+//                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+//               </button>
+//             </div>
+//           </div>
+
+//           {/* Submit Button */}
+//           <button
+//             type="submit"
+//             disabled={loading}
+//             className={`w-full py-2 rounded-lg font-semibold shadow-md transition duration-300 ${
+//               loading
+//                 ? "bg-blue-400 cursor-not-allowed text-white"
+//                 : "bg-blue-600 hover:bg-blue-700 text-white"
+//             }`}
+//           >
+//             {loading ? "Logging in..." : "Login"}
+//           </button>
+//         </form>
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default Login;
+import React, { useState } from "react";
+import { LockKeyhole, Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
+const Login = ({ onLogin }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      const res = await fetch(`${SERVER_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      onLogin();
+      navigate(data.user?.isAdmin ? "/magnet/admin/dashboard/users" : "/home");
+    } catch (error) {
+      setErrorMsg(error.message || "Invalid username or password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900" />
+      <div className="absolute inset-0 bg-black/30" />
+
+      {/* Glass Card */}
+      <div className="relative z-10 w-full max-w-5xl min-h-[560px] rounded-3xl bg-white/20 backdrop-blur-xl shadow-2xl border border-white/20 grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+
+        {/* LEFT SIDE */}
+        <div className="hidden md:flex flex-col justify-center items-center bg-blue-900/30 px-12">
+          <img
+            src="https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/10/The-Nambale-Magnet-School.png"
+            alt="School Logo"
+            className="h-36 mb-8 drop-shadow-xl"
+          />
+          <h1 className="text-4xl font-extrabold text-white mb-3">
+            MagTrack
+          </h1>
+          <p className="text-blue-100 text-lg text-center max-w-xs">
+            Visitor & Access Management System
+          </p>
+        </div>
+
+        {/* RIGHT SIDE — LOGIN */}
+        <div className="flex flex-col justify-center px-10 md:px-14 py-12 text-left">
+
+          {/* HEADING WITH ICON ON THE LEFT */}
+          <h2 className="flex items-center text-3xl font-bold text-white mb-2">
+            <LockKeyhole className="h-8 w-8 text-amber-400 mr-3" />
+            MagTrack Login
+          </h2>
+
+          <p className="text-blue-100 text-sm mb-8">
+            Authorized personnel only
+          </p>
+
+          {errorMsg && (
+            <div className="mb-5 text-sm text-red-100 bg-red-600/40 px-4 py-2 rounded-lg">
+              {errorMsg}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Username */}
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-lg bg-white/80 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            />
+
+            {/* Password */}
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-lg bg-white/80 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-400 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-900"
+              >
+                {showPassword ? <EyeOff /> : <Eye />}
+              </button>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
+                loading
+                  ? "bg-amber-300 text-gray-800 cursor-not-allowed"
+                  : "bg-amber-400 text-blue-900 hover:bg-amber-500 hover:shadow-lg hover:scale-[1.02]"
+              }`}
+            >
+              {loading ? (
+                <>
+                  <span className="w-5 h-5 border-2 border-blue-900 border-t-transparent rounded-full animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                "Log In"
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

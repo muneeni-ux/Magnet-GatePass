@@ -20,18 +20,17 @@ const Navbar = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
 
   const navItems = [
-    { path: "/home", label: "Home", icon: <Home size={16} /> },
-    { path: "/form", label: "Form", icon: <BookOpen size={16} /> },
-    { path: "/history", label: "History", icon: <Clock size={16} /> },
-    { path: "/about", label: "About", icon: <Info size={16} /> },
+    { path: "/home", label: "Home", icon: <Home size={20} /> },
+    { path: "/form", label: "Form", icon: <BookOpen size={20} /> },
+    { path: "/history", label: "History", icon: <Clock size={20} /> },
+    { path: "/about", label: "About", icon: <Info size={20} /> },
   ];
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   const handleLogout = () => {
-    const confirmed = window.confirm("Are you sure you want to log out?");
-    if (confirmed) {
+    if (window.confirm("Are you sure you want to log out?")) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       setIsLoggedIn(false);
@@ -49,7 +48,6 @@ const Navbar = ({ setIsLoggedIn }) => {
   const base64Logo =
     "https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/10/The-Nambale-Magnet-School.png";
 
-  // Close dropdown if clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -57,33 +55,35 @@ const Navbar = ({ setIsLoggedIn }) => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className="shadow-md fixed top-0 w-full z-30 font-sans">
-      {/* Single Layer Navbar (Desktop & Mobile) */}
-      <div className="bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 px-6 py-3 flex items-center justify-between shadow-md rounded-b-3xl">
-        {/* Left - Logo */}
-        <div className="flex items-center gap-3">
+    <div className="fixed top-0 w-full z-30 font-sans shadow-md">
+      {/* Main Navbar */}
+      <div className="bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 px-10 py-5 flex items-center justify-between rounded-b-3xl min-h-[90px]">
+        
+        {/* Logo */}
+        <div className="flex items-center gap-4">
           <img
             src={base64Logo}
             alt="Institution Logo"
-            className="w-10 h-10 object-cover rounded-full border-2 border-white shadow hover:scale-105 transition-transform duration-300"
+            className="w-14 h-14 object-cover rounded-full border-2 border-white shadow hover:scale-105 transition-transform duration-300"
           />
-          <h1 className="text-lg font-bold text-white tracking-wide">
+          <h1 className="text-2xl font-extrabold text-white tracking-wide">
             MagTrack
           </h1>
         </div>
 
-        {/* Center - Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition-all duration-300 ${
+                `flex items-center gap-3 text-base font-semibold px-6 py-3 rounded-full transition-all duration-300 ${
                   isActive
                     ? "bg-white text-blue-700 shadow-md"
                     : "text-white hover:bg-blue-800/70"
@@ -96,71 +96,77 @@ const Navbar = ({ setIsLoggedIn }) => {
           ))}
         </nav>
 
-        {/* Right - Profile + Mobile Menu */}
-        <div className="flex items-center gap-3 text-white relative" ref={dropdownRef}>
-          {/* User Dropdown */}
+        {/* Profile + Mobile Menu */}
+        <div
+          className="flex items-center gap-4 text-white relative"
+          ref={dropdownRef}
+        >
+          {/* User Icon */}
           <div
             onClick={toggleDropdown}
-            className="hover:text-yellow-300 cursor-pointer transition-all duration-300"
+            className="cursor-pointer hover:text-yellow-300 transition-all duration-300"
           >
-            <User size={24} />
+            <User size={30} />
           </div>
 
+          {/* Dropdown */}
           {dropdownOpen && (
-            <div className="absolute top-12 right-0 mt-2 bg-white text-black rounded-xl shadow-xl w-52 py-2 z-50 border border-blue-100 animate-fade-in">
+            <div className="absolute top-14 right-0 bg-white text-black rounded-xl shadow-xl w-56 py-2 z-50 border border-blue-100">
               <button
                 onClick={handleOccurrenceClick}
-                className="w-full flex items-center gap-3 px-5 py-2.5 hover:bg-blue-50 transition-all text-sm font-medium"
+                className="w-full flex items-center gap-4 px-6 py-3 hover:bg-blue-50 text-base font-semibold"
               >
-                <Book size={18} className="text-blue-600" />
-                <span>Occurrence Book</span>
+                <Book size={20} className="text-blue-600" />
+                Occurrence Book
               </button>
-              <div className="border-t border-gray-200 my-1"></div>
+
+              <div className="border-t my-1"></div>
+
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-5 py-2.5 hover:bg-red-50 transition-all text-sm font-medium"
+                className="w-full flex items-center gap-4 px-6 py-3 hover:bg-red-50 text-base font-semibold"
               >
-                <LogOut size={18} className="text-red-500" />
+                <LogOut size={20} className="text-red-500" />
                 <span className="text-red-600">Log Out</span>
               </button>
             </div>
           )}
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Toggle */}
           <div
-            className="hover:text-yellow-300 cursor-pointer transition-all duration-300 md:hidden"
+            className="md:hidden cursor-pointer hover:text-yellow-300"
             onClick={toggleMenu}
           >
-            {menuOpen ? <X size={28} /> : <Menu size={28} />}
+            {menuOpen ? <X size={32} /> : <Menu size={32} />}
           </div>
         </div>
       </div>
 
-      {/* Sidebar (Mobile) */}
+      {/* Mobile Sidebar */}
       <nav
-        className={`fixed top-0 left-0 w-64 h-full bg-gradient-to-b from-blue-900 to-blue-700 text-white z-40 transform ${
+        className={`fixed top-0 left-0 w-72 h-full bg-gradient-to-b from-blue-900 to-blue-700 text-white z-40 transform ${
           menuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-all duration-500 ease-in-out md:hidden shadow-2xl`}
+        } transition-transform duration-500 md:hidden shadow-2xl`}
       >
-        <div className="flex items-center gap-3 p-6 border-b border-white/20 bg-blue-800/80">
+        <div className="flex items-center gap-4 p-6 border-b border-white/20 bg-blue-800/80">
           <img
             src={base64Logo}
             alt="Institution Logo"
-            className="w-12 h-12 object-cover rounded-full border-2 border-white shadow"
+            className="w-16 h-16 rounded-full border-2 border-white shadow"
           />
-          <h1 className="text-lg font-extrabold">MagTrack</h1>
+          <h1 className="text-2xl font-extrabold">MagTrack</h1>
         </div>
 
-        <ul className="mt-4">
+        <ul className="mt-6 space-y-2">
           {navItems.map((item) => (
             <li key={item.path} className="px-4">
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 text-base font-medium py-2.5 px-4 rounded-lg transition-all duration-300 ${
+                  `flex items-center gap-4 text-lg font-semibold py-3 px-5 rounded-xl transition-all duration-300 ${
                     isActive
                       ? "bg-blue-600 shadow-lg"
-                      : "hover:bg-blue-500/70 hover:pl-6"
+                      : "hover:bg-blue-500/70 hover:pl-7"
                   }`
                 }
                 onClick={() => setMenuOpen(false)}
