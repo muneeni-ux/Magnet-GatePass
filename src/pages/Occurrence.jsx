@@ -293,8 +293,8 @@ const Occurrence = () => {
                 <option value="" disabled>
                   Select gate
                 </option>
-                <option value="Gate One">Gate 1</option>
-                <option value="Gate Two">Gate 2</option>
+                <option value="Gate One">Gate A</option>
+                <option value="Gate Two">Gate B</option>
               </select>
             </div>
 

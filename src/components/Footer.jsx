@@ -24,7 +24,7 @@ function Footer() {
           <h3 className="text-base font-semibold mb-3 text-yellow-400">Quick Links</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/" className="hover:text-yellow-300 hover:underline transition">
+              <Link to="/home" className="hover:text-yellow-300 hover:underline transition">
                 Home
               </Link>
             </li>

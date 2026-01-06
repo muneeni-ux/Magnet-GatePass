@@ -146,7 +146,7 @@ const Home = () => {
 
       <div className="max-w-5xl text-center">
         {/* TITLE */}
-        <motion.h1
+        <h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -156,7 +156,7 @@ const Home = () => {
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">
             Smart, Secure & Modern
           </span>
-        </motion.h1>
+        </h1>
 
         {/* SUBTITLE */}
         <p className="mt-4 text-lg opacity-90">
