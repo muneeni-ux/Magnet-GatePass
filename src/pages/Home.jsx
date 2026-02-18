@@ -89,7 +89,7 @@
 // export default Home;
 
 // /neww
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -97,12 +97,21 @@ import {
   Users,
   Clock,
   LayoutDashboard,
+  Activity,
+  Server,
+  Lock,
+  Database
 } from "lucide-react";
-// framer-motion removed temporarily to avoid runtime hook issues
 
 const Home = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false); // loader state
+  const [systemStatus, setSystemStatus] = useState("INITIALIZING");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSystemStatus("ONLINE"), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleGetStarted = () => {
     setLoading(true);
@@ -111,123 +120,134 @@ const Home = () => {
 
   const steps = [
     {
-      title: "Secure Login",
-      desc: "Access the system with top-tier security and encrypted authentication.",
+      title: "AUTHENTICATION",
+      desc: "Encrypted login protocol.",
       icon: ShieldCheck,
-      colors: "from-yellow-500 to-yellow-700",
+      status: "SECURE",
+      color: "text-green-500",
+      border: "border-green-500/30"
     },
     {
-      title: "Record Visitors",
-      desc: "Capture accurate visitor details quickly and professionally.",
+      title: "ENTRY LOG",
+      desc: "Capture visitor data.",
       icon: Users,
-      colors: "from-indigo-600 to-indigo-900",
+      status: "ACTIVE",
+      color: "text-blue-500",
+      border: "border-blue-500/30"
     },
     {
-      title: "Track Exits",
-      desc: "Log time-out entries effortlessly and maintain clean records.",
+      title: "TIME STAMP",
+      desc: " precise exit tracking.",
       icon: Clock,
-      colors: "from-blue-500 to-blue-800",
+      status: "SYNCED",
+      color: "text-amber-500",
+      border: "border-amber-500/30"
     },
     {
-      title: "Admin Dashboard",
-      desc: "Monitor activity, print logs, and manage records with ease.",
+      title: "ADMIN CORE",
+      desc: "Centralized control.",
       icon: LayoutDashboard,
-      colors: "from-amber-500 to-orange-600",
+      status: "RESTRICTED",
+      color: "text-red-500",
+      border: "border-red-500/30"
     },
   ];
 
   return (
-    <div className="relative min-h-screen px-6 py-16 flex items-center justify-center text-white bg-gradient-to-br from-indigo-900 via-indigo-800 to-black overflow-hidden">
-      {/* Floating particles */}
-      <div className="absolute inset-0 -z-10 opacity-50">
-        <div className="absolute w-2 h-2 bg-white rounded-full top-16 left-24" />
-        <div className="absolute w-2 h-2 bg-white rounded-full bottom-20 right-32" />
+    <div className="min-h-screen bg-slate-950 text-blue-100 font-mono relative overflow-hidden flex flex-col pt-20">
+      
+      {/* Background Grid */}
+      <div className="absolute inset-0 z-0 opacity-10" 
+           style={{
+             backgroundImage: "linear-gradient(#1e40af 1px, transparent 1px), linear-gradient(90deg, #1e40af 1px, transparent 1px)",
+             backgroundSize: "50px 50px"
+           }}>
       </div>
 
-      <div className="max-w-5xl text-center">
-        {/* TITLE */}
-        <h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-6xl font-extrabold mt-12 pt-4 drop-shadow-2xl"
-        >
-          MagTrack
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">
-            Smart, Secure & Modern
-          </span>
-        </h1>
-
-        {/* SUBTITLE */}
-        <p className="mt-4 text-lg opacity-90">
-          Designed to enhance professionalism, safety, and seamless digital
-          record-keeping at every step.
-        </p>
-
-        {/* CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-14 px-4">
-          {steps.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <div
-                key={i}
-                className={`relative p-8 rounded-3xl bg-gradient-to-br ${step.colors}
-                shadow-2xl backdrop-blur-xl border border-white/10 cursor-pointer`}
-              >
-                {/* ICON */}
-                <div
-                  className="w-16 h-16 mx-auto flex items-center justify-center
-                  rounded-2xl bg-black/20 shadow-inner mb-4"
-                >
-                  <Icon className="w-9 h-9 text-white drop-shadow animate-pulse" />
-                </div>
-
-                {/* TITLE */}
-                <h3 className="text-2xl font-bold tracking-wide drop-shadow-md text-white">
-                  {step.title}
-                </h3>
-
-                {/* DESC */}
-                <p className="opacity-95 mt-2 font-medium">{step.desc}</p>
-
-                {/* STEP NUMBER */}
-                <span className="absolute top-4 right-6 text-sm opacity-70 font-bold">
-                  Step {i + 1}
-                </span>
+      {/* Header Status Bar */}
+      <div className="w-full bg-slate-900/80 border-b border-blue-900/50 p-2 flex justify-between items-center px-6 backdrop-blur-sm z-10">
+          <div className="flex items-center gap-4 text-xs">
+              <span className="text-slate-500">SYSTEM STATUS:</span>
+              <span className={`font-bold ${systemStatus === "ONLINE" ? "text-green-500 animate-pulse" : "text-yellow-500"}`}>
+                  {systemStatus}
+              </span>
+          </div>
+          <div className="flex items-center gap-4 text-xs text-slate-500">
+              <div className="flex items-center gap-1">
+                  <Server size={12} />
+                  <span>SERVER: CONNECTED</span>
               </div>
-            );
-          })}
+              <div className="flex items-center gap-1">
+                  <Database size={12} />
+                  <span>DB: LIVE</span>
+              </div>
+          </div>
+      </div>
+
+      <div className="flex-grow flex flex-col items-center justify-center p-6 relative z-10">
+        
+        {/* Main Content */}
+        <div className="max-w-5xl w-full">
+            
+            {/* Hero Section */}
+            <div className="text-center mb-16 relative">
+                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-blue-600/10 blur-[100px] rounded-full -z-10"></div>
+                 
+                 <div className="inline-flex items-center gap-2 border border-blue-500/30 bg-blue-900/10 rounded-full px-4 py-1 mb-6">
+                     <Activity size={14} className="text-blue-400" />
+                     <span className="text-xs font-bold text-blue-300 tracking-widest">V2.4.0 STABLE BUILD</span>
+                 </div>
+
+                 <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-6 uppercase">
+                    MagTrack <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">OS</span>
+                 </h1>
+                 
+                 <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto tracking-wide border-l-2 border-blue-500/50 pl-4 text-left md:text-center md:border-l-0 md:pl-0">
+                    ADVANCED VISITOR MANAGEMENT PROTOCOLS ENABLED.<br className="hidden md:block"/>
+                    SECURE. EFFICIENT. COMPLIANT.
+                 </p>
+            </div>
+
+            {/* Dashboard Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                {steps.map((step, i) => (
+                    <div key={i} className={`bg-slate-900/50 border ${step.border} p-6 rounded-sm relative group hover:bg-slate-800/80 transition-all duration-300`}>
+                        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-current to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        
+                        <div className="flex justify-between items-start mb-4">
+                            <step.icon size={24} className={step.color} />
+                            <span className={`text-[10px] font-bold border border-current px-1 rounded-sm ${step.color} opacity-70`}>
+                                {step.status}
+                            </span>
+                        </div>
+                        
+                        <h3 className="text-lg font-bold text-white mb-2 tracking-wide">{step.title}</h3>
+                        <p className="text-xs text-slate-400">{step.desc}</p>
+                        
+                        <div className="absolute bottom-2 right-2 opacity-10 text-4xl font-bold text-slate-500">
+                            0{i + 1}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Action Button */}
+            <div className="text-center">
+                <button
+                    onClick={handleGetStarted}
+                    className="relative group px-12 py-4 bg-transparent overflow-hidden"
+                >
+                    <div className="absolute inset-0 w-full h-full bg-blue-600/20 skew-x-[-20deg] group-hover:bg-blue-600/40 transition-colors border border-blue-500/50"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500 shadow-[0_0_20px_#3b82f6]"></div>
+                    
+                    <span className="relative z-10 flex items-center gap-3 font-bold text-blue-100 tracking-[0.2em] group-hover:gap-6 transition-all duration-300">
+                        {loading ? "INITIALIZING..." : "LAUNCH PROTOCOL"}
+                        {!loading && <ArrowRight size={18} />}
+                    </span>
+                </button>
+            </div>
+
         </div>
-
-        {/* CTA BUTTON */}
-        <button
-          onClick={handleGetStarted}
-          disabled={loading}
-          className={`
-            mt-16 px-16 py-4 text-xl font-extrabold rounded-full
-            shadow-2xl flex items-center gap-3 mx-auto transition-all duration-300
-            ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-yellow-400 to-yellow-500 hover:scale-110"
-            }
-          `}
-        >
-          {/* loader spinner */}
-          {loading && (
-            <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
-          )}
-
-          {loading ? "Loading..." : "Get Started"}
-
-          {!loading && (
-            <ArrowRight className="w-7 h-7 group-hover:translate-x-2 transition-transform duration-300" />
-          )}
-        </button>
-
-        <p className="mt-4 text-sm opacity-90 font-medium drop-shadow">
-          Faster. Smarter. Safer digital visitor management.
-        </p>
       </div>
     </div>
   );

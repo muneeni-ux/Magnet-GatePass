@@ -22,6 +22,7 @@ import NotFound from './pages/NotFound';
 import Form from './pages/VisitorForm';
 import History from './pages/VisitorHistory';
 import FAQs from './pages/FAQs';
+import Profile from './pages/Profile';
 import AdminInquiry from './Admin/AdminInquiry';
 
 const App = () => {
@@ -59,10 +60,10 @@ const App = () => {
       />
 
       {/* Conditionally show Navbar */}
-      {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <Navbar setIsLoggedIn={() => {}} />}
+      {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <Navbar setIsLoggedIn={() => { }} />}
 
       <Routes>
-        <Route path="/" element={<Login onLogin={() => {}} />} />
+        <Route path="/" element={<Login onLogin={() => { }} />} />
 
         {isLoggedIn && !isAdmin && (
           <>
@@ -72,6 +73,7 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/occurrence" element={<Occurrence />} />
             <Route path="/faq" element={<FAQs />} />
+            <Route path="/profile" element={<Profile />} />
           </>
         )}
 
@@ -89,9 +91,9 @@ const App = () => {
           <Route path="users" element={<UsersDetails />} />
           <Route path="usersignup" element={<Signup />} />
           <Route path="visitorsdetails" element={<VisitordsDetails />} />
-           <Route path="occurrence" element={<AdminOccurrence />} />
-           <Route path="faq" element={<AdminFAQs />} />
-           <Route path="inquiry" element={<AdminInquiry />} />
+          <Route path="occurrence" element={<AdminOccurrence />} />
+          <Route path="faq" element={<AdminFAQs />} />
+          <Route path="inquiry" element={<AdminInquiry />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

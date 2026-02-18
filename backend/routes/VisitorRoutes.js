@@ -15,7 +15,7 @@ const Visitor = require("../models/Visitor");
 // CREATE - POST /api/visitors
 router.post("/", async (req, res) => {
   try {
-    const visitor = new Visitor(req.body); // formData already includes gate & nature
+    const visitor = new Visitor(req.body); // formData includes gate, nature, recordedBy
     const savedVisitor = await visitor.save();
     res.status(201).json(savedVisitor);
   } catch (err) {
@@ -42,7 +42,9 @@ router.put("/:id", async (req, res) => {
 // READ ALL - GET /api/visitors
 router.get("/", async (req, res) => {
   try {
-    const visitors = await Visitor.find().sort({ createdAt: -1 });
+    const visitors = await Visitor.find()
+      .populate("recordedBy timedOutBy", "username")
+      .sort({ createdAt: -1 });
 
     const visitorsWithDuration = visitors.map((visitor) => {
       const visitorObj = visitor.toObject(); // Convert Mongoose doc to plain object
@@ -110,6 +112,7 @@ router.put("/visitors/:id/timeout", async (req, res) => {
 
     visitor.timeOut = timeOut;
     visitor.duration = duration;
+    visitor.timedOutBy = req.body.timedOutBy;
     await visitor.save();
 
     res.json(visitor);

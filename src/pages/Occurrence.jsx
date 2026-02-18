@@ -169,7 +169,7 @@
 
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion";
+import { AlertTriangle, CheckCircle, ChevronRight, Clipboard, FileText } from "lucide-react";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -184,7 +184,7 @@ const Occurrence = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // Step tracker
+  const [step, setStep] = useState(1);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -193,7 +193,7 @@ const Occurrence = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.submittedBy) return toast.error("Please log in first.");
+    if (!form.submittedBy) return toast.error("ACCESS DENIED: Please log in first.");
 
     try {
       setLoading(true);
@@ -206,7 +206,7 @@ const Occurrence = () => {
 
       if (!res.ok) throw new Error(data.message || "Failed to submit");
 
-      toast.success("Occurrence submitted successfully");
+      toast.success("INCIDENTS LOGGED SUCCESSFULLY");
       setForm({
         gate: "",
         endTime: "",
@@ -217,245 +217,244 @@ const Occurrence = () => {
       });
       setStep(1);
     } catch (err) {
-      toast.error(err.message || "Submission failed");
+      toast.error(err.message || "SUBMISSION FAILURE");
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-200 via-blue-100 to-yellow-50 flex items-center justify-center p-4 mt-12 md:mt-24">
-      <motion.form
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="w-full max-w-2xl bg-white/30 backdrop-blur-xl rounded-3xl shadow-2xl p-8 space-y-6 border border-white/30"
-      >
-        <h2 className="text-3xl font-extrabold text-blue-800 text-center mb-6">
-          Occurrence Report
-        </h2>
+  const InputLabel = ({ children }) => (
+      <label className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2">
+          {children}
+      </label>
+  );
 
-        {/* Step Progress */}
-        <div className="flex justify-between mb-6 text-sm font-semibold text-gray-700">
-          <div
-            className={`flex-1 text-center ${
-              step === 1 ? "text-yellow-400" : "opacity-50"
-            } cursor-pointer`}
-            onClick={() => setStep(1)}
-          >
-            Gate
-          </div>
-          <div
-            className={`flex-1 text-center ${
-              step === 2 ? "text-yellow-400" : "opacity-50"
-            } cursor-pointer`}
-            onClick={() => setStep(2)}
-          >
-            Unusual Occurrence
-          </div>
-          <div
-            className={`flex-1 text-center ${
-              step === 3 ? "text-yellow-400" : "opacity-50"
-            } cursor-pointer`}
-            onClick={() => setStep(3)}
-          >
-            Remarks
-          </div>
-          <div
-            className={`flex-1 text-center ${
-              step === 4 ? "text-yellow-400" : "opacity-50"
-            } cursor-pointer`}
-            onClick={() => setStep(4)}
-          >
-            Submit
-          </div>
+  return (
+    <div className="min-h-screen bg-slate-950 text-blue-100 font-mono p-4 md:p-6 pt-24 relative overflow-hidden flex items-center justify-center">
+        {/* Background Grid */}
+       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+            style={{
+                backgroundImage: "linear-gradient(#1e40af 1px, transparent 1px), linear-gradient(90deg, #1e40af 1px, transparent 1px)",
+                backgroundSize: "40px 40px"
+            }}>
         </div>
 
-        {/* Step 1: Gate and End Time */}
-        {step === 1 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <div>
-              <label className="block text-sm font-semibold text-blue-700 mb-1">
-                I am reporting occurrences from:
-              </label>
-              <select
-                name="gate"
-                value={form.gate}
-                onChange={handleChange}
-                required
-                className="w-full p-3 rounded-lg bg-white/80 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="" disabled>
-                  Select gate
-                </option>
-                <option value="Gate One">Gate A</option>
-                <option value="Gate Two">Gate B</option>
-              </select>
+      <div className="w-full max-w-2xl relative z-10">
+        
+        {/* Header */}
+        <div className="bg-slate-900 border border-blue-900/50 border-b-0 rounded-t-lg p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+                <div className="p-2 bg-amber-900/20 rounded-md border border-amber-500/30">
+                    <Clipboard className="h-5 w-5 text-amber-500" />
+                </div>
+                <div>
+                    <h2 className="text-lg font-bold text-white tracking-widest uppercase">Occurrence Report</h2>
+                    <p className="text-[10px] text-amber-500/70 uppercase tracking-wider">Shift Activity Log</p>
+                </div>
+            </div>
+             <div className="flex items-center gap-2">
+                 <div className="h-2 w-2 bg-amber-500 rounded-full animate-pulse"></div>
+                 <span className="text-[10px] text-amber-500 font-bold">LOGGING ACTIVE</span>
+            </div>
+        </div>
+
+        <form
+            onSubmit={handleSubmit}
+            className="bg-slate-900/80 backdrop-blur-xl border border-blue-900/50 p-6 md:p-10 shadow-[0_0_50px_rgba(30,58,138,0.2)] rounded-b-lg"
+        >
+            {/* Progress Indicators */}
+            <div className="flex justify-between items-center mb-8 relative">
+                 <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -z-10"></div>
+                 {[1, 2, 3, 4].map((s) => (
+                    <div 
+                        key={s}
+                        onClick={() => s < step ? setStep(s) : null}
+                        className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-bold transition-all cursor-pointer ${
+                            step >= s 
+                            ? "bg-blue-600 text-white shadow-[0_0_10px_rgba(37,99,235,0.5)]" 
+                            : "bg-slate-900 border border-slate-700 text-slate-600"
+                        }`}
+                    >
+                        {step > s ? <CheckCircle size={14} /> : `0${s}`}
+                    </div>
+                 ))}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-blue-700 mb-1">
-                End Time of Shift
-              </label>
-              <input
-                type="datetime-local"
-                name="endTime"
-                value={form.endTime}
-                onChange={handleChange}
-                required
-                className="w-full p-3 rounded-lg bg-white/80 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+            {/* Step 1: Gate and End Time */}
+            {step === 1 && (
+            <div className="space-y-6 animate-fade-in">
+                 <div className="border-b border-blue-900/30 pb-2 mb-4">
+                    <h3 className="text-sm font-bold text-blue-300 uppercase tracking-wider">Step 01 // Shift Details</h3>
+                </div>
+
+                <div>
+                    <InputLabel>Reporting From (Access Point)</InputLabel>
+                    <select
+                        name="gate"
+                        value={form.gate}
+                        onChange={handleChange}
+                        required
+                        className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 p-3 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all text-sm font-mono appearance-none"
+                    >
+                        <option value="" disabled>SELECT GATE...</option>
+                        <option value="Gate One">GATE A (MAIN)</option>
+                        <option value="Gate Two">GATE B (MAUZO)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <InputLabel>Shift End Timestamp</InputLabel>
+                    <input
+                        type="datetime-local"
+                        name="endTime"
+                        value={form.endTime}
+                        onChange={handleChange}
+                        required
+                        className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 p-3 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all text-sm font-mono" // Standard datetime-local styling is limited, but this applies basic colors
+                    />
+                </div>
+
+                <div className="flex justify-end mt-6">
+                    <button
+                        type="button"
+                        onClick={() => setStep(2)}
+                        className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-sm font-bold text-xs tracking-widest uppercase transition-all"
+                    >
+                        Next Section <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                </div>
             </div>
-
-            <button
-              type="button"
-              onClick={() => setStep(2)}
-              className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 rounded-full w-full mt-4"
-            >
-              Next →
-            </button>
-          </motion.div>
-        )}
-
-        {/* Step 2: Unusual Occurrence */}
-        {step === 2 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <div>
-              <label className="block text-sm font-semibold text-blue-700 mb-1">
-                Was There Any Unusual Occurrence?
-              </label>
-              <select
-                name="unusualOccurrence"
-                value={form.unusualOccurrence}
-                onChange={handleChange}
-                className="w-full p-3 rounded-lg bg-white/80 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="No">No</option>
-                <option value="Yes">Yes</option>
-              </select>
-            </div>
-
-            {form.unusualOccurrence === "Yes" && (
-              <div>
-                <label className="block text-sm font-semibold text-blue-700 mb-1">
-                  Describe the Occurrence
-                </label>
-                <textarea
-                  name="unusualDescription"
-                  value={form.unusualDescription}
-                  onChange={handleChange}
-                  rows={4}
-                  className="w-full p-3 rounded-lg bg-white/80 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Provide details here..."
-                />
-              </div>
             )}
 
-            <div className="flex justify-between">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="bg-gray-400 hover:bg-gray-500 text-black font-bold py-2 px-6 rounded-full"
-              >
-                ← Back
-              </button>
-              <button
-                type="button"
-                onClick={() => setStep(3)}
-                className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-6 rounded-full"
-              >
-                Next →
-              </button>
-            </div>
-          </motion.div>
-        )}
+            {/* Step 2: Unusual Occurrence */}
+            {step === 2 && (
+            <div className="space-y-6 animate-fade-in">
+                 <div className="border-b border-blue-900/30 pb-2 mb-4">
+                    <h3 className="text-sm font-bold text-amber-500 uppercase tracking-wider">Step 02 // Incident Check</h3>
+                </div>
 
-        {/* Step 3: Remarks */}
-        {step === 3 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <div>
-              <label className="block text-sm font-semibold text-blue-700 mb-1">
-                Additional Remarks
-              </label>
-              <textarea
-                name="remarks"
-                value={form.remarks}
-                onChange={handleChange}
-                rows={4}
-                className="w-full p-3 rounded-lg bg-white/80 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Any other comments..."
-              />
-            </div>
+                <div>
+                    <InputLabel>Anomaly Detected?</InputLabel>
+                    <div className="grid grid-cols-2 gap-4">
+                        <label className={`cursor-pointer p-4 border rounded-sm flex items-center justify-center gap-2 transition-all ${form.unusualOccurrence === "No" ? "bg-green-900/20 border-green-500/50 text-green-400" : "bg-slate-950/50 border-slate-800 text-slate-500 hover:border-slate-600"}`}>
+                            <input type="radio" name="unusualOccurrence" value="No" checked={form.unusualOccurrence === "No"} onChange={handleChange} className="hidden" />
+                            <CheckCircle size={16} /> NO INCIDENTS
+                        </label>
+                        <label className={`cursor-pointer p-4 border rounded-sm flex items-center justify-center gap-2 transition-all ${form.unusualOccurrence === "Yes" ? "bg-red-900/20 border-red-500/50 text-red-400 animate-pulse-slow" : "bg-slate-950/50 border-slate-800 text-slate-500 hover:border-slate-600"}`}>
+                             <input type="radio" name="unusualOccurrence" value="Yes" checked={form.unusualOccurrence === "Yes"} onChange={handleChange} className="hidden" />
+                             <AlertTriangle size={16} /> YES, REPORT
+                        </label>
+                    </div>
+                </div>
 
-            <div className="flex justify-between">
-              <button
-                type="button"
-                onClick={() => setStep(2)}
-                className="bg-gray-400 hover:bg-gray-500 text-black font-bold py-2 px-6 rounded-full"
-              >
-                ← Back
-              </button>
-              <button
-                type="button"
-                onClick={() => setStep(4)}
-                className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-6 rounded-full"
-              >
-                Next →
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Step 4: Submit */}
-        {step === 4 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center space-y-4"
-          >
-            <p className="text-blue-700 font-semibold text-center">
-              Review your inputs and submit.
-            </p>
-            <div className="flex justify-between w-full">
-              <button
-                type="button"
-                onClick={() => setStep(3)}
-                className="bg-gray-400 hover:bg-gray-500 text-black font-bold py-2 px-6 rounded-full"
-              >
-                ← Back
-              </button>
-              <motion.button
-                type="submit"
-                disabled={loading}
-                whileTap={{ scale: 0.95 }}
-                className={`flex items-center gap-3 justify-center bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded-full`}
-              >
-                {loading && (
-                  <motion.div
-                    className="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"
-                  />
+                {form.unusualOccurrence === "Yes" && (
+                <div>
+                     <InputLabel>Incident Description</InputLabel>
+                    <textarea
+                    name="unusualDescription"
+                    value={form.unusualDescription}
+                    onChange={handleChange}
+                    rows={4}
+                    className="w-full bg-slate-950/50 border border-red-900/50 text-red-100 p-3 rounded-sm focus:outline-none focus:border-red-500 focus:bg-slate-900/80 transition-all text-sm font-mono placeholder-red-900/50"
+                    placeholder="DESCRIBE THE UNUSUAL EVENT IN DETAIL..."
+                    />
+                </div>
                 )}
-                {loading ? "Submitting..." : "Submit"}
-              </motion.button>
+
+                <div className="flex justify-between mt-6">
+                    <button
+                        type="button"
+                        onClick={() => setStep(1)}
+                        className="text-slate-500 hover:text-blue-400 text-xs font-bold uppercase tracking-widest transition-colors"
+                    >
+                        ← Back
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setStep(3)}
+                        className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-sm font-bold text-xs tracking-widest uppercase transition-all"
+                    >
+                        Next Section <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                </div>
             </div>
-          </motion.div>
-        )}
-      </motion.form>
+            )}
+
+            {/* Step 3: Remarks */}
+            {step === 3 && (
+            <div className="space-y-6 animate-fade-in">
+                <div className="border-b border-blue-900/30 pb-2 mb-4">
+                    <h3 className="text-sm font-bold text-blue-300 uppercase tracking-wider">Step 03 // Additional Notes</h3>
+                </div>
+
+                <div>
+                     <InputLabel>General Remarks / Handover Notes</InputLabel>
+                    <textarea
+                        name="remarks"
+                        value={form.remarks}
+                        onChange={handleChange}
+                        rows={4}
+                         className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 p-3 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all text-sm font-mono placeholder-slate-600"
+                        placeholder="ENTER ANY ADDITIONAL COMMENTS..."
+                    />
+                </div>
+
+                <div className="flex justify-between mt-6">
+                    <button
+                        type="button"
+                        onClick={() => setStep(2)}
+                       className="text-slate-500 hover:text-blue-400 text-xs font-bold uppercase tracking-widest transition-colors"
+                    >
+                        ← Back
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setStep(4)}
+                        className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-sm font-bold text-xs tracking-widest uppercase transition-all"
+                    >
+                        Review & Submit <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                </div>
+            </div>
+            )}
+
+            {/* Step 4: Submit */}
+            {step === 4 && (
+            <div className="space-y-6 animate-fade-in text-center">
+                 <div className="border-b border-blue-900/30 pb-2 mb-4 text-left">
+                    <h3 className="text-sm font-bold text-green-400 uppercase tracking-wider">Step 04 // Final Authorization</h3>
+                </div>
+                
+                <div className="p-4 bg-slate-950 border border-blue-900/30 rounded-sm text-left space-y-2 mb-6">
+                    <div className="flex justify-between text-xs"><span className="text-slate-500">GATE:</span> <span className="text-blue-200">{form.gate}</span></div>
+                    <div className="flex justify-between text-xs"><span className="text-slate-500">SHIFT END:</span> <span className="text-blue-200">{form.endTime}</span></div>
+                    <div className="flex justify-between text-xs"><span className="text-slate-500">INCIDENT:</span> <span className={form.unusualOccurrence === "Yes" ? "text-red-400 font-bold" : "text-green-400"}>{form.unusualOccurrence}</span></div>
+                </div>
+
+                <div className="flex justify-between w-full gap-4">
+                    <button
+                        type="button"
+                        onClick={() => setStep(3)}
+                        className="px-6 py-3 rounded-sm border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 text-xs font-bold uppercase tracking-widest transition-all"
+                    >
+                        ← Edit Data
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={`flex-1 flex items-center gap-3 justify-center px-6 py-3 rounded-sm font-bold text-xs tracking-widest uppercase transition-all shadow-[0_0_20px_rgba(22,163,74,0.3)] hover:shadow-[0_0_30px_rgba(22,163,74,0.5)] ${loading ? "bg-slate-800 text-slate-500" : "bg-green-600 hover:bg-green-500 text-white"}`}
+                    >
+                        {loading && (
+                        <div className="w-4 h-4 border-2 border-slate-300 border-t-transparent rounded-full animate-spin" />
+                        )}
+                        {loading ? "UPLOADING..." : "SUBMIT REPORT"}
+                    </button>
+                </div>
+            </div>
+            )}
+        </form>
+      </div>
     </div>
   );
 };
-
 export default Occurrence;

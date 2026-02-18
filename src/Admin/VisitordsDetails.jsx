@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { CSVLink } from "react-csv";
-import { Download, Printer, Search, Edit, Trash } from "lucide-react";
+import { Download, Printer, Search, Edit, Trash, Baby } from "lucide-react";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -85,7 +85,24 @@ const VisitorsDetails = () => {
   );
 
   const columns = [
-    { name: "Name", selector: (row) => row.name, sortable: true },
+    {
+      name: "Name",
+      selector: (row) => row.name,
+      sortable: true,
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          {row.name}
+          {row.isUnderage && (
+            <span
+              title="Underage Visitor"
+              className="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold border border-yellow-300 flex items-center gap-1"
+            >
+              <Baby size={14} />
+            </span>
+          )}
+        </div>
+      ),
+    },
     { name: "ID Number", selector: (row) => row.idNumber, sortable: true },
     { name: "Phone", selector: (row) => row.phone, sortable: true },
     { name: "Vehicle Reg", selector: (row) => row.vehicleReg || "-", sortable: true },
@@ -101,6 +118,16 @@ const VisitorsDetails = () => {
       name: "Check Out",
       selector: (row) =>
         row.timeOut ? format(new Date(row.timeOut), "dd/MM/yyyy HH:mm") : "Still Inside",
+      sortable: true,
+    },
+    {
+      name: "Recorded By",
+      selector: (row) => row.recordedBy?.username || "-",
+      sortable: true,
+    },
+    {
+      name: "Timed Out By",
+      selector: (row) => row.timedOutBy?.username || "-",
       sortable: true,
     },
     {

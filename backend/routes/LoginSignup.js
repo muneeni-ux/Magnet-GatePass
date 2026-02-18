@@ -72,22 +72,49 @@ router.get('/users', async (req, res) => {
 });
 
 // ✏️ Update User (PUT /users/:id)
-router.put('/users/:id', async (req, res) => {
+router.put('/users/:id', authenticate, async (req, res) => {
   try {
-    const { username, email, isAdmin } = req.body;
+    const { username, email, isAdmin, password } = req.body;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      { username, email, isAdmin },
-      { new: true, runValidators: true }
-    ).select('-password');
+    // 1. Authorization Check
+    // Allow if user is admin OR if user is updating their own profile
+    if (!req.user.isAdmin && req.user._id.toString() !== req.params.id) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
-    if (!updatedUser) {
+    // 2. Find user first to manipulate the document directly
+    const user = await User.findById(req.params.id);
+    if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json({ message: 'User updated', user: updatedUser });
+    // 3. Update fields
+    user.email = email || user.email; // Functionality: Everyone can update email
+
+    if (req.user.isAdmin) {
+      // Only Admin can update username and role
+      user.username = username || user.username;
+      // Explicitly check boolean, as 'false' is falsy
+      if (typeof isAdmin !== 'undefined') {
+        user.isAdmin = isAdmin;
+      }
+    }
+
+    // 4. Update password ONLY if provided and not empty
+    if (password && password.trim() !== "") {
+      user.password = password; // This triggers the pre('save') hook to hash it
+    }
+
+    // 5. Save document (Running validations)
+    await user.save();
+
+    // 6. Return updated user without password
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    res.status(200).json({ message: 'User updated', user: userObj });
   } catch (error) {
+    console.error("Update Error:", error);
     res.status(500).json({ message: 'Error updating user' });
   }
 });

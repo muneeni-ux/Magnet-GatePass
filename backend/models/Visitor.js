@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const visitorSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    idNumber: { type: String, required: true },
+    idNumber: { type: String, required: false }, // Made optional for underage visitors
+    isUnderage: { type: Boolean, default: false },
     phone: { type: String, required: true },
     vehicleReg: { type: String },
     department: { type: String, required: true }, // allow any string
@@ -11,6 +12,8 @@ const visitorSchema = new mongoose.Schema(
     nature: { type: String, enum: ["official", "personal"], required: true },
     timeOut: { type: Date },
     duration: { type: String }, // e.g., "1h 25m"
+    recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    timedOutBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );

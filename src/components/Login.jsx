@@ -436,8 +436,9 @@
 // };
 
 // export default Login;
+
 import React, { useState } from "react";
-import { LockKeyhole, Eye, EyeOff } from "lucide-react";
+import { LockKeyhole, Eye, EyeOff, ShieldCheck, Cpu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -463,7 +464,7 @@ const Login = ({ onLogin }) => {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Login failed");
+      if (!res.ok) throw new Error(data.message || "Access Denied");
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
@@ -471,106 +472,147 @@ const Login = ({ onLogin }) => {
       onLogin();
       navigate(data.user?.isAdmin ? "/magnet/admin/dashboard/users" : "/home");
     } catch (error) {
-      setErrorMsg(error.message || "Invalid username or password");
+      setErrorMsg(error.message || "Invalid Credentials");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900" />
-      <div className="absolute inset-0 bg-black/30" />
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-950 text-blue-100 font-mono">
+      {/* Background Elements */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-indigo-900/20 rounded-full blur-[120px]"></div>
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        ></div>
+      </div>
 
-      {/* Glass Card */}
-      <div className="relative z-10 w-full max-w-5xl min-h-[560px] rounded-3xl bg-white/20 backdrop-blur-xl shadow-2xl border border-white/20 grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+      {/* Login Terminal Card */}
+      <div className="relative z-10 w-full max-w-lg p-1">
+        
+        {/* Border Glow Effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent opacity-50 blur-sm"></div>
+        
+        <div className="relative bg-slate-900/80 backdrop-blur-xl border border-blue-900/50 rounded-lg shadow-[0_0_50px_rgba(30,58,138,0.3)] overflow-hidden">
+             
+             {/* Header Section */}
+             <div className="bg-slate-950/50 border-b border-blue-900/30 p-4 flex justify-between items-center">
+                 <div className="flex items-center gap-2 text-xs text-blue-500 tracking-wider">
+                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                     SYSTEM ONLINE
+                 </div>
+                 <div className="text-[10px] text-slate-500">
+                     SECURE CONNECTION ESTABLISHED
+                 </div>
+             </div>
 
-        {/* LEFT SIDE */}
-        <div className="hidden md:flex flex-col justify-center items-center bg-blue-900/30 px-12">
-          <img
-            src="https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/10/The-Nambale-Magnet-School.png"
-            alt="School Logo"
-            className="h-36 mb-8 drop-shadow-xl"
-          />
-          <h1 className="text-4xl font-extrabold text-white mb-3">
-            MagTrack
-          </h1>
-          <p className="text-blue-100 text-lg text-center max-w-xs">
-            Visitor & Access Management System
-          </p>
+             <div className="p-8 md:p-12">
+                 <div className="flex flex-col items-center mb-10">
+                     <div className="relative mb-6">
+                         <div className="absolute inset-0 bg-blue-500 blur-lg opacity-30 animate-pulse"></div>
+                         <div className="relative bg-slate-950 p-4 rounded-full border border-blue-500/30">
+                            <ShieldCheck className="h-10 w-10 text-blue-400" />
+                         </div>
+                     </div>
+                     
+                     <h1 className="text-3xl font-bold text-white tracking-wider mb-2 uppercase text-center">
+                         MagTrack <span className="text-blue-500">Security</span>
+                     </h1>
+                     <p className="text-blue-300/70 text-xs tracking-[0.2em] uppercase">
+                         Authorized Personnel Access Only
+                     </p>
+                 </div>
+
+                 {errorMsg && (
+                    <div className="mb-6 bg-red-900/20 border-l-2 border-red-500 p-3 text-xs text-red-300 flex items-start gap-2">
+                        <span className="font-bold">ERROR:</span> {errorMsg}
+                    </div>
+                  )}
+
+                 <form onSubmit={handleSubmit} className="space-y-6">
+                     <div className="space-y-1">
+                         <label className="text-xs font-bold text-blue-400 uppercase tracking-widest pl-1">ID / Username</label>
+                         <div className="relative group">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Cpu className="h-4 w-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                            </div>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                                className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 pl-10 pr-4 py-3 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all placeholder-slate-600 text-sm"
+                                placeholder="ENTER IDENTIFIER"
+                            />
+                         </div>
+                     </div>
+
+                     <div className="space-y-1">
+                         <label className="text-xs font-bold text-blue-400 uppercase tracking-widest pl-1">Access Code</label>
+                         <div className="relative group">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <LockKeyhole className="h-4 w-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                            </div>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 pl-10 pr-10 py-3 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all placeholder-slate-600 text-sm"
+                                placeholder="ENTER PASSWORD"
+                            />
+                             <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-3 flex items-center text-slate-500 hover:text-blue-400 focus:outline-none transition-colors"
+                              >
+                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
+                         </div>
+                     </div>
+
+                     <button
+                        type="submit"
+                        disabled={loading}
+                        className={`w-full py-3 mt-4 rounded-sm font-bold text-sm tracking-widest uppercase transition-all duration-300 relative overflow-hidden group ${
+                            loading 
+                            ? "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700" 
+                            : "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] border border-blue-500"
+                        }`}
+                     >
+                        {loading ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <span className="w-3 h-3 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></span>
+                                AUTHENTICATING...
+                            </span>
+                        ) : (
+                            <span className="relative z-10 flex items-center justify-center gap-2">
+                                INITIATE SESSION 
+                                <ShieldCheck className="w-4 h-4" />
+                            </span>
+                        )}
+                     </button>
+                 </form>
+
+                 <div className="mt-8 pt-6 border-t border-blue-900/30 text-center">
+                     <p className="text-[10px] text-slate-500">
+                         RESTRICTED AREA. UNAUTHORIZED ACCESS ATTEMPTS WILL BE LOGGED.
+                     </p>
+                 </div>
+             </div>
         </div>
-
-        {/* RIGHT SIDE — LOGIN */}
-        <div className="flex flex-col justify-center px-10 md:px-14 py-12 text-left">
-
-          {/* HEADING WITH ICON ON THE LEFT */}
-          <h2 className="flex items-center text-3xl font-bold text-white mb-2">
-            <LockKeyhole className="h-8 w-8 text-amber-400 mr-3" />
-            MagTrack Login
-          </h2>
-
-          <p className="text-blue-100 text-sm mb-8">
-            Authorized personnel only
-          </p>
-
-          {errorMsg && (
-            <div className="mb-5 text-sm text-red-100 bg-red-600/40 px-4 py-2 rounded-lg">
-              {errorMsg}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Username */}
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-lg bg-white/80 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-400"
-            />
-
-            {/* Password */}
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-white/80 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-400 pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-900"
-              >
-                {showPassword ? <EyeOff /> : <Eye />}
-              </button>
-            </div>
-
-            {/* Login Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-                loading
-                  ? "bg-amber-300 text-gray-800 cursor-not-allowed"
-                  : "bg-amber-400 text-blue-900 hover:bg-amber-500 hover:shadow-lg hover:scale-[1.02]"
-              }`}
-            >
-              {loading ? (
-                <>
-                  <span className="w-5 h-5 border-2 border-blue-900 border-t-transparent rounded-full animate-spin" />
-                  Logging in...
-                </>
-              ) : (
-                "Log In"
-              )}
-            </button>
-          </form>
-        </div>
+      </div>
+      
+      {/* Footer Text */}
+      <div className="absolute bottom-4 text-[10px] text-slate-600 opacity-50">
+          SECURE PROTOCOL V2.4 // ENCRYPTED CONNECTION
       </div>
     </div>
   );
