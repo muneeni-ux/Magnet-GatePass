@@ -35,87 +35,81 @@ const Signup = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
-      setSuccessMsg("USER REGISTERED TO DATABASE");
+      setSuccessMsg("User successfully registered.");
       setFormData({ username: "", email: "", password: "", role: "user" });
     } catch (err) {
-      setErrorMsg(err.message || "REGISTRATION FAILED");
+      setErrorMsg(err.message || "Registration failed.");
     } finally {
       setLoading(false);
     }
   };
 
   const InputField = ({ label, ...props }) => (
-    <div>
-        <label className="block mb-1 text-[10px] font-bold text-blue-400 uppercase tracking-widest">{label}</label>
+    <div className="space-y-1.5">
+        <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">{label}</label>
         <div className="relative group">
             <input
                 {...props}
-                className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 px-4 py-2 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all font-mono text-sm placeholder-slate-600"
+                className="w-full bg-slate-900/50 border border-slate-700 text-white px-4 py-2.5 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
             />
-             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <div className="w-1 h-1 bg-blue-500 rounded-full opacity-50 group-focus-within:opacity-100 group-focus-within:animate-pulse"></div>
-            </div>
         </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-10 font-mono relative overflow-hidden">
+    <div className="min-h-screen bg-slate-900 flex items-center justify-center px-4 py-10 font-sans relative overflow-hidden">
         {/* Background Grid */}
-       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+       <div className="absolute inset-0 z-0 opacity-[0.03]" 
             style={{
-                backgroundImage: "linear-gradient(#1e40af 1px, transparent 1px), linear-gradient(90deg, #1e40af 1px, transparent 1px)",
-                backgroundSize: "40px 40px"
+                backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
+                backgroundSize: "60px 60px"
             }}>
         </div>
 
-      <div className="flex flex-col md:flex-row w-full max-w-5xl rounded-sm overflow-hidden shadow-[0_0_50px_rgba(30,58,138,0.2)] bg-slate-900/80 backdrop-blur-xl border border-blue-900/50 relative z-10">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl rounded-xl overflow-hidden shadow-2xl bg-slate-800 border border-slate-700 relative z-10">
         
         {/* Left - Description */}
-        <div className="hidden md:flex flex-col justify-center bg-slate-950/50 px-10 py-10 w-1/2 border-r border-blue-900/50 relative">
-             <div className="absolute top-6 left-6 flex items-center gap-2">
-                <Shield className="text-blue-500 h-5 w-5" />
-                <span className="text-xs font-bold text-blue-300 tracking-widest uppercase">Admin Terminal</span>
+        <div className="hidden md:flex flex-col justify-center bg-slate-900/50 px-10 py-10 w-2/5 border-r border-slate-700">
+             <div className="flex items-center gap-2 mb-8">
+                <Shield className="text-blue-500 h-6 w-6" />
+                <span className="text-sm font-bold text-white uppercase tracking-wider">Admin Console</span>
              </div>
 
-          <h2 className="text-3xl font-bold mb-6 text-white uppercase tracking-wider">
-            User Provisions
+          <h2 className="text-2xl font-bold mb-4 text-white">
+            User Management
           </h2>
           <p className="text-sm text-slate-400 leading-relaxed mb-8">
-            <span className="text-blue-500 font-bold">WARNING:</span> Restricted Area. You are accessing the user database write protocol. Ensure all new user entries are authorized and assigned correct clearance levels (User/Admin).
+            Create and manage system access credentials. Ensure appropriate role assignment for security compliance.
           </p>
           
-          <div className="mt-auto flex items-center gap-4 border-t border-blue-900/30 pt-6">
-               <div className="p-3 bg-blue-900/20 rounded-sm border border-blue-500/30">
-                  <UserPlus className="h-8 w-8 text-blue-400" />
+          <div className="mt-auto flex items-center gap-4 border-t border-slate-700 pt-6">
+               <div className="p-3 bg-slate-800 rounded-lg border border-slate-700">
+                  <UserPlus className="h-6 w-6 text-emerald-500" />
                </div>
                <div>
-                   <p className="text-xs font-bold text-white uppercase">Profile Generator</p>
-                   <p className="text-[10px] text-blue-500 uppercase tracking-widest">Active Status</p>
+                   <p className="text-sm font-semibold text-white">New User Entry</p>
+                   <p className="text-xs text-slate-500">System Database</p>
                </div>
           </div>
         </div>
 
         {/* Right - Form */}
-        <div className="w-full md:w-1/2 p-8 sm:p-10 relative">
-             <div className="absolute top-0 right-0 p-2">
-                 <Terminal size={16} className="text-slate-700" />
-             </div>
+        <div className="w-full md:w-3/5 p-8 sm:p-12 bg-slate-800">
 
-          <h3 className="text-xl font-bold mb-6 text-white uppercase tracking-wider flex items-center gap-2">
-             <span className="w-2 h-6 bg-blue-600"></span> Create New User
+          <h3 className="text-xl font-bold mb-8 text-white flex items-center gap-3">
+             Create Account
           </h3>
 
           {errorMsg && (
-            <div className="mb-6 bg-red-900/20 border-l-2 border-red-500 text-red-200 px-4 py-3 rounded-r-sm text-xs font-bold uppercase tracking-wide flex items-center gap-2">
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            <div className="mb-6 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
               {errorMsg}
             </div>
           )}
 
           {successMsg && (
-             <div className="mb-6 bg-green-900/20 border-l-2 border-green-500 text-green-200 px-4 py-3 rounded-r-sm text-xs font-bold uppercase tracking-wide flex items-center gap-2">
-               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+             <div className="mb-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
+               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
               {successMsg}
             </div>
           )}
@@ -128,7 +122,7 @@ const Signup = () => {
                 value={formData.username}
                 onChange={handleChange}
                 required
-                placeholder="E.G. OFFICER_JOHN"
+                placeholder="e.g. jsmith"
             />
 
             <InputField
@@ -138,7 +132,7 @@ const Signup = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                placeholder="E.G. JOHN@ACCESS.SECURE"
+                placeholder="name@institution.com"
             />
 
             <InputField
@@ -148,23 +142,23 @@ const Signup = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                placeholder="MINIMUM 6 CHARACTERS"
+                placeholder="Min. 6 characters"
             />
 
-            <div>
-              <label className="block mb-1 text-[10px] font-bold text-blue-400 uppercase tracking-widest">Clearance Level</label>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Role Assignment</label>
               <div className="relative">
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
-                    className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 px-4 py-2 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all font-mono text-sm appearance-none cursor-pointer"
+                    className="w-full bg-slate-900/50 border border-slate-700 text-white px-4 py-2.5 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none cursor-pointer"
                   >
-                    <option value="user">USER (STANDARD)</option>
-                    <option value="admin">ADMIN (ELEVATED)</option>
+                    <option value="user">Standard User</option>
+                    <option value="admin">Administrator</option>
                   </select>
                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                        <div className="w-0 h-0 border-l-[4px] border-l-transparent border-t-[6px] border-t-blue-500 border-r-[4px] border-r-transparent"></div>
+                        <div className="w-0 h-0 border-l-[4px] border-l-transparent border-t-[6px] border-t-slate-500 border-r-[4px] border-r-transparent"></div>
                     </div>
               </div>
             </div>
@@ -172,16 +166,16 @@ const Signup = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3 rounded-sm font-bold text-xs tracking-widest uppercase transition-all shadow-xl flex items-center justify-center gap-2 mt-8 ${
+              className={`w-full py-3.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 mt-4 shadow-lg ${
                 loading
-                  ? "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700"
-                  : "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] border border-blue-500"
+                  ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/20 hover:shadow-blue-900/40 hover:-translate-y-0.5"
               }`}
             >
                {loading && (
-                    <div className="w-3 h-3 border-2 border-slate-300 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 )}
-              {loading ? "PROCESSING..." : "REGISTER USER"}
+              {loading ? "Registering..." : "Create Account"}
             </button>
           </form>
         </div>

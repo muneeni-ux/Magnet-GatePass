@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Handshake, Clock, ClipboardList, Phone, Shield, Cpu, Database, Users } from "lucide-react";
+import { Handshake, Clock, Database, Phone, Info } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -25,145 +25,132 @@ const About = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-blue-100 font-mono relative overflow-x-hidden pt-16 md:pt-24">
+    <div className="min-h-screen bg-slate-900 text-slate-300 font-sans relative overflow-x-hidden pt-16 md:pt-24">
       
        {/* Background Grid */}
-       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+       <div className="absolute inset-0 z-0 opacity-[0.03]" 
             style={{
-                backgroundImage: "linear-gradient(#1e40af 1px, transparent 1px), linear-gradient(90deg, #1e40af 1px, transparent 1px)",
-                backgroundSize: "40px 40px"
+                backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
+                backgroundSize: "60px 60px"
             }}>
         </div>
 
-      {/* Hero Section */}
-      <div className="relative w-full h-[50vh] flex items-center justify-center border-b border-blue-900/50">
-         <div className="absolute inset-0 bg-blue-900/10 z-0"></div>
-         <div 
-            className="absolute inset-0 bg-cover bg-center opacity-30 grayscale mix-blend-luminosity"
-            style={{
-                backgroundImage: "url('https://thenambalemagnetschool.sc.ke/wp-content/uploads/2019/08/The-Nambale-Magnet-School-Students-tuition-fees.jpg')",
-            }}
-         ></div>
-         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/50 to-slate-950 z-10"></div>
-
-         <div className="relative z-20 text-center max-w-4xl px-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 border border-blue-500/30 rounded-full bg-blue-900/20 mb-6 backdrop-blur-sm">
-                <Shield className="w-4 h-4 text-blue-400" />
-                <span className="text-[10px] font-bold tracking-widest uppercase text-blue-300">System Documentation v2.4</span>
+       {/* Hero Section */}
+       <div className="relative w-full py-20 border-b border-slate-800 z-10">
+         <div className="text-center max-w-4xl mx-auto px-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-600/10 border border-blue-500/20 mb-6">
+                <Info className="w-4 h-4 text-blue-400" />
+                <span className="text-xs font-semibold text-blue-400 uppercase tracking-wide">System Overview</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight uppercase module-header">
-                About <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">MagTrack</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                About MagTrack
             </h1>
-            <p className="text-blue-200/70 text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-sans">
-                A digitally integrated visitor access control verification system. Designed to enhance institutional security protocols through real-time monitoring, encrypted data logging, and automated identity verification.
+            <p className="text-slate-400 text-lg leading-relaxed max-w-2xl mx-auto">
+                A comprehensive visitor management solution designed to enhance security, streamline access control, and provide real-time insights for the institution.
             </p>
          </div>
       </div>
 
-      {/* Core Modules (Why MagTrack) */}
+      {/* Core Features */}
       <section className="py-20 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
-             <div className="flex items-center gap-4 mb-12 border-b border-blue-900/30 pb-4">
-                <Cpu className="text-blue-500" />
-                <h2 className="text-2xl font-bold text-white uppercase tracking-widest">System Core Modules</h2>
+             <div className="text-center mb-16">
+                <h2 className="text-3xl font-bold text-white mb-4">Core System Capabilities</h2>
+                <p className="text-slate-500 max-w-2xl mx-auto">Designed for efficiency, security, and accountability.</p>
             </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-slate-900/50 border border-blue-900/30 p-8 rounded-sm hover:bg-slate-800/50 transition-all group">
-              <div className="w-12 h-12 bg-blue-900/20 rounded-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-blue-500/20">
-                   <Handshake className="text-blue-400" />
+            <div className="p-8 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-800/80 transition-all group shadow-lg">
+              <div className="w-12 h-12 bg-blue-600/10 rounded-lg flex items-center justify-center mb-6 text-blue-500 group-hover:scale-110 transition-transform border border-blue-500/10">
+                   <Handshake />
               </div>
-              <h3 className="text-lg font-bold text-white mb-3 uppercase tracking-wide">Protocol: Reception</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Standardized entry procedures ensuring all personnel are vetted before access authorization.
+              <h3 className="text-xl font-bold text-white mb-3">Controlled Access</h3>
+              <p className="text-slate-400 leading-relaxed">
+                Standardized entry protocols ensuring every visitor is verified and authorized before granting access to the premises.
               </p>
             </div>
 
-            <div className="bg-slate-900/50 border border-blue-900/30 p-8 rounded-sm hover:bg-slate-800/50 transition-all group">
-               <div className="w-12 h-12 bg-blue-900/20 rounded-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-blue-500/20">
-                   <Clock className="text-blue-400" />
+            <div className="p-8 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-800/80 transition-all group shadow-lg">
+               <div className="w-12 h-12 bg-blue-600/10 rounded-lg flex items-center justify-center mb-6 text-blue-500 group-hover:scale-110 transition-transform border border-blue-500/10">
+                   <Clock />
               </div>
-              <h3 className="text-lg font-bold text-white mb-3 uppercase tracking-wide">Temporal Log</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Precision timestamping for entry and exit events to maintain accurate duration records.
+              <h3 className="text-xl font-bold text-white mb-3">Time Tracking</h3>
+              <p className="text-slate-400 leading-relaxed">
+                Precise digital logging of entry and exit times to monitor visitor duration and ensure campus safety.
               </p>
             </div>
 
-            <div className="bg-slate-900/50 border border-blue-900/30 p-8 rounded-sm hover:bg-slate-800/50 transition-all group">
-               <div className="w-12 h-12 bg-blue-900/20 rounded-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-blue-500/20">
-                   <Database className="text-blue-400" />
+            <div className="p-8 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-800/80 transition-all group shadow-lg">
+               <div className="w-12 h-12 bg-blue-600/10 rounded-lg flex items-center justify-center mb-6 text-blue-500 group-hover:scale-110 transition-transform border border-blue-500/10">
+                   <Database />
               </div>
-              <h3 className="text-lg font-bold text-white mb-3 uppercase tracking-wide">Data Archival</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Secure centralized database for retrieval of historical access logs and audit trails.
+              <h3 className="text-xl font-bold text-white mb-3">Secure Records</h3>
+              <p className="text-slate-400 leading-relaxed">
+                Centralized, encrypted database for historical logs, audit trails, and reporting on visitor traffic.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Operational Workflow (How It Works) */}
-      <section className="py-20 px-6 bg-slate-900/30 border-y border-blue-900/30 relative z-10">
+      {/* Workflow */}
+      <section className="py-20 px-6 border-y border-slate-800 bg-slate-900/50 relative z-10">
         <div className="max-w-6xl mx-auto">
-             <div className="flex items-center gap-4 mb-16 justify-center">
-                <ClipboardList className="text-blue-500" />
-                <h2 className="text-2xl font-bold text-white uppercase tracking-widest">Operational Workflow</h2>
+             <div className="text-center mb-16">
+                <h2 className="text-3xl font-bold text-white mb-4">How It Works</h2>
+                <p className="text-slate-500 max-w-2xl mx-auto">A seamless 4-step process for managing visitor flow.</p>
             </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
-              { step: "01", title: "Identity Scan", desc: "Visitor data capture & intent verification." },
-              { step: "02", title: "Auth Check", desc: "Security clearance & destination confirm." },
-              { step: "03", title: "Active Monitor", desc: "Real-time presence tracking on dashboard." },
-              { step: "04", title: "Exit Protocol", desc: "Checkout log & session termination." },
+              { step: "01", title: "Registration", desc: "Visitor details are captured at the gate." },
+              { step: "02", title: "Verification", desc: "Identity and purpose of visit are confirmed." },
+              { step: "03", title: "Entry Log", desc: "Visitor is checked in and monitored." },
+              { step: "04", title: "Checkout", desc: "Exit is recorded upon departure." },
             ].map((item, index) => (
-              <div key={index} className="relative p-6 pt-12 bg-slate-950 border border-blue-900/30 rounded-sm">
-                <div className="absolute top-0 right-0 bg-blue-900/20 text-blue-400 font-bold px-3 py-1 text-xs border-b border-l border-blue-900/50">
-                    PHASE {item.step}
+              <div key={index} className="relative p-6 pt-12 bg-slate-800 border border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="absolute top-4 right-4 text-slate-700 font-bold text-4xl select-none">
+                    {item.step}
                 </div>
-                <h3 className="font-bold text-white mb-2 uppercase tracking-wide text-sm">{item.title}</h3>
-                <p className="text-[10px] text-slate-400 font-sans">{item.desc}</p>
-                <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+                <h3 className="font-bold text-white mb-2 text-lg relative z-10">{item.title}</h3>
+                <p className="text-slate-400 text-sm relative z-10">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Personnel Grid */}
+      {/* Team */}
       <section className="py-20 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
-             <div className="flex items-center gap-4 mb-12 border-b border-blue-900/30 pb-4">
-                <Users className="text-blue-500" />
-                <h2 className="text-2xl font-bold text-white uppercase tracking-widest">Authorized Personnel</h2>
+            <div className="text-center mb-16">
+                <h2 className="text-3xl font-bold text-white mb-4">Security Support Team</h2>
+                <p className="text-slate-500 max-w-2xl mx-auto">Dedicated personnel ensuring campus safety and system operation.</p>
             </div>
 
           {loading ? (
-             <div className="flex items-center justify-center gap-4 text-blue-300">
-                <div className="w-4 h-4 bg-blue-500 rounded-full animate-pulse"></div>
-                <span className="font-mono text-xs tracking-widest">RETRIEVING PERSONNEL DATA...</span>
+             <div className="flex items-center justify-center gap-4 text-slate-500 py-12">
+                <div className="w-4 h-4 bg-slate-500 rounded-full animate-pulse"></div>
+                <span className="font-medium text-sm">Loading personnel data...</span>
              </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {profiles.map((profile, index) => (
-                <div key={index} className="bg-slate-900/80 border border-blue-900/30 p-1 rounded-sm backdrop-blur-sm group hover:border-blue-500/50 transition-colors">
-                  <div className="relative h-48 w-full bg-slate-950 mb-4 overflow-hidden group-hover:opacity-90 transition-opacity">
+                <div key={index} className="bg-slate-800 border border-slate-700 rounded-xl shadow-lg overflow-hidden hover:border-slate-600 transition-all group">
+                  <div className="relative h-64 w-full bg-slate-900 overflow-hidden">
                      <img
                       src={profile.image}
                       alt={profile.name}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
-                    <div className="absolute bottom-2 left-3">
-                        <p className="text-xs font-bold text-white uppercase tracking-wider">{profile.name}</p>
-                        <p className="text-[10px] text-blue-400 uppercase tracking-widest">{profile.role}</p>
-                    </div>
                   </div>
                   
-                  <div className="px-3 pb-3">
-                    <a href={`tel:${profile.phone}`} className="flex items-center justify-between text-xs text-slate-400 hover:text-blue-400 transition-colors p-2 border border-blue-900/30 rounded-sm bg-slate-950/50">
-                        <span className="tracking-widest flex items-center gap-2"><Phone size={12}/> COMM LINK</span>
-                        <span className="font-mono">{profile.phone}</span>
+                  <div className="p-6">
+                      <h3 className="text-lg font-bold text-white mb-1">{profile.name}</h3>
+                      <p className="text-sm text-blue-400 font-medium mb-4">{profile.role}</p>
+                      
+                    <a href={`tel:${profile.phone}`} className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium">
+                        <Phone size={14}/> {profile.phone}
                     </a>
                   </div>
                 </div>
@@ -173,18 +160,15 @@ const About = () => {
         </div>
       </section>
 
-      {/* Secure Comms Button */}
+      {/* WhatsApp Button */}
       <a
         href="https://wa.me/254743072126?text=Hello%20Nambale%20Magnet%20School%20Support"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-600/90 text-white p-4 rounded-sm border border-green-400/50 shadow-[0_0_20px_rgba(22,163,74,0.3)] hover:shadow-[0_0_30px_rgba(22,163,74,0.5)] flex items-center justify-center transition-all duration-300 z-50 group"
-        title="Encrypted Chat Protocol"
+        className="fixed bottom-6 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-500 hover:shadow-green-900/20 hover:-translate-y-1 transition-all duration-300 z-50 flex items-center justify-center"
+        title="Contact Support"
       >
-        <FaWhatsapp size={24} className="group-hover:scale-110 transition-transform"/>
-        <span className="absolute right-full mr-3 bg-slate-900 text-green-400 text-[10px] font-bold px-2 py-1 rounded-sm border border-green-900/50 opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity pointer-events-none uppercase tracking-widest">
-            Secure Chat
-        </span>
+        <FaWhatsapp size={24} />
       </a>
     </div>
   );

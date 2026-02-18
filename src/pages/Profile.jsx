@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { User, Mail, Lock, Shield, Save, Key, Cpu, AlertTriangle } from "lucide-react";
+import { User, Mail, Lock, Shield, Save, Key, CreditCard } from "lucide-react";
 import toast from "react-hot-toast";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -29,7 +29,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password && formData.password !== formData.confirmPassword) {
-      return toast.error("ACCESS DENIED: Password Mismatch");
+      return toast.error("Password mismatch");
     }
 
     setLoading(true);
@@ -41,7 +41,6 @@ const Profile = () => {
         payload.password = formData.password;
       }
 
-      // Use 'id' from stored user (Login endpoint returns user.id)
       const userId = user.id || user._id; 
 
       const res = await fetch(`${SERVER_URL}/api/auth/users/${userId}`, {
@@ -56,157 +55,145 @@ const Profile = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to update profile");
 
-      // Update local storage
       const updatedUser = { ...user, ...data.user };
-      // Ensure we keep the token if it's stored separately, but here we just update the user object
-      localStorage.setItem("user", JSON.stringify(updatedUser)); // Update user in local storage
+      localStorage.setItem("user", JSON.stringify(updatedUser)); 
       
       setUser(updatedUser);
       setFormData((prev) => ({ ...prev, password: "", confirmPassword: "" }));
-      toast.success("PROFILE DATA UPDATED");
+      toast.success("Profile updated successfully");
     } catch (error) {
       console.error("Profile update error:", error);
-      toast.error(error.message || "SYSTEM ERROR");
+      toast.error(error.message || "An error occurred");
     } finally {
       setLoading(false);
     }
   };
 
   if (!user) return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-blue-500 font-mono text-xs animate-pulse">
-        Initializing Secure Profile Uplink...
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-slate-400 font-sans text-sm">
+        Loading Profile...
       </div>
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 md:p-8 font-mono relative overflow-hidden">
+    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 md:p-8 font-sans relative overflow-hidden pt-24 md:pt-0">
         {/* Background Grid */}
-       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+       <div className="absolute inset-0 z-0 opacity-[0.03]" 
             style={{
-                backgroundImage: "linear-gradient(#1e40af 1px, transparent 1px), linear-gradient(90deg, #1e40af 1px, transparent 1px)",
-                backgroundSize: "40px 40px"
+                backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
+                backgroundSize: "60px 60px"
             }}>
         </div>
 
-      <div className="w-full max-w-4xl flex flex-col md:flex-row rounded-sm overflow-hidden shadow-[0_0_50px_rgba(30,58,138,0.2)] bg-slate-900/80 backdrop-blur-xl border border-blue-900/50 relative z-10 md:mt-24">
+      <div className="w-full max-w-4xl flex flex-col md:flex-row rounded-xl overflow-hidden shadow-2xl bg-slate-800 border border-slate-700 relative z-10 md:mt-16">
         
-        {/* Left Panel - Identity Card */}
-        <div className="w-full md:w-1/3 bg-slate-950/80 border-r border-blue-900/50 p-8 flex flex-col items-center text-center relative">
-             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+        {/* Left Panel - Profile Card */}
+        <div className="w-full md:w-1/3 bg-slate-900/50 border-r border-slate-700 p-8 flex flex-col items-center text-center">
              
-             <div className="w-24 h-24 rounded-full border-2 border-blue-500/50 p-1 mb-6 relative group">
-                <div className="w-full h-full rounded-full bg-blue-900/20 flex items-center justify-center overflow-hidden relative">
-                    <User size={40} className="text-blue-400" />
-                    <div className="absolute inset-0 bg-blue-500/10 animate-pulse"></div>
-                </div>
-                 <div className="absolute -bottom-2 -right-2 bg-slate-900 border border-blue-500 p-1 rounded-full">
-                    {user.isAdmin ? <Shield size={12} className="text-blue-400" /> : <User size={12} className="text-slate-400" />}
+             <div className="w-24 h-24 rounded-full bg-slate-800 border-2 border-slate-700 p-1 mb-6 relative">
+                 <div className="w-full h-full rounded-full bg-slate-700 flex items-center justify-center overflow-hidden">
+                    <User size={40} className="text-slate-400" />
+                 </div>
+                 <div className="absolute -bottom-1 -right-1 bg-slate-800 border border-slate-600 p-1.5 rounded-full shadow-sm">
+                    {user.isAdmin ? <Shield size={12} className="text-blue-500" /> : <User size={12} className="text-slate-400" />}
                  </div>
              </div>
 
-             <h2 className="text-xl font-bold text-white tracking-wider mb-1 uppercase">{user.username}</h2>
-             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-900/20 border border-blue-500/30 rounded-full mb-8">
-                 <div className={`w-2 h-2 rounded-full ${user.isAdmin ? "bg-amber-500" : "bg-blue-500"} animate-pulse`}></div>
-                 <span className="text-[10px] font-bold text-blue-300 uppercase tracking-widest">{user.isAdmin ? "ADMINISTRATOR" : "OPERATIVE"}</span>
-             </div>
+             <h2 className="text-xl font-bold text-white mb-1">{user.username}</h2>
+             <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-8 ${user.isAdmin ? "bg-blue-600/10 text-blue-400 border border-blue-500/20" : "bg-slate-700 text-slate-300 border border-slate-600"}`}>
+                 {user.isAdmin ? "Administrator" : "Staff User"}
+             </span>
 
-             <div className="w-full space-y-4 mt-auto">
-                 <div className="flex justify-between text-xs border-b border-blue-900/30 pb-2">
-                     <span className="text-slate-500">ID REF:</span>
-                     <span className="text-blue-200 font-mono">#{user.id?.slice(-6).toUpperCase() || "UNK"}</span>
+             <div className="w-full space-y-4 mt-auto border-t border-slate-700 pt-6">
+                 <div className="flex justify-between text-xs">
+                     <span className="text-slate-500 font-medium uppercase tracking-wide">User ID</span>
+                     <span className="text-slate-300 font-mono">#{user.id?.slice(-6).toUpperCase() || "UNK"}</span>
                  </div>
-                 <div className="flex justify-between text-xs border-b border-blue-900/30 pb-2">
-                     <span className="text-slate-500">ACCESS:</span>
-                     <span className="text-blue-200 font-mono">LEVEL {user.isAdmin ? "1 (FULL)" : "4 (RESTRICTED)"}</span>
+                 <div className="flex justify-between text-xs">
+                     <span className="text-slate-500 font-medium uppercase tracking-wide">Status</span>
+                     <span className="text-emerald-400 font-medium flex items-center gap-1.5">
+                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                     </span>
                  </div>
              </div>
         </div>
 
         {/* Right Panel - Edit Form */}
-        <div className="w-full md:w-2/3 p-8 md:p-12 relative">
-             <div className="absolute top-4 right-4">
-                 <Cpu className="text-slate-800 h-24 w-24 opacity-20" />
-             </div>
+        <div className="w-full md:w-2/3 p-8 md:p-12 bg-slate-800">
 
-            <div className="mb-8 border-b border-blue-900/30 pb-4">
-                <h3 className="text-lg font-bold text-white uppercase tracking-widest flex items-center gap-2">
-                    <Key className="text-blue-500 h-4 w-4" /> Credentials Update
+            <div className="mb-8 border-b border-slate-700 pb-4">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Key className="text-slate-400 h-5 w-5" /> Account Security
                 </h3>
+                <p className="text-sm text-slate-400 mt-1">Manage your account credentials and contact information.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+            <form onSubmit={handleSubmit} className="space-y-6">
                 
                 {/* Email Field */}
-                <div className="group">
-                    <label className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2">Secure Comm Link (Email)</label>
-                    <div className="relative">
+                <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Email Address</label>
+                    <div className="relative group">
                         <input
                             type="email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 pl-10 pr-4 py-3 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all font-mono text-sm"
+                            className="w-full bg-slate-900/50 border border-slate-700 text-white pl-10 pr-4 py-2.5 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm placeholder-slate-600"
                         />
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors h-4 w-4" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 h-4 w-4" />
                     </div>
                 </div>
 
                 {/* Password Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="group">
-                        <label className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2">New Access Key</label>
-                        <div className="relative">
+                    <div className="space-y-1.5">
+                        <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">New Password</label>
+                        <div className="relative group">
                             <input
                                 type="password"
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                placeholder="UNCHANGED"
-                                className="w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 pl-10 pr-4 py-3 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all font-mono text-sm placeholder-slate-700"
+                                placeholder="Leave empty to keep"
+                                className="w-full bg-slate-900/50 border border-slate-700 text-white pl-10 pr-4 py-2.5 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm placeholder-slate-600"
                             />
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors h-4 w-4" />
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 h-4 w-4" />
                         </div>
                     </div>
 
-                    <div className="group">
-                         <label className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2">Verify Key</label>
-                         <div className="relative">
+                    <div className="space-y-1.5">
+                         <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Confirm Password</label>
+                         <div className="relative group">
                             <input
                                 type="password"
                                 name="confirmPassword"
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 disabled={!formData.password}
-                                placeholder="CONFIRM"
-                                className={`w-full bg-slate-950/50 border border-blue-900/30 text-blue-100 pl-10 pr-4 py-3 rounded-sm focus:outline-none focus:border-blue-500 focus:bg-slate-900/80 transition-all font-mono text-sm placeholder-slate-700 ${!formData.password ? "opacity-50 cursor-not-allowed" : ""}`}
+                                placeholder="Confirm new password"
+                                className={`w-full bg-slate-900/50 border border-slate-700 text-white pl-10 pr-4 py-2.5 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm placeholder-slate-600 ${!formData.password ? "opacity-50 cursor-not-allowed" : ""}`}
                             />
-                            <AlertTriangle className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 ${!formData.password ? "text-slate-700" : "text-slate-500 group-focus-within:text-blue-500"}`} />
+                            <Shield className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 h-4 w-4" />
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-6 flex justify-end border-t border-blue-900/30 mt-8">
+                <div className="pt-6 flex justify-end border-t border-slate-700 mt-8">
                      <button
                         type="submit"
                         disabled={loading}
-                        className={`group relative overflow-hidden px-8 py-3 rounded-sm font-bold text-xs tracking-widest uppercase transition-all shadow-[0_0_20px_rgba(37,99,235,0.2)] hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] ${
-                            loading ? "bg-slate-800 text-slate-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-500 text-white"
+                        className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg flex items-center gap-2 ${
+                            loading ? "bg-slate-700 text-slate-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/20"
                         }`}
                     >
-                        <span className="relative z-10 flex items-center gap-2">
-                            {loading ? (
-                                <div className="w-3 h-3 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
-                            ) : (
-                                <Save className="h-4 w-4" />
-                            )}
-                            {loading ? "ENCRYPTING DATA..." : "UPDATE CREDENTIALS"}
-                        </span>
+                        {loading ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save className="h-4 w-4" />}
+                        {loading ? "Saving..." : "Save Changes"}
                     </button>
                 </div>
             </form>
         </div>
-
       </div>
     </div>
   );

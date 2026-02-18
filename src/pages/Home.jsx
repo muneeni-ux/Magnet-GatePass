@@ -1,94 +1,3 @@
-// import React from "react";
-// import { useNavigate } from "react-router-dom";
-// import { BadgeCheck } from "lucide-react";
-
-// const Home = () => {
-//   const navigate = useNavigate();
-
-//   const handleGetStarted = () => {
-//     navigate("/form");
-//   };
-
-//   const steps = [
-//     {
-//       title: "Secure Login",
-//       desc: "Login securely using your gatekeeper credentials.",
-//       color: "from-blue-500 to-indigo-500",
-//     },
-//     {
-//       title: "Record Visitors",
-//       desc: "Record visitor information instantly upon entry.",
-//       color: "from-green-500 to-emerald-500",
-//     },
-//     {
-//       title: "Track Exits",
-//       desc: "Use the Time Out button when visitors leave.",
-//       color: "from-yellow-400 to-orange-500",
-//     },
-//     {
-//       title: "Admin Dashboard",
-//       desc: "Admins can view, manage, and print visit logs easily.",
-//       color: "from-pink-500 to-purple-600",
-//     },
-//   ];
-
-//   return (
-//     <div className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center text-gray-800 px-6 py-10">
-//       {/* Animated Background */}
-//       <div className="absolute inset-0 -z-10">
-//         <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full filter blur-3xl opacity-30 animate-float-slow"></div>
-//         <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full filter blur-3xl opacity-30 animate-float"></div>
-//         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-to-r from-yellow-300 to-orange-400 rounded-full filter blur-3xl opacity-20 animate-float-delayed"></div>
-//       </div>
-
-//       {/* Hero Section */}
-//       <div className="max-w-5xl w-full text-center mt-16 animate-fade-in">
-//         <h1 className="text-5xl md:text-6xl font-extrabold mb-6 text-blue-900 drop-shadow-xl leading-tight">
-//           Welcome to{" "}
-//           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-//             Nambale Magnet School
-//           </span>{" "}
-//           Visitors Pass System
-//         </h1>
-//         <p className="text-lg md:text-xl mb-10 text-blue-800 font-medium max-w-2xl mx-auto">
-//           A fast, secure, and user-friendly system to manage visitor movement
-//           with ease and professionalism.
-//         </p>
-
-//         {/* Steps as Colorful Cards */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-//           {steps.map((step, i) => (
-//             <div
-//               key={i}
-//               className={`relative p-6 rounded-2xl shadow-lg bg-gradient-to-r ${step.color} text-white transform transition duration-300 hover:scale-105 hover:shadow-2xl`}
-//             >
-//               <div className="flex items-center gap-3 mb-3">
-//                 <BadgeCheck className="w-7 h-7 text-white" />
-//                 <h3 className="text-xl font-bold">{step.title}</h3>
-//               </div>
-//               <p className="text-md font-medium">{step.desc}</p>
-//               <span className="absolute top-4 right-4 text-sm font-semibold opacity-60">
-//                 Step {i + 1}
-//               </span>
-//             </div>
-//           ))}
-//         </div>
-
-//         {/* CTA Button */}
-//         <button
-//           onClick={handleGetStarted}
-//           className="mt-12 px-12 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition duration-300 rounded-full text-lg md:text-xl font-bold text-white shadow-lg hover:shadow-2xl transform hover:scale-105"
-//         >
-//           🚀 Get Started
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-// /neww
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -99,17 +8,16 @@ import {
   LayoutDashboard,
   Activity,
   Server,
-  Lock,
   Database
 } from "lucide-react";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [systemStatus, setSystemStatus] = useState("INITIALIZING");
+  const [systemStatus, setSystemStatus] = useState("Initializing...");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSystemStatus("ONLINE"), 1500);
+    const timer = setTimeout(() => setSystemStatus("Online"), 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -120,66 +28,66 @@ const Home = () => {
 
   const steps = [
     {
-      title: "AUTHENTICATION",
-      desc: "Encrypted login protocol.",
+      title: "Authentication",
+      desc: "Secure login credential verification.",
       icon: ShieldCheck,
-      status: "SECURE",
-      color: "text-green-500",
-      border: "border-green-500/30"
+      status: "Secure",
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/10",
+      border: "border-emerald-500/20"
     },
     {
-      title: "ENTRY LOG",
-      desc: "Capture visitor data.",
+      title: "Entry Logging",
+      desc: "Capture and validate visitor data.",
       icon: Users,
-      status: "ACTIVE",
+      status: "Active",
       color: "text-blue-500",
-      border: "border-blue-500/30"
+      bg: "bg-blue-500/10",
+      border: "border-blue-500/20"
     },
     {
-      title: "TIME STAMP",
-      desc: " precise exit tracking.",
+      title: "Time Tracking",
+      desc: "Precise entry and exit timestamps.",
       icon: Clock,
-      status: "SYNCED",
+      status: "Synced",
       color: "text-amber-500",
-      border: "border-amber-500/30"
+      bg: "bg-amber-500/10",
+      border: "border-amber-500/20"
     },
     {
-      title: "ADMIN CORE",
-      desc: "Centralized control.",
+      title: "Administration",
+      desc: "Centralized control and oversight.",
       icon: LayoutDashboard,
-      status: "RESTRICTED",
-      color: "text-red-500",
-      border: "border-red-500/30"
+      status: "Restricted",
+      color: "text-rose-500",
+      bg: "bg-rose-500/10",
+      border: "border-rose-500/20"
     },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-blue-100 font-mono relative overflow-hidden flex flex-col pt-20">
+    <div className="min-h-screen bg-slate-900 text-gray-100 font-sans relative overflow-hidden flex flex-col pt-20">
       
-      {/* Background Grid */}
-      <div className="absolute inset-0 z-0 opacity-10" 
+      {/* Background Subtle Grid */}
+      <div className="absolute inset-0 z-0 opacity-[0.03]" 
            style={{
-             backgroundImage: "linear-gradient(#1e40af 1px, transparent 1px), linear-gradient(90deg, #1e40af 1px, transparent 1px)",
-             backgroundSize: "50px 50px"
+             backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
+             backgroundSize: "60px 60px"
            }}>
       </div>
 
       {/* Header Status Bar */}
-      <div className="w-full bg-slate-900/80 border-b border-blue-900/50 p-2 flex justify-between items-center px-6 backdrop-blur-sm z-10">
-          <div className="flex items-center gap-4 text-xs">
-              <span className="text-slate-500">SYSTEM STATUS:</span>
-              <span className={`font-bold ${systemStatus === "ONLINE" ? "text-green-500 animate-pulse" : "text-yellow-500"}`}>
+      <div className="w-full bg-slate-800/80 border-b border-slate-700/50 py-2 flex justify-between items-center px-6 backdrop-blur-sm z-10 text-xs font-medium">
+          <div className="flex items-center gap-3">
+              <span className="text-slate-400">System Status:</span>
+              <span className={`px-2 py-0.5 rounded-full ${systemStatus === "Online" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"}`}>
                   {systemStatus}
               </span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-slate-500">
-              <div className="flex items-center gap-1">
-                  <Server size={12} />
-                  <span>SERVER: CONNECTED</span>
-              </div>
-              <div className="flex items-center gap-1">
-                  <Database size={12} />
-                  <span>DB: LIVE</span>
+          <div className="flex items-center gap-4 text-slate-500">
+              <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span>Server Connected</span>
               </div>
           </div>
       </div>
@@ -187,63 +95,56 @@ const Home = () => {
       <div className="flex-grow flex flex-col items-center justify-center p-6 relative z-10">
         
         {/* Main Content */}
-        <div className="max-w-5xl w-full">
+        <div className="max-w-6xl w-full">
             
             {/* Hero Section */}
             <div className="text-center mb-16 relative">
-                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-blue-600/10 blur-[100px] rounded-full -z-10"></div>
+                 {/* Soft Blur Behind Title */}
+                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-500/5 blur-[120px] rounded-full -z-10"></div>
                  
-                 <div className="inline-flex items-center gap-2 border border-blue-500/30 bg-blue-900/10 rounded-full px-4 py-1 mb-6">
+                 <div className="inline-flex items-center gap-2 border border-slate-700/50 bg-slate-800/50 rounded-full px-4 py-1.5 mb-8">
                      <Activity size={14} className="text-blue-400" />
-                     <span className="text-xs font-bold text-blue-300 tracking-widest">V2.4.0 STABLE BUILD</span>
+                     <span className="text-xs font-semibold text-blue-300 tracking-wide uppercase">Version 2.4.0 Stable</span>
                  </div>
 
-                 <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-6 uppercase">
-                    MagTrack <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">OS</span>
+                 <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+                    MagTrack <span className="text-blue-500">OS</span>
                  </h1>
                  
-                 <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto tracking-wide border-l-2 border-blue-500/50 pl-4 text-left md:text-center md:border-l-0 md:pl-0">
-                    ADVANCED VISITOR MANAGEMENT PROTOCOLS ENABLED.<br className="hidden md:block"/>
-                    SECURE. EFFICIENT. COMPLIANT.
+                 <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                    Advanced Visitor Management Protocol for Nambale Magnet School.<br/>
+                    <span className="text-slate-500">Secure. Efficient. Compliant.</span>
                  </p>
             </div>
 
             {/* Dashboard Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 {steps.map((step, i) => (
-                    <div key={i} className={`bg-slate-900/50 border ${step.border} p-6 rounded-sm relative group hover:bg-slate-800/80 transition-all duration-300`}>
-                        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-current to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div key={i} className="bg-slate-800/50 border border-slate-700/50 p-6 rounded-xl relative group hover:bg-slate-800 hover:border-slate-600 transition-all duration-300 shadow-sm hover:shadow-xl">
                         
-                        <div className="flex justify-between items-start mb-4">
-                            <step.icon size={24} className={step.color} />
-                            <span className={`text-[10px] font-bold border border-current px-1 rounded-sm ${step.color} opacity-70`}>
+                        <div className="flex justify-between items-start mb-5">
+                            <div className={`p-3 rounded-lg ${step.bg} ${step.color}`}>
+                                <step.icon size={24} />
+                            </div>
+                            <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${step.bg} ${step.color} border ${step.border}`}>
                                 {step.status}
                             </span>
                         </div>
                         
-                        <h3 className="text-lg font-bold text-white mb-2 tracking-wide">{step.title}</h3>
-                        <p className="text-xs text-slate-400">{step.desc}</p>
-                        
-                        <div className="absolute bottom-2 right-2 opacity-10 text-4xl font-bold text-slate-500">
-                            0{i + 1}
-                        </div>
+                        <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
+                        <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
                     </div>
                 ))}
             </div>
 
             {/* Action Button */}
-            <div className="text-center">
+            <div className="text-center pb-10">
                 <button
                     onClick={handleGetStarted}
-                    className="relative group px-12 py-4 bg-transparent overflow-hidden"
+                    className="group relative inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm tracking-wide shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-0.5"
                 >
-                    <div className="absolute inset-0 w-full h-full bg-blue-600/20 skew-x-[-20deg] group-hover:bg-blue-600/40 transition-colors border border-blue-500/50"></div>
-                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500 shadow-[0_0_20px_#3b82f6]"></div>
-                    
-                    <span className="relative z-10 flex items-center gap-3 font-bold text-blue-100 tracking-[0.2em] group-hover:gap-6 transition-all duration-300">
-                        {loading ? "INITIALIZING..." : "LAUNCH PROTOCOL"}
-                        {!loading && <ArrowRight size={18} />}
-                    </span>
+                    {loading ? "Initializing..." : "Access Dashboard"}
+                    {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
                 </button>
             </div>
 
