@@ -1,35 +1,49 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Edit, Trash } from "lucide-react";
+import {
+  Edit,
+  Trash,
+  FileClock,
+  Search,
+  Calendar,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { format } from "date-fns";
 import { ClipLoader } from "react-spinners";
+import { toast } from "react-hot-toast";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const gates = [ "Gate One", "Gate Two"];
 const ITEMS_PER_PAGE = 10;
 
 const AdminOccurrence = () => {
   const [occurrences, setOccurrences] = useState([]);
+  const [gates, setGates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterGate, setFilterGate] = useState("");
   const [filterDate, setFilterDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchOccurrences = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${SERVER_URL}/api/occurrences`);
-      setOccurrences(res.data || []);
+      const [occRes, gatesRes] = await Promise.all([
+        axios.get(`${SERVER_URL}/api/occurrences`),
+        axios.get(`${SERVER_URL}/api/locations/gates`),
+      ]);
+      setOccurrences(occRes.data || []);
+      setGates(gatesRes.data || []);
     } catch (error) {
-      console.error("Failed to fetch occurrences:", error);
+      console.error("Failed to fetch data:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOccurrences();
+    fetchData();
   }, []);
 
   const filteredOccurrences = occurrences.filter((o) => {
@@ -53,7 +67,10 @@ const AdminOccurrence = () => {
   // Pagination logic
   const totalPages = Math.ceil(filteredOccurrences.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentItems = filteredOccurrences.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentItems = filteredOccurrences.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this occurrence?")) {
@@ -67,131 +84,223 @@ const AdminOccurrence = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">All Occurrences</h1>
-
-      {/* Filters + Search */}
-      <div className="flex flex-wrap items-center gap-4 mb-6">
-        <select
-          className="border rounded px-3 py-2"
-          value={filterGate}
-          onChange={(e) => setFilterGate(e.target.value)}
-        >
-          <option value="">All Gates</option>
-          {gates.map((g) => (
-            <option key={g} value={g}>{g}</option>
-          ))}
-        </select>
-
-        <input
-          type="date"
-          className="border rounded px-3 py-2"
-          value={filterDate}
-          onChange={(e) => setFilterDate(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="Search by gate, remarks, or user"
-          className="border rounded px-3 py-2 flex-1"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-
-      {/* Table */}
-      {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <ClipLoader color="#8b5cf6" size={50} />
+    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div className="p-3 bg-indigo-100 text-indigo-600 rounded-xl">
+            <FileClock className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              Security Occurrences
+            </h1>
+            <p className="text-slate-500 text-sm mt-1">
+              Review and track all reported security events and shift logs.
+            </p>
+          </div>
         </div>
-      ) : currentItems.length === 0 ? (
-        <p className="text-center text-gray-500">No occurrences found.</p>
-      ) : (
-        <div className="overflow-x-auto bg-white shadow-md rounded">
-          <table className="min-w-full text-sm text-left">
-            <thead className="bg-gray-100 text-xs uppercase text-gray-700">
-              <tr>
-                <th className="px-4 py-2">Gate</th>
-                <th className="px-4 py-2">End Time</th>
-                {/* <th className="px-4 py-2">Disarmed By</th>
-                <th className="px-4 py-2">Disarm Time</th>
-                <th className="px-4 py-2">Armed By</th>
-                <th className="px-4 py-2">Arm Time</th> */}
-                {/* <th className="px-4 py-2">Parking Open</th>
-                <th className="px-4 py-2">Parking Close</th> */}
-                {/* <th className="px-4 py-2">Premise</th>
-                <th className="px-4 py-2">Phones With</th> */}
-                <th className="px-4 py-2">Unusual?</th>
-                <th className="px-4 py-2">Remarks</th>
-                <th className="px-4 py-2">Submitted By</th>
-                <th className="px-4 py-2">Submitted At</th>
-                <th className="px-4 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((o) => (
-                <tr key={o._id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2">{o.gate || "—"}</td>
-                  <td className="px-4 py-2">
-                    {o.endTime ? format(new Date(o.endTime), "dd/MM/yyyy HH:mm") : "—"}
-                  </td>
-                  {/* <td className="px-4 py-2">{o.disarmedBy || "—"}</td>
-                  <td className="px-4 py-2">{o.disarmTime || "—"}</td>
-                  <td className="px-4 py-2">{o.armedBy || "—"}</td>
-                  <td className="px-4 py-2">{o.armTime || "—"}</td> */}
-                  {/* <td className="px-4 py-2">{o.parkingOpeningTime || "—"}</td>
-                  <td className="px-4 py-2">{o.parkingClosingTime || "—"}</td> */}
-                  {/* <td className="px-4 py-2">{o.premise || "—"}</td>
-                  <td className="px-4 py-2">{o.phonesLeftWith || "—"}</td> */}
-                  <td className="px-4 py-2">{o.unusualOccurrence || "—"}</td>
-                  <td className="px-4 py-2">{o.remarks || "—"}</td>
-                  <td className="px-4 py-2">{o.submittedBy?.username || "—"}</td>
-                  <td className="px-4 py-2">
-                    {o.submittedAt
-                      ? format(new Date(o.submittedAt), "dd/MM/yyyy HH:mm")
-                      : "—"}
-                  </td>
-                  <td className="px-4 py-2 flex items-center gap-2">
-                    <button
-                      onClick={() => alert("Edit coming soon")}
-                      className="text-blue-600 hover:text-blue-800"
-                      title="Edit"
-                    >
-                      <Edit size={16} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(o._id)}
-                      className="text-red-600 hover:text-red-800"
-                      title="Delete"
-                    >
-                      <Trash size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-6 space-x-2">
-          {[...Array(totalPages)].map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentPage(idx + 1)}
-              className={`px-3 py-1 rounded ${
-                currentPage === idx + 1
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-              }`}
+        {/* Filters + Search */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-4">
+          <div className="relative w-full md:w-64">
+            <Filter
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              size={18}
+            />
+            <select
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm appearance-none"
+              value={filterGate}
+              onChange={(e) => setFilterGate(e.target.value)}
             >
-              {idx + 1}
-            </button>
-          ))}
+              <option value="">All Gates</option>
+              {gates.map((g) => (
+                <option key={g._id} value={g.name}>
+                  {g.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="relative w-full md:w-56">
+            <Calendar
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              size={18}
+            />
+            <input
+              type="date"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+            />
+          </div>
+
+          <div className="relative flex-1 w-full">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              size={18}
+            />
+            <input
+              type="text"
+              placeholder="Search by gate, remarks, or user..."
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
-      )}
+
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <ClipLoader color="#6366f1" size={40} />
+            </div>
+          ) : currentItems.length === 0 ? (
+            <div className="text-center py-16 bg-slate-50 border border-slate-100 rounded-xl m-4">
+              <FileClock size={48} className="mx-auto text-slate-300 mb-4" />
+              <p className="text-slate-500 font-medium">
+                No occurrences found matching criteria.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-sm whitespace-nowrap">
+                <thead>
+                  <tr className="bg-slate-50/80 border-b border-slate-100 text-slate-500">
+                    <th className="px-6 py-4 font-semibold">Gate</th>
+                    <th className="px-6 py-4 font-semibold">End Time</th>
+                    <th className="px-6 py-4 font-semibold">Unusual?</th>
+                    <th className="px-6 py-4 font-semibold hidden md:table-cell">
+                      Remarks
+                    </th>
+                    <th className="px-6 py-4 font-semibold">Submitted By</th>
+                    <th className="px-6 py-4 font-semibold">Submitted At</th>
+                    <th className="px-6 py-4 font-semibold text-right">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {currentItems.map((o) => (
+                    <tr
+                      key={o._id}
+                      className="hover:bg-slate-50/50 transition-colors group"
+                    >
+                      <td className="px-6 py-4 font-medium text-slate-800">
+                        {o.gate || "—"}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600">
+                        {o.endTime
+                          ? format(new Date(o.endTime), "dd/MM/yyyy HH:mm")
+                          : "—"}
+                      </td>
+                      <td className="px-6 py-4">
+                        {o.unusualOccurrence?.toLowerCase() === "yes" ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">
+                            YES
+                          </span>
+                        ) : (
+                          <span className="text-slate-500">
+                            {o.unusualOccurrence || "—"}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 hidden md:table-cell">
+                        <div
+                          className="max-w-[200px] truncate text-slate-600"
+                          title={o.remarks}
+                        >
+                          {o.remarks || "—"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-slate-700">
+                        {o.submittedBy?.username || "—"}
+                      </td>
+                      <td className="px-6 py-4 text-slate-500">
+                        {o.submittedAt
+                          ? format(new Date(o.submittedAt), "dd/MM/yyyy HH:mm")
+                          : "—"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-end gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() =>
+                              toast("Editing is under development", {
+                                icon: "ℹ️",
+                              })
+                            }
+                            className="p-1.5 text-slate-400 hover:text-indigo-600 bg-white border border-slate-200 hover:border-indigo-200 rounded-lg shadow-sm transition-all"
+                            title="Edit"
+                          >
+                            <Edit size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(o._id)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 bg-white border border-slate-200 hover:border-red-200 rounded-lg shadow-sm transition-all"
+                            title="Delete"
+                          >
+                            <Trash size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex justify-between items-center px-6 py-4 border-t border-slate-100 bg-white">
+                  <span className="text-sm font-medium text-slate-500">
+                    Showing {startIndex + 1} to{" "}
+                    {Math.min(
+                      startIndex + ITEMS_PER_PAGE,
+                      filteredOccurrences.length,
+                    )}{" "}
+                    of {filteredOccurrences.length} entries
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    <div className="flex space-x-1">
+                      {[...Array(totalPages)].map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentPage(idx + 1)}
+                          className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                            currentPage === idx + 1
+                              ? "bg-indigo-600 text-white shadow-sm"
+                              : "text-slate-600 hover:bg-slate-100"
+                          }`}
+                        >
+                          {idx + 1}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

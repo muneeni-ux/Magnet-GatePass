@@ -17,10 +17,15 @@ const occurrence = require("./routes/OccurenceRoute.js");
 const auth = require("./routes/LoginSignup.js");
 const inquiryStaffRoutes = require("./routes/InquiryRoute.js");
 const faqRoutes = require("./routes/FAQRoute.js");
+const notificationRoutes = require("./routes/NotificationRoute.js");
+const locationRoutes = require("./routes/LocationRoute.js");
+const reportRoutes = require("./routes/ReportRoute.js");
 const errorHandler = require("./middleware/Errorhandler.js");
+const initCronJobs = require("./services/CronJobs.js");
 
 dotenv.config();
 connectdb();
+initCronJobs();
 
 const app = express();  // Initialize express
 app.set('trust proxy', 1);
@@ -77,6 +82,9 @@ app.use("/api/auth", auth); // Authentication routes
 app.use("/api/inquiry-staff", inquiryStaffRoutes);
 app.use("/api/upload", Uploads); // Image upload route
 app.use("/api/faq", faqRoutes); // FAQ routes
+app.use("/api/notifications", notificationRoutes); // Notifications routes
+app.use("/api/locations", locationRoutes); // Dynamic gates and departments routes
+app.use("/api/reports", reportRoutes); // Analytics and Reporting routes
 
 // Graceful Shutdown
 process.on("SIGINT", () => {

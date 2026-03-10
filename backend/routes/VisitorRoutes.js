@@ -12,14 +12,18 @@ const Visitor = require("../models/Visitor");
 //     res.status(400).json({ error: err.message });
 //   }
 // });
-// CREATE - POST /api/visitors
 router.post("/", async (req, res) => {
   try {
     const visitor = new Visitor(req.body); // formData includes gate, nature, recordedBy
     const savedVisitor = await visitor.save();
     res.status(201).json(savedVisitor);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    if (err.name === 'ValidationError' || err.name === 'CastError') {
+      res.status(400).json({ error: err.message });
+    } else {
+      // MongoServerSelectionError or other network timeouts
+      res.status(503).json({ error: "Database connectivity error", details: err.message });
+    }
   }
 });
 

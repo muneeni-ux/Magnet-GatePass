@@ -15,6 +15,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 export default function VisitorHistory() {
   const [visitors, setVisitors] = useState([]);
+  const [gatesMap, setGatesMap] = useState({});
   const [showTodayOnly, setShowTodayOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortAsc, setSortAsc] = useState(false);
@@ -25,11 +26,24 @@ export default function VisitorHistory() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  const fetchVisitors = async () => {
+  const fetchVisitorsAndGates = async () => {
     try {
-      const res = await fetch(`${SERVER_URL}/api/visitors`);
-      const data = await res.json();
-      setVisitors(data);
+      const [visitorsRes, gatesRes] = await Promise.all([
+        fetch(`${SERVER_URL}/api/visitors`),
+        fetch(`${SERVER_URL}/api/locations/gates`),
+      ]);
+      const visitorsData = await visitorsRes.json();
+      const gatesData = await gatesRes.json();
+
+      // Build lookup map
+      const gMap = {};
+      if (Array.isArray(gatesData)) {
+        gatesData.forEach((g) => {
+          gMap[g._id] = g.name;
+        });
+      }
+      setGatesMap(gMap);
+      setVisitors(visitorsData);
     } catch (error) {
       toast.error("Unable to load visitor records");
     }
@@ -49,7 +63,7 @@ export default function VisitorHistory() {
       );
       if (!res.ok) throw new Error();
       toast.success("Exit recorded successfully");
-      fetchVisitors();
+      fetchVisitorsAndGates();
     } catch {
       toast.error("Failed to record exit");
     }
@@ -57,7 +71,7 @@ export default function VisitorHistory() {
   };
 
   useEffect(() => {
-    fetchVisitors();
+    fetchVisitorsAndGates();
   }, []);
 
   // Reset to first page when filters change
@@ -243,7 +257,9 @@ export default function VisitorHistory() {
                       <td className="p-5 text-slate-400 text-xs">
                         <div>
                           Entry:{" "}
-                          <span className="text-slate-300">{v.gate}</span>
+                          <span className="text-slate-300">
+                            {gatesMap[v.gate] || v.gate}
+                          </span>
                         </div>
                         {v.vehicleReg && <div>Ref: {v.vehicleReg}</div>}
                       </td>

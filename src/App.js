@@ -24,6 +24,10 @@ import History from './pages/VisitorHistory';
 import FAQs from './pages/FAQs';
 import Profile from './pages/Profile';
 import AdminInquiry from './Admin/AdminInquiry';
+import AdminNotifications from './Admin/AdminNotifications';
+import AdminLocations from './Admin/AdminLocations';
+import AdminEmergency from './Admin/AdminEmergency';
+import AdminReports from './Admin/AdminReports';
 
 const App = () => {
   const location = useLocation();
@@ -44,17 +48,23 @@ const App = () => {
         position="top-right"
         reverseOrder={false}
         toastOptions={{
+          style: {
+            background: '#0f172a',
+            color: '#f8fafc',
+            border: '1px solid #334155',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: '600',
+            letterSpacing: '0.025em'
+          },
           success: {
-            style: {
-              background: '#D1FAE5',
-              color: '#065F46',
-            },
+            iconTheme: { primary: '#10b981', secondary: '#042f2e' },
+            style: { border: '1px solid #065f46' },
           },
           error: {
-            style: {
-              background: '#FEE2E2',
-              color: '#991B1B',
-            },
+            iconTheme: { primary: '#ef4444', secondary: '#450a0a' },
+            style: { border: '1px solid #991b1b' },
           },
         }}
       />
@@ -94,6 +104,10 @@ const App = () => {
           <Route path="occurrence" element={<AdminOccurrence />} />
           <Route path="faq" element={<AdminFAQs />} />
           <Route path="inquiry" element={<AdminInquiry />} />
+          <Route path="notifications" element={<AdminNotifications />} />
+          <Route path="locations" element={<AdminLocations />} />
+          <Route path="analytics" element={<AdminReports />} />
+          <Route path="emergency" element={<AdminEmergency />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
