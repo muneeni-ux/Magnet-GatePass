@@ -9,10 +9,13 @@ import {
   Filter,
   ChevronLeft,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-hot-toast";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const ITEMS_PER_PAGE = 10;
@@ -83,6 +86,68 @@ const AdminOccurrence = () => {
     }
   };
 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+    const dateStr = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+
+    autoTable(doc, {
+      head: [["Gate", "End Time", "Unusual?", "Remarks", "Submitted By", "Submitted At"]],
+      body: filteredOccurrences.map(o => [
+        o.gate || "—",
+        o.endTime ? format(new Date(o.endTime), "dd/MM/yyyy HH:mm") : "—",
+        o.unusualOccurrence || "—",
+        o.remarks || "—",
+        o.submittedBy?.username || "—",
+        o.submittedAt ? format(new Date(o.submittedAt), "dd/MM/yyyy HH:mm") : "—"
+      ]),
+      startY: 45,
+      styles: { fontSize: 8, cellPadding: 3 },
+      headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' }, // Indigo-600
+      alternateRowStyles: { fillColor: [249, 250, 251] },
+      didDrawPage: (data) => {
+        // Header
+        try {
+          // Attempt to load the logo if it exists in public folder
+          doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 25, 25);
+        } catch (e) {
+          console.warn("Logo failed to load in PDF:", e);
+        }
+        
+        doc.setFontSize(18);
+        doc.setTextColor(30, 41, 59); // Slate-800
+        doc.text("MAGNET SECURITY SYSTEM", 45, 20);
+        
+        doc.setFontSize(11);
+        doc.setTextColor(100, 116, 139); // Slate-500
+        doc.text("Official Security Occurrences & Logs Report", 45, 26);
+        
+        doc.setFontSize(9);
+        doc.text(`Generated on: ${dateStr}`, 45, 32);
+        
+        // Horizontal line
+        doc.setDrawColor(226, 232, 240); // Slate-200
+        doc.line(14, 40, pageWidth - 14, 40);
+
+        // Footer
+        doc.setFontSize(9);
+        doc.setTextColor(148, 163, 184); // Slate-400
+        
+        // Copyright notice
+        doc.text("© 2024 Magnet Security System. All rights reserved.", 14, pageHeight - 10);
+        
+        // Page number
+        const pageNum = doc.internal.getNumberOfPages();
+        doc.text(`Page ${pageNum}`, pageWidth - 25, pageHeight - 10);
+      },
+      margin: { top: 45, bottom: 20 },
+    });
+
+    doc.save(`Security_Occurrences_${format(new Date(), "yyyy-MM-dd")}.pdf`);
+    toast.success("PDF Report Generated!");
+  };
+
   return (
     <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -91,7 +156,7 @@ const AdminOccurrence = () => {
           <div className="p-3 bg-indigo-100 text-indigo-600 rounded-xl">
             <FileClock className="w-6 h-6" />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
               Security Occurrences
             </h1>
@@ -99,6 +164,13 @@ const AdminOccurrence = () => {
               Review and track all reported security events and shift logs.
             </p>
           </div>
+          <button
+            onClick={exportToPDF}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors shadow-sm"
+          >
+            <Download size={16} />
+            Export PDF
+          </button>
         </div>
 
         {/* Filters + Search */}

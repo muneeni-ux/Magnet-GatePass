@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Visitor = require('../models/Visitor');
+const Occurrence = require('../models/Occurence');
 
 // GET /api/reports/analytics
 // Fast MongoDB aggregation to compute heatmap data
@@ -54,6 +55,118 @@ router.get('/analytics', async (req, res) => {
     } catch (error) {
         console.error("Aggregation Error:", error);
         res.status(500).json({ success: false, message: "Failed to generate analytics data" });
+    }
+});
+
+// GET /api/reports/compliance
+// Visitor Compliance & Overstay Report
+router.get('/compliance', async (req, res) => {
+    try {
+        const complianceData = await Visitor.aggregate([
+            {
+                $facet: {
+                    "byNature": [
+                        { $group: { _id: "$nature", count: { $sum: 1 } } }
+                    ],
+                    "overstays": [
+                        { $match: { timeOut: null } },
+                        { $group: { _id: "$department", count: { $sum: 1 } } }
+                    ]
+                }
+            }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            data: complianceData[0] // $facet returns an array with one object
+        });
+    } catch (error) {
+        console.error("Compliance Report Error:", error);
+        res.status(500).json({ success: false, message: "Failed to generate compliance report" });
+    }
+});
+
+// GET /api/reports/occurrences
+// Security Occurrences & Incident Report
+router.get('/occurrences', async (req, res) => {
+    try {
+        const occurrenceData = await Occurrence.aggregate([
+            {
+                $group: {
+                    _id: "$gate",
+                    totalLogs: { $sum: 1 },
+                    unusualEvents: {
+                        $sum: { $cond: [{ $eq: ["$unusualOccurrence", "Yes"] }, 1, 0] }
+                    }
+                }
+            }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            data: occurrenceData
+        });
+    } catch (error) {
+        console.error("Occurrence Report Error:", error);
+        res.status(500).json({ success: false, message: "Failed to generate occurrences report" });
+    }
+});
+
+// GET /api/reports/staff-activity
+// Staff Efficiency & Activity Report
+router.get('/staff-activity', async (req, res) => {
+    try {
+        const staffData = await Visitor.aggregate([
+            {
+                $group: {
+                    _id: "$recordedBy",
+                    totalRegistered: { $sum: 1 },
+                    missingCheckouts: {
+                        $sum: { $cond: [{ $eq: ["$timeOut", null] }, 1, 0] }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "staffDetails"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$staffDetails",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $project: {
+                    staffName: { $ifNull: ["$staffDetails.name", "Unknown Staff"] },
+                    role: { $ifNull: ["$staffDetails.role", "Unknown Role"] },
+                    totalRegistered: 1,
+                    missingCheckouts: 1,
+                    complianceRate: {
+                        $multiply: [
+                            { $divide: [
+                                { $subtract: ["$totalRegistered", "$missingCheckouts"] },
+                                "$totalRegistered"
+                            ]},
+                            100
+                        ]
+                    }
+                }
+            },
+            { $sort: { totalRegistered: -1 } }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            data: staffData
+        });
+    } catch (error) {
+        console.error("Staff Activity Report Error:", error);
+        res.status(500).json({ success: false, message: "Failed to generate staff activity report" });
     }
 });
 
