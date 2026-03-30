@@ -74,6 +74,34 @@ router.get("/", async (req, res) => {
 });
 
 
+// GET ACTIVE STAFF DEPARTMENTS
+router.get("/active-staff-departments", async (req, res) => {
+  try {
+    const activeStaff = await Visitor.find({ nature: "staff", timeOut: { $exists: false } });
+    const deps = activeStaff.map(s => s.department);
+    res.json([...new Set(deps)]);
+  } catch(err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// SEARCH RECENT FOR AUTOFILL
+router.get("/search/recent", async (req, res) => {
+  try {
+    const { phone, idNumber } = req.query;
+    if (!phone && !idNumber) return res.json(null);
+    
+    let queryArr = [];
+    if (phone) queryArr.push({ phone });
+    if (idNumber) queryArr.push({ idNumber });
+    
+    const visitor = await Visitor.findOne({ $or: queryArr }).sort({ createdAt: -1 });
+    res.json(visitor);
+  } catch(err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // READ ONE - GET /api/visitors/:id
 router.get("/:id", async (req, res) => {
   try {

@@ -66,7 +66,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-900 text-gray-100 font-sans relative overflow-hidden flex flex-col pt-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-gray-100 font-sans relative overflow-hidden flex flex-col pt-20">
       
       {/* Background Subtle Grid */}
       <div className="absolute inset-0 z-0 opacity-[0.03]" 
@@ -77,9 +77,9 @@ const Home = () => {
       </div>
 
       {/* Header Status Bar */}
-      <div className="w-full bg-slate-800/80 border-b border-slate-700/50 py-2 flex justify-between items-center px-6 backdrop-blur-sm z-10 text-xs font-medium">
+      <div className="w-full bg-white/80 dark:bg-slate-800/80 border-b border-slate-300/50 dark:border-slate-700/50 py-2 flex justify-between items-center px-6 backdrop-blur-sm z-10 text-xs font-medium">
           <div className="flex items-center gap-3">
-              <span className="text-slate-400">System Status:</span>
+              <span className="text-slate-500 dark:text-slate-400">System Status:</span>
               <span className={`px-2 py-0.5 rounded-full ${systemStatus === "Online" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"}`}>
                   {systemStatus}
               </span>
@@ -102,16 +102,16 @@ const Home = () => {
                  {/* Soft Blur Behind Title */}
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-500/5 blur-[120px] rounded-full -z-10"></div>
                  
-                 <div className="inline-flex items-center gap-2 border border-slate-700/50 bg-slate-800/50 rounded-full px-4 py-1.5 mb-8">
+                 <div className="inline-flex items-center gap-2 border border-slate-300/50 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/50 rounded-full px-4 py-1.5 mb-8">
                      <Activity size={14} className="text-blue-400" />
-                     <span className="text-xs font-semibold text-blue-300 tracking-wide uppercase">Version 2.4.0 Stable</span>
+                     <span className="text-xs font-semibold text-blue-300 tracking-wide uppercase">Version 2.0.0 Stable</span>
                  </div>
 
-                 <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
-                    MagTrack <span className="text-blue-500">OS</span>
+                 <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
+                    Visitrack <span className="text-blue-500">OS</span>
                  </h1>
                  
-                 <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                 <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
                     Advanced Visitor Management Protocol for Nambale Magnet School.<br/>
                     <span className="text-slate-500">Secure. Efficient. Compliant.</span>
                  </p>
@@ -120,7 +120,7 @@ const Home = () => {
             {/* Dashboard Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 {steps.map((step, i) => (
-                    <div key={i} className="bg-slate-800/50 border border-slate-700/50 p-6 rounded-xl relative group hover:bg-slate-800 hover:border-slate-600 transition-all duration-300 shadow-sm hover:shadow-xl">
+                    <div key={i} className="bg-white/50 dark:bg-slate-800/50 border border-slate-300/50 dark:border-slate-700/50 p-6 rounded-xl relative group hover:bg-white dark:hover:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-300 shadow-sm hover:shadow-xl">
                         
                         <div className="flex justify-between items-start mb-5">
                             <div className={`p-3 rounded-lg ${step.bg} ${step.color}`}>
@@ -131,8 +131,8 @@ const Home = () => {
                             </span>
                         </div>
                         
-                        <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
-                        <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{step.title}</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{step.desc}</p>
                     </div>
                 ))}
             </div>
@@ -141,7 +141,7 @@ const Home = () => {
             <div className="text-center pb-10">
                 <button
                     onClick={handleGetStarted}
-                    className="group relative inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm tracking-wide shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-0.5"
+                    className="group relative inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-slate-900 dark:text-white rounded-lg font-semibold text-sm tracking-wide shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-0.5"
                 >
                     {loading ? "Initializing..." : "Access Dashboard"}
                     {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}

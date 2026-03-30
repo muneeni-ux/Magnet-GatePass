@@ -9,7 +9,10 @@ const visitorSchema = new mongoose.Schema(
     vehicleReg: { type: String },
     department: { type: String, required: true }, // allow any string
     gate: { type: String, required: true },
-    nature: { type: String, enum: ["official", "personal"], required: true },
+    nature: { type: String, enum: ["official", "personal", "staff"], required: true },
+    isGroup: { type: Boolean, default: false },
+    groupSize: { type: Number, default: 1 },
+    isDisabled: { type: Boolean, default: false },
     timeOut: { type: Date },
     duration: { type: String }, // e.g., "1h 25m"
     recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

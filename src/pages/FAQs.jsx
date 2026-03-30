@@ -25,7 +25,7 @@ function FAQs() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-300 font-sans px-6 py-24 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 font-sans px-6 py-24 relative overflow-hidden">
        
        {/* Background Grid */}
        <div className="absolute inset-0 z-0 opacity-[0.03]" 
@@ -43,18 +43,18 @@ function FAQs() {
                 <HelpCircle className="w-4 h-4" />
                 <span className="text-xs font-bold uppercase tracking-wide">Support Center</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                 Frequently Asked Questions
             </h1>
-            <p className="text-slate-400 text-lg">
-                Common questions about the MagTrack Visitor Management System.
+            <p className="text-slate-500 dark:text-slate-400 text-lg">
+                Common questions about the Visitrack Visitor Management System.
             </p>
         </div>
 
         {/* FAQs */}
         <div className="space-y-4">
             {faqs.length === 0 && (
-                <div className="p-12 text-center border border-slate-800 rounded-xl bg-slate-800/50">
+                <div className="p-12 text-center border border-slate-200 dark:border-slate-800 rounded-xl bg-white/50 dark:bg-slate-800/50">
                     <p className="text-slate-500">
                         Loading knowledge base...
                     </p>
@@ -64,7 +64,7 @@ function FAQs() {
             {faqs.map((faq, index) => (
             <div
                 key={faq.id}
-                className={`border rounded-xl bg-slate-800 transition-all overflow-hidden ${activeIndex === index ? 'border-blue-500 shadow-lg shadow-blue-900/20' : 'border-slate-700 hover:border-slate-600'}`}
+                className={`border rounded-xl bg-white dark:bg-slate-800 transition-all overflow-hidden ${activeIndex === index ? 'border-blue-500 shadow-lg shadow-blue-900/20' : 'border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600'}`}
             >
                 {/* Question */}
                 <button
@@ -72,7 +72,7 @@ function FAQs() {
                 className="w-full flex justify-between items-center text-left p-6 focus:outline-none"
                 >
                 <div className="flex items-center gap-4">
-                    <span className={`text-base font-semibold transition-colors ${activeIndex === index ? 'text-blue-400' : 'text-slate-200'}`}>
+                    <span className={`text-base font-semibold transition-colors ${activeIndex === index ? 'text-blue-400' : 'text-slate-700 dark:text-slate-200'}`}>
                         {faq.question}
                     </span>
                 </div>
@@ -89,7 +89,7 @@ function FAQs() {
                     activeIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                 } overflow-hidden`}
                 >
-                <div className="px-6 pb-6 text-slate-400 leading-relaxed text-sm">
+                <div className="px-6 pb-6 text-slate-500 dark:text-slate-400 leading-relaxed text-sm">
                     {faq.answer}
                 </div>
                 </div>

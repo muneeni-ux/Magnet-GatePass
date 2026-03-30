@@ -25,14 +25,32 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get all active notifications
+// Get notifications (supports ?activeOnly=true)
 router.get('/', async (req, res) => {
   try {
-    const notifications = await Notification.find({ isActive: true }).sort({ createdAt: -1 });
+    const { activeOnly } = req.query;
+    const filter = activeOnly === 'true' ? { isActive: true } : {};
+    const notifications = await Notification.find(filter).sort({ createdAt: -1 });
     res.status(200).json(notifications);
   } catch (error) {
     console.error("Error fetching notifications:", error);
     res.status(500).json({ message: 'Server error while fetching notifications' });
+  }
+});
+
+// Toggle active status
+router.put('/:id/toggle', authenticateToken, async (req, res) => {
+  try {
+    const notification = await Notification.findById(req.params.id);
+    if (!notification) {
+      return res.status(404).json({ message: 'Notification not found' });
+    }
+    notification.isActive = !notification.isActive;
+    await notification.save();
+    res.status(200).json({ message: 'Notification toggled status', notification });
+  } catch (error) {
+    console.error("Error toggling notification:", error);
+    res.status(500).json({ message: 'Server error while toggling notification' });
   }
 });
 

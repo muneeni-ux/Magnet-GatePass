@@ -12,8 +12,6 @@ import {
   Pie,
   Cell,
   Legend,
-  LineChart,
-  Line,
 } from "recharts";
 import { Activity, Users, Clock, Loader2, ShieldAlert, FileText, UserCheck, Download } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -83,39 +81,30 @@ export default function AdminReports() {
     const dateStr = format(new Date(), "dd/MM/yyyy HH:mm:ss");
 
     const addHeaderAndFooter = (doc) => {
-        // Header
-        try {
-          doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 25, 25);
-        } catch (e) {
-          console.warn("Logo failed to load in PDF:", e);
-        }
+        try { doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 25, 25); } catch (e) {}
         
         doc.setFontSize(18);
-        doc.setTextColor(30, 41, 59); // Slate-800
+        doc.setTextColor(30, 41, 59);
         doc.text("MAGNET SECURITY SYSTEM", 45, 20);
         
         doc.setFontSize(11);
-        doc.setTextColor(100, 116, 139); // Slate-500
+        doc.setTextColor(100, 116, 139);
         doc.text("System Analytics & Performance Summary", 45, 26);
         
         doc.setFontSize(9);
         doc.text(`Generated on: ${dateStr}`, 45, 32);
         
-        // Horizontal line
-        doc.setDrawColor(226, 232, 240); // Slate-200
+        doc.setDrawColor(226, 232, 240);
         doc.line(14, 40, pageWidth - 14, 40);
 
-        // Footer
         doc.setFontSize(9);
-        doc.setTextColor(148, 163, 184); // Slate-400
-        doc.text("© 2024 Magnet Security System. All rights reserved.", 14, pageHeight - 10);
+        doc.setTextColor(148, 163, 184);
+        doc.text("© 2026 Magnet Security System. All rights reserved.", 14, pageHeight - 10);
         doc.text(`Page ${doc.internal.getNumberOfPages()}`, pageWidth - 25, pageHeight - 10);
     };
 
-    // Initial Header
     addHeaderAndFooter(doc);
 
-    // Summary Content
     doc.setFontSize(14);
     doc.setTextColor(30, 41, 59);
     doc.text("Traffic Summary", 14, 50);
@@ -125,7 +114,6 @@ export default function AdminReports() {
     doc.text(`Estimated Monthly Volume: ${data.totalVisits.toLocaleString()} visitors`, 14, 58);
     doc.text(`Departments Monitored: ${data.departments?.length || 0}`, 14, 64);
 
-    // Staff Efficiency Table
     if (staffData.length > 0) {
       autoTable(doc, {
         head: [["Staff Name", "Role", "Registered", "Missing Checkouts", "Compliance Rate"]],
@@ -137,9 +125,9 @@ export default function AdminReports() {
           `${s.complianceRate ? s.complianceRate.toFixed(1) : 0}%`
         ]),
         startY: 75,
-        styles: { fontSize: 8, cellPadding: 3 },
-        headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' }, // Emerald-500
-        alternateRowStyles: { fillColor: [240, 253, 244] }, // Emerald-50
+        styles: { fontSize: 8, cellPadding: 3, font: "helvetica" },
+        headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [240, 253, 244] },
         didDrawPage: (data) => {
           if (doc.internal.getNumberOfPages() > 1) {
             addHeaderAndFooter(doc);
@@ -166,7 +154,6 @@ export default function AdminReports() {
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      {/* Header Content */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -185,7 +172,6 @@ export default function AdminReports() {
             <Download size={16} />
             Export PDF
           </button>
-          {/* Quick Stat Card */}
           <div className="bg-white px-6 py-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
             <div className="p-3 bg-blue-50 rounded-lg">
               <Users className="h-6 w-6 text-blue-600" />
@@ -202,9 +188,7 @@ export default function AdminReports() {
         </div>
       </div>
 
-      {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Hourly Heatmap (Bar Chart) */}
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -265,7 +249,6 @@ export default function AdminReports() {
           </div>
         </div>
 
-        {/* Department Distribution (Pie Chart) */}
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -326,9 +309,6 @@ export default function AdminReports() {
         </div>
       </div>
 
-      {/* NEW REPORTS SECTION */}
-      
-      {/* 1. Security Occurrences & Incident Report */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col mt-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -371,7 +351,6 @@ export default function AdminReports() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        {/* 2. Visitor Compliance & Overstay */}
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -438,7 +417,6 @@ export default function AdminReports() {
           </div>
         </div>
 
-        {/* 3. Staff Efficiency & Activity Table */}
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">

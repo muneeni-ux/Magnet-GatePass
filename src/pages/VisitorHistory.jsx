@@ -121,7 +121,7 @@ export default function VisitorHistory() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-200 font-sans p-4 md:p-6 pt-24 md:pt-28 relative">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-sans p-4 md:p-6 pt-24 md:pt-28 relative">
       {/* Background Grid */}
       <div
         className="absolute inset-0 z-0 opacity-[0.03]"
@@ -134,31 +134,31 @@ export default function VisitorHistory() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-800 pb-6">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
           <div className="flex items-center gap-4">
             <div className="p-2.5 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/20">
-              <Clock className="h-6 w-6 text-white" />
+              <Clock className="h-6 w-6 text-slate-900 dark:text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white tracking-tight">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Visitor Logs
               </h2>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Comprehensive Access Records
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg">
+          <div className="flex items-center gap-3 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg">
             <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></div>
-            <span className="text-xs font-semibold text-slate-300">
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
               Live Database
             </span>
           </div>
         </div>
 
         {/* Controls Toolbar */}
-        <div className="bg-slate-800 border border-slate-700 p-4 rounded-xl mb-6 flex flex-col md:flex-row gap-4 items-center justify-between shadow-sm">
+        <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-4 rounded-xl mb-6 flex flex-col md:flex-row gap-4 items-center justify-between shadow-sm">
           {/* Search */}
           <div className="relative w-full md:w-auto">
             <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
@@ -167,21 +167,21 @@ export default function VisitorHistory() {
               placeholder="Search visitors, departments..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-72 bg-slate-900 border border-slate-700 text-slate-200 pl-9 pr-4 py-2.5 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm placeholder-slate-500 transition-all"
+              className="w-full md:w-72 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 pl-9 pr-4 py-2.5 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm placeholder-slate-500 transition-all"
             />
           </div>
 
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex bg-slate-900 border border-slate-700 rounded-lg p-1">
+            <div className="flex bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-1">
               {["all", "active", "completed"].map((item) => (
                 <button
                   key={item}
                   onClick={() => setFilterStatus(item)}
                   className={`px-4 py-1.5 text-xs font-semibold capitalize rounded-md transition-all ${
                     filterStatus === item
-                      ? "bg-slate-700 text-white shadow-sm"
-                      : "text-slate-500 hover:text-slate-300 hover:bg-slate-800"
+                      ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
+                      : "text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-white dark:hover:bg-slate-800"
                   }`}
                 >
                   {item}
@@ -189,14 +189,14 @@ export default function VisitorHistory() {
               ))}
             </div>
 
-            <div className="h-6 w-px bg-slate-700 mx-1 hidden md:block"></div>
+            <div className="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-1 hidden md:block"></div>
 
             <button
               onClick={() => setShowTodayOnly((p) => !p)}
               className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-xs font-semibold transition-all ${
                 showTodayOnly
                   ? "bg-blue-600/10 border-blue-500/30 text-blue-400"
-                  : "bg-slate-900 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-slate-300"
+                  : "bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300"
               }`}
             >
               <Filter size={14} />
@@ -205,7 +205,7 @@ export default function VisitorHistory() {
 
             <button
               onClick={() => setSortAsc((prev) => !prev)}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-slate-300 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-all"
             >
               <FaSort />
               {sortAsc ? "Oldest First" : "Newest First"}
@@ -214,11 +214,11 @@ export default function VisitorHistory() {
         </div>
 
         {/* Table */}
-        <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-xl flex flex-col">
+        <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden shadow-xl flex flex-col">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-900/50 border-b border-slate-700 text-xs text-slate-400 font-semibold uppercase tracking-wide">
+                <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-300 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wide">
                   <th className="p-5">Visitor Details</th>
                   <th className="p-5">Department / Dest</th>
                   <th className="p-5">Log Info</th>
@@ -240,31 +240,36 @@ export default function VisitorHistory() {
                   currentItems.map((v) => (
                     <tr
                       key={v._id}
-                      className="hover:bg-slate-700/30 transition-colors"
+                      className="hover:bg-slate-100/30 dark:hover:bg-slate-700/30 transition-colors"
                     >
                       <td className="p-5">
-                        <div className="font-semibold text-white">{v.name}</div>
-                        <div className="text-xs text-slate-500 mt-1">
-                          {v.phone}
+                        <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                          {v.name}
+                          {v.isGroup && <span className="text-[10px] px-1.5 py-0.5 bg-purple-500/20 text-purple-300 rounded-full" title="Group Size">Grp: {v.groupSize}</span>}
+                          {v.isDisabled && <span className="text-[10px] px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded-full" title="Needs Assistance">Asst</span>}
+                        </div>
+                        <div className="text-xs text-slate-500 mt-1 flex items-center gap-2">
+                          {v.phone} 
+                          {v.nature === 'staff' && <span className="px-1.5 py-0.5 bg-blue-500/20 text-blue-300 rounded-full text-[10px]">Staff</span>}
                         </div>
                       </td>
                       <td className="p-5">
-                        <div className="text-slate-300">{v.department}</div>
+                        <div className="text-slate-600 dark:text-slate-300">{v.department}</div>
                         <div className="text-xs text-slate-500 mt-1">
                           {v.nature} Visit
                         </div>
                       </td>
-                      <td className="p-5 text-slate-400 text-xs">
+                      <td className="p-5 text-slate-500 dark:text-slate-400 text-xs">
                         <div>
                           Entry:{" "}
-                          <span className="text-slate-300">
+                          <span className="text-slate-600 dark:text-slate-300">
                             {gatesMap[v.gate] || v.gate}
                           </span>
                         </div>
                         {v.vehicleReg && <div>Ref: {v.vehicleReg}</div>}
                       </td>
                       <td className="p-5">
-                        <div className="text-slate-300 font-medium">
+                        <div className="text-slate-600 dark:text-slate-300 font-medium">
                           {new Date(v.createdAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
@@ -284,7 +289,7 @@ export default function VisitorHistory() {
                             <button
                               onClick={() => handleTimeOut(v._id)}
                               disabled={loadingTimeout === v._id}
-                              className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs font-medium transition-colors border border-slate-600 shadow-sm"
+                              className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-600 text-slate-900 dark:text-white rounded text-xs font-medium transition-colors border border-slate-400 dark:border-slate-600 shadow-sm"
                             >
                               {loadingTimeout === v._id
                                 ? "Logging..."
@@ -314,18 +319,18 @@ export default function VisitorHistory() {
           </div>
 
           {/* Pagination Footer */}
-          <div className="bg-slate-800 border-t border-slate-700 p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
+          <div className="bg-white dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
             <div className="text-xs text-slate-500">
               Showing{" "}
-              <span className="text-white font-medium">
+              <span className="text-slate-900 dark:text-white font-medium">
                 {indexOfFirstItem + 1}
               </span>{" "}
               to{" "}
-              <span className="text-white font-medium">
+              <span className="text-slate-900 dark:text-white font-medium">
                 {Math.min(indexOfLastItem, filteredVisitors.length)}
               </span>{" "}
               of{" "}
-              <span className="text-white font-medium">
+              <span className="text-slate-900 dark:text-white font-medium">
                 {filteredVisitors.length}
               </span>{" "}
               records
@@ -335,7 +340,7 @@ export default function VisitorHistory() {
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="p-2 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -360,8 +365,8 @@ export default function VisitorHistory() {
                       onClick={() => paginate(p)}
                       className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-medium transition-all ${
                         currentPage === p
-                          ? "bg-blue-600 text-white border border-blue-500"
-                          : "bg-slate-900 border border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white"
+                          ? "bg-blue-600 text-slate-900 dark:text-white border border-blue-500"
+                          : "bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
                       }`}
                     >
                       {p}
@@ -373,7 +378,7 @@ export default function VisitorHistory() {
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages || totalPages === 0}
-                className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="p-2 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronRight size={16} />
               </button>

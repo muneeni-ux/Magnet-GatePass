@@ -40,7 +40,7 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-900 text-gray-100 font-sans">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-gray-100 font-sans">
       {/* Subtle Background */}
       <div className="absolute inset-0 z-0 opacity-5">
         <div
@@ -56,19 +56,19 @@ const Login = ({ onLogin }) => {
       {/* Login Card */}
       <div className="relative z-10 w-full max-w-md p-6">
         
-        <div className="bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden">
              
              {/* Header Section */}
-             <div className="bg-slate-800/50 border-b border-slate-700 p-6 text-center">
+             <div className="bg-white/50 dark:bg-slate-800/50 border-b border-slate-300 dark:border-slate-700 p-6 text-center">
                  <div className="flex justify-center mb-4">
                      <div className="p-3 bg-blue-600/10 rounded-full border border-blue-500/20">
                         <ShieldCheck className="h-8 w-8 text-blue-500" />
                      </div>
                  </div>
-                 <h1 className="text-2xl font-bold text-white mb-1">
-                     MagTrack
+                 <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+                     Visitrack
                  </h1>
-                 <p className="text-sm text-slate-400 font-medium">
+                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
                      Visitor Management System
                  </p>
              </div>
@@ -83,34 +83,34 @@ const Login = ({ onLogin }) => {
 
                  <form onSubmit={handleSubmit} className="space-y-5">
                      <div className="space-y-1.5">
-                         <label className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Username</label>
+                         <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Username</label>
                          <div className="relative group">
                             <input
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
-                                className="w-full bg-slate-900/50 border border-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600 text-sm"
+                                className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600 text-sm"
                                 placeholder="Enter your username"
                             />
                          </div>
                      </div>
 
                      <div className="space-y-1.5">
-                         <label className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Password</label>
+                         <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Password</label>
                          <div className="relative group">
                             <input
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full bg-slate-900/50 border border-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600 text-sm pr-10"
+                                className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600 text-sm pr-10"
                                 placeholder="Enter your password"
                             />
                              <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute inset-y-0 right-3 flex items-center text-slate-500 hover:text-slate-300 focus:outline-none transition-colors"
+                                className="absolute inset-y-0 right-3 flex items-center text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none transition-colors"
                               >
                                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                               </button>
@@ -122,8 +122,8 @@ const Login = ({ onLogin }) => {
                         disabled={loading}
                         className={`w-full py-3.5 mt-2 rounded-lg font-semibold text-sm transition-all duration-200 shadow-lg ${
                             loading 
-                            ? "bg-slate-700 text-slate-400 cursor-not-allowed" 
-                            : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/20 hover:shadow-blue-900/40 hover:-translate-y-0.5"
+                            ? "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed" 
+                            : "bg-blue-600 hover:bg-blue-500 text-slate-900 dark:text-white shadow-blue-900/20 hover:shadow-blue-900/40 hover:-translate-y-0.5"
                         }`}
                      >
                         {loading ? "Authenticating..." : "Sign In"}

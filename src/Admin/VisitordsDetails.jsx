@@ -11,12 +11,23 @@ import {
   Users,
 } from "lucide-react";
 import axios from "axios";
-import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
 import format from "date-fns/format";
 import isWithinInterval from "date-fns/isWithinInterval";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
+const maskIdNumber = (idStr) => {
+  if (!idStr) return "-";
+  const str = idStr.toString();
+  if (str.length <= 4) return str.replace(/./g, '*');
+  const first = str.slice(0, 3);
+  const last = str.slice(-3);
+  const asterisks = '*'.repeat(Math.max(3, str.length - 6));
+  return `${first}${asterisks}${last}`;
+};
 
 const VisitorsDetails = () => {
   const [visitors, setVisitors] = useState([]);
@@ -58,15 +69,48 @@ const VisitorsDetails = () => {
     }
   };
 
-  const handleExcelExport = () => {
-    const ws = XLSX.utils.json_to_sheet(filteredExportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Visitor Summary");
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    saveAs(
-      new Blob([excelBuffer], { type: "application/octet-stream" }),
-      "visitors.xlsx",
-    );
+  const handlePDFExport = () => {
+    if (filteredVisitors.length === 0) return alert("No data to export");
+
+    const doc = new jsPDF();
+    const dateStr = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+
+    autoTable(doc, {
+      head: [["Name", "ID No", "Phone", "Vehicle", "Department", "Gate", "Nature", "Time In", "Time Out"]],
+      body: filteredVisitors.map((v) => [
+        v.name,
+        maskIdNumber(v.idNumber),
+        v.phone,
+        v.vehicleReg || "-",
+        v.department,
+        v.gate,
+        v.nature,
+        format(new Date(v.createdAt), "dd/MM/yyyy HH:mm"),
+        v.timeOut ? format(new Date(v.timeOut), "dd/MM/yyyy HH:mm") : "Inside",
+      ]),
+      startY: 40,
+      styles: { fontSize: 7, cellPadding: 2, font: "helvetica" },
+      headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [248, 250, 252] },
+      didDrawPage: (data) => {
+        try { doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 20, 20); } catch(e){}
+        doc.setFontSize(16);
+        doc.setTextColor(30, 41, 59);
+        doc.text("MAGNET SECURITY SYSTEM", 38, 18);
+        doc.setFontSize(12);
+        doc.setTextColor(100, 116, 139);
+        doc.text("Visitor Records & Detail Report", 38, 24);
+        doc.setFontSize(9);
+        doc.text(`Generated: ${dateStr}`, 14, 35);
+        doc.text(`Total Records: ${filteredVisitors.length}`, doc.internal.pageSize.width - 14, 35, { align: "right" });
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setDrawColor(226, 232, 240);
+        doc.line(14, pageHeight - 12, doc.internal.pageSize.width - 14, pageHeight - 12);
+        doc.text(`Page ${doc.internal.getNumberOfPages()}`, doc.internal.pageSize.width - 14, pageHeight - 8, { align: "right" });
+      }
+    });
+
+    doc.save(`Visitor_Records_${format(new Date(), "yyyy-MM-dd")}.pdf`);
   };
 
   const isToday = (dateStr) => {
@@ -167,6 +211,16 @@ const VisitorsDetails = () => {
       cell: (row) => (
         <div className="flex items-center gap-2">
           {row.name}
+          {row.isGroup && (
+             <span title="Group Visit" className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[10px] font-bold border border-purple-300">
+               Grp: {row.groupSize}
+             </span>
+          )}
+          {row.isDisabled && (
+             <span title="Needs Assistance" className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-300">
+               Asst
+             </span>
+          )}
           {row.isUnderage && (
             <span
               title="Underage Visitor"
@@ -178,7 +232,7 @@ const VisitorsDetails = () => {
         </div>
       ),
     },
-    { name: "ID Number", selector: (row) => row.idNumber, sortable: true },
+    { name: "ID Number", selector: (row) => maskIdNumber(row.idNumber), sortable: true },
     { name: "Phone", selector: (row) => row.phone, sortable: true },
     {
       name: "Vehicle Reg",
@@ -231,76 +285,6 @@ const VisitorsDetails = () => {
       ),
     },
   ];
-
-  const handlePrint = () => {
-    const theadTh = `
-      <th>Name</th><th>ID No</th><th>Phone</th>
-      <th>Vehicle</th><th>Department</th><th>Gate</th><th>Nature</th>
-      <th>Time In</th><th>Time Out</th>
-    `;
-
-    const rowsHtml = filteredVisitors
-      .map(
-        (v) => `<tr>
-          <td>${v.name}</td>
-          <td>${v.idNumber}</td>
-          <td>${v.phone}</td>
-          <td>${v.vehicleReg || "-"}</td>
-          <td>${v.department}</td>
-          <td>${v.gate}</td>
-          <td>${v.nature}</td>
-          <td>${format(new Date(v.createdAt), "dd/MM/yyyy HH:mm")}</td>
-          <td>${v.timeOut ? format(new Date(v.timeOut), "dd/MM/yyyy HH:mm") : "—"}</td>
-        </tr>`,
-      )
-      .join("");
-
-    const todayString = format(new Date(), "dd MMM yyyy");
-
-    const html = `
-      <html>
-        <head>
-          <title>Visitor Summary Report</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 40px; color:#333; }
-            .logo { width:80px;height:80px;object-fit:cover;display:block;margin:0 auto 10px; }
-            h1 { text-align:center;margin:5px 0 25px 0;font-size:22px; }
-            .date { text-align:right;font-size:12px;margin-bottom:10px;color:#666; }
-            table { width:100%;border-collapse:collapse;font-size:12px;margin-top:10px; }
-            th,td { border:1px solid #aaa;padding:5px 8px;text-align:left; }
-            th { background:#f0f0f0; }
-            .signature { margin-top:40px;display:flex;justify-content:space-between;font-size:12px; }
-            .footer { margin-top:30px;text-align:center;font-size:11px;color:#777; }
-          </style>
-        </head>
-        <body>
-          <img src="./magnetlogo.jpg" class="logo" />
-          <h1>Nambale Magnet School Visitor Report</h1>
-          <div class="date">Generated: ${todayString}</div>
-          <table>
-            <thead><tr>${theadTh}</tr></thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-          <div class="signature">
-            <div>Prepared by: ______________________</div>
-            <div>Approved by: ______________________</div>
-          </div>
-          <div class="footer">
-            Generated by Nambale Magnet School Visitor Pass System
-          </div>
-        </body>
-      </html>
-    `;
-
-    const w = window.open("", "_blank");
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
-    w.onload = () => {
-      w.focus();
-      w.print();
-    };
-  };
 
   const customStyles = {
     headRow: {
@@ -361,16 +345,10 @@ const VisitorsDetails = () => {
               <Download size={16} /> CSV
             </CSVLink>
             <button
-              onClick={handleExcelExport}
+              onClick={handlePDFExport}
               className="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-4 py-2.5 rounded-xl transition-all border border-indigo-200"
             >
-              <Download size={16} /> Excel
-            </button>
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl transition-all border border-slate-200"
-            >
-              <Printer size={16} /> Print
+              <Download size={16} /> PDF Report
             </button>
           </div>
         </div>
@@ -461,7 +439,7 @@ const VisitorsDetails = () => {
                 )}
               </div>
               <input
-                type="checkbox"
+               type="checkbox"
                 className="hidden"
                 checked={todayOnly}
                 onChange={() => setTodayOnly(!todayOnly)}

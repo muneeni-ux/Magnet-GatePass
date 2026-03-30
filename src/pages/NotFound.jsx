@@ -4,7 +4,7 @@ import { AlertTriangle, Home } from "lucide-react";
 
 function NotFound() {
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-center p-6 relative overflow-hidden font-sans text-slate-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center text-center p-6 relative overflow-hidden font-sans text-slate-700 dark:text-slate-200">
       
        {/* Background Grid */}
        <div className="absolute inset-0 z-0 opacity-[0.03]" 
@@ -16,14 +16,14 @@ function NotFound() {
 
       <div className="relative z-10 p-12 max-w-lg w-full">
             <div className="mb-6 flex justify-center">
-                 <div className="p-4 bg-slate-800 rounded-full shadow-xl">
+                 <div className="p-4 bg-white dark:bg-slate-800 rounded-full shadow-xl">
                      <AlertTriangle size={64} className="text-slate-500" />
                  </div>
             </div>
 
-            <h1 className="text-8xl font-bold text-white mb-2 tracking-tighter">404</h1>
+            <h1 className="text-8xl font-bold text-slate-900 dark:text-white mb-2 tracking-tighter">404</h1>
             
-            <h2 className="text-xl font-semibold text-slate-400 mb-6">
+            <h2 className="text-xl font-semibold text-slate-500 dark:text-slate-400 mb-6">
                 Page Not Found
             </h2>
             
@@ -32,7 +32,7 @@ function NotFound() {
             </p>
 
             <Link to="/">
-                <button className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2 mx-auto">
+                <button className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-slate-900 dark:text-white rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2 mx-auto">
                     <Home size={16} /> Return to Dashboard
                 </button>
             </Link>

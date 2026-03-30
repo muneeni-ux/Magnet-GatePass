@@ -67,7 +67,6 @@ const AdminOccurrence = () => {
     return gateMatch && dateMatch && searchMatch;
   });
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredOccurrences.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentItems = filteredOccurrences.slice(
@@ -87,6 +86,7 @@ const AdminOccurrence = () => {
   };
 
   const exportToPDF = () => {
+    if (filteredOccurrences.length === 0) return toast.error("No data to export");
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
@@ -103,41 +103,24 @@ const AdminOccurrence = () => {
         o.submittedAt ? format(new Date(o.submittedAt), "dd/MM/yyyy HH:mm") : "—"
       ]),
       startY: 45,
-      styles: { fontSize: 8, cellPadding: 3 },
-      headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' }, // Indigo-600
+      styles: { fontSize: 8, cellPadding: 3, font: "helvetica" },
+      headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [249, 250, 251] },
       didDrawPage: (data) => {
-        // Header
-        try {
-          // Attempt to load the logo if it exists in public folder
-          doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 25, 25);
-        } catch (e) {
-          console.warn("Logo failed to load in PDF:", e);
-        }
-        
+        try { doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 25, 25); } catch (e) {}
         doc.setFontSize(18);
-        doc.setTextColor(30, 41, 59); // Slate-800
+        doc.setTextColor(30, 41, 59);
         doc.text("MAGNET SECURITY SYSTEM", 45, 20);
-        
         doc.setFontSize(11);
-        doc.setTextColor(100, 116, 139); // Slate-500
+        doc.setTextColor(100, 116, 139);
         doc.text("Official Security Occurrences & Logs Report", 45, 26);
-        
         doc.setFontSize(9);
         doc.text(`Generated on: ${dateStr}`, 45, 32);
-        
-        // Horizontal line
-        doc.setDrawColor(226, 232, 240); // Slate-200
+        doc.setDrawColor(226, 232, 240);
         doc.line(14, 40, pageWidth - 14, 40);
-
-        // Footer
         doc.setFontSize(9);
-        doc.setTextColor(148, 163, 184); // Slate-400
-        
-        // Copyright notice
-        doc.text("© 2024 Magnet Security System. All rights reserved.", 14, pageHeight - 10);
-        
-        // Page number
+        doc.setTextColor(148, 163, 184);
+        doc.text("© 2026 Magnet Security System. All rights reserved.", 14, pageHeight - 10);
         const pageNum = doc.internal.getNumberOfPages();
         doc.text(`Page ${pageNum}`, pageWidth - 25, pageHeight - 10);
       },
@@ -151,7 +134,6 @@ const AdminOccurrence = () => {
   return (
     <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex items-center gap-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <div className="p-3 bg-indigo-100 text-indigo-600 rounded-xl">
             <FileClock className="w-6 h-6" />
@@ -173,7 +155,6 @@ const AdminOccurrence = () => {
           </button>
         </div>
 
-        {/* Filters + Search */}
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-4">
           <div className="relative w-full md:w-64">
             <Filter
@@ -222,7 +203,6 @@ const AdminOccurrence = () => {
           </div>
         </div>
 
-        {/* Table */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -243,65 +223,37 @@ const AdminOccurrence = () => {
                     <th className="px-6 py-4 font-semibold">Gate</th>
                     <th className="px-6 py-4 font-semibold">End Time</th>
                     <th className="px-6 py-4 font-semibold">Unusual?</th>
-                    <th className="px-6 py-4 font-semibold hidden md:table-cell">
-                      Remarks
-                    </th>
+                    <th className="px-6 py-4 font-semibold hidden md:table-cell">Remarks</th>
                     <th className="px-6 py-4 font-semibold">Submitted By</th>
                     <th className="px-6 py-4 font-semibold">Submitted At</th>
-                    <th className="px-6 py-4 font-semibold text-right">
-                      Actions
-                    </th>
+                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {currentItems.map((o) => (
-                    <tr
-                      key={o._id}
-                      className="hover:bg-slate-50/50 transition-colors group"
-                    >
-                      <td className="px-6 py-4 font-medium text-slate-800">
-                        {o.gate || "—"}
-                      </td>
+                    <tr key={o._id} className="hover:bg-slate-50/50 transition-colors group">
+                      <td className="px-6 py-4 font-medium text-slate-800">{o.gate || "—"}</td>
                       <td className="px-6 py-4 text-slate-600">
-                        {o.endTime
-                          ? format(new Date(o.endTime), "dd/MM/yyyy HH:mm")
-                          : "—"}
+                        {o.endTime ? format(new Date(o.endTime), "dd/MM/yyyy HH:mm") : "—"}
                       </td>
                       <td className="px-6 py-4">
                         {o.unusualOccurrence?.toLowerCase() === "yes" ? (
-                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">
-                            YES
-                          </span>
+                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">YES</span>
                         ) : (
-                          <span className="text-slate-500">
-                            {o.unusualOccurrence || "—"}
-                          </span>
+                          <span className="text-slate-500">{o.unusualOccurrence || "—"}</span>
                         )}
                       </td>
                       <td className="px-6 py-4 hidden md:table-cell">
-                        <div
-                          className="max-w-[200px] truncate text-slate-600"
-                          title={o.remarks}
-                        >
-                          {o.remarks || "—"}
-                        </div>
+                        <div className="max-w-[200px] truncate text-slate-600" title={o.remarks}>{o.remarks || "—"}</div>
                       </td>
-                      <td className="px-6 py-4 text-slate-700">
-                        {o.submittedBy?.username || "—"}
-                      </td>
+                      <td className="px-6 py-4 text-slate-700">{o.submittedBy?.username || "—"}</td>
                       <td className="px-6 py-4 text-slate-500">
-                        {o.submittedAt
-                          ? format(new Date(o.submittedAt), "dd/MM/yyyy HH:mm")
-                          : "—"}
+                        {o.submittedAt ? format(new Date(o.submittedAt), "dd/MM/yyyy HH:mm") : "—"}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-end gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
-                            onClick={() =>
-                              toast("Editing is under development", {
-                                icon: "ℹ️",
-                              })
-                            }
+                            onClick={() => toast("Editing is under development", { icon: "ℹ️" })}
                             className="p-1.5 text-slate-400 hover:text-indigo-600 bg-white border border-slate-200 hover:border-indigo-200 rounded-lg shadow-sm transition-all"
                             title="Edit"
                           >
@@ -321,22 +273,14 @@ const AdminOccurrence = () => {
                 </tbody>
               </table>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-between items-center px-6 py-4 border-t border-slate-100 bg-white">
                   <span className="text-sm font-medium text-slate-500">
-                    Showing {startIndex + 1} to{" "}
-                    {Math.min(
-                      startIndex + ITEMS_PER_PAGE,
-                      filteredOccurrences.length,
-                    )}{" "}
-                    of {filteredOccurrences.length} entries
+                    Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, filteredOccurrences.length)} of {filteredOccurrences.length} entries
                   </span>
                   <div className="flex gap-2">
                     <button
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.max(prev - 1, 1))
-                      }
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                       disabled={currentPage === 1}
                       className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
                     >
@@ -348,9 +292,7 @@ const AdminOccurrence = () => {
                           key={idx}
                           onClick={() => setCurrentPage(idx + 1)}
                           className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                            currentPage === idx + 1
-                              ? "bg-indigo-600 text-white shadow-sm"
-                              : "text-slate-600 hover:bg-slate-100"
+                            currentPage === idx + 1 ? "bg-indigo-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
                           }`}
                         >
                           {idx + 1}
@@ -358,9 +300,7 @@ const AdminOccurrence = () => {
                       ))}
                     </div>
                     <button
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                      }
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                       disabled={currentPage === totalPages}
                       className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
                     >

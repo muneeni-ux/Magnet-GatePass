@@ -33,9 +33,14 @@ export default function VisitorForm() {
     gate: "",
     nature: "",
     isUnderage: false,
+    isGroup: false,
+    groupSize: 1,
+    isDisabled: false,
   });
 
   const [gates, setGates] = useState([]);
+  const [activeStaffDeps, setActiveStaffDeps] = useState([]);
+  const [autofilling, setAutofilling] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [filteredDepartments, setFilteredDepartments] = useState([]);
 
@@ -46,12 +51,14 @@ export default function VisitorForm() {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const [gatesRes, deptsRes] = await Promise.all([
+        const [gatesRes, deptsRes, staffDepsRes] = await Promise.all([
           axios.get(`${SERVER_URL}/api/locations/gates`),
           axios.get(`${SERVER_URL}/api/locations/departments`),
+          axios.get(`${SERVER_URL}/api/visitors/active-staff-departments`),
         ]);
         setGates(gatesRes.data);
         setDepartments(deptsRes.data);
+        setActiveStaffDeps(staffDepsRes.data || []);
       } catch (error) {
         console.error("Failed to fetch locations:", error);
       }
@@ -96,6 +103,41 @@ export default function VisitorForm() {
     return () => window.removeEventListener("online", syncOfflineVisitors);
   }, []);
 
+  // Autofill debounce effect
+  useEffect(() => {
+    const queryPhone = formData.phone?.length >= 10 ? formData.phone : null;
+    const queryId = formData.idNumber?.length >= 6 ? formData.idNumber : null;
+
+    if (!queryPhone && !queryId) return;
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        setAutofilling(true);
+        let url = `${SERVER_URL}/api/visitors/search/recent?`;
+        if (queryPhone) url += `phone=${queryPhone}&`;
+        if (queryId) url += `idNumber=${queryId}`;
+        
+        const res = await axios.get(url);
+        if (res.data) {
+           toast.success("Past visitor found. Autofilling details...", { id: 'autofill' });
+           setFormData(prev => ({
+             ...prev,
+             name: prev.name || res.data.name,
+             vehicleReg: prev.vehicleReg || res.data.vehicleReg || "",
+             isUnderage: prev.isUnderage || res.data.isUnderage || false,
+             idNumber: prev.idNumber || res.data.idNumber || ""
+           }));
+        }
+      } catch (err) {
+        console.error("Autofill fetch failed", err);
+      } finally {
+        setAutofilling(false);
+      }
+    }, 800);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.phone, formData.idNumber]);
+
   const validatePhone = (phone) => {
     if (!phone) return "Required Field";
     if (phone.length < 10) return "Min 10 Digits";
@@ -116,11 +158,11 @@ export default function VisitorForm() {
       // Filter departments based on selected gate
       const filtered = departments.filter((d) => d.gateId._id === value);
       setFilteredDepartments(filtered);
-    } else if (type === "checkbox" && name === "isUnderage") {
+    } else if (type === "checkbox" && (name === "isUnderage" || name === "isGroup" || name === "isDisabled")) {
       setFormData((prev) => ({
         ...prev,
         [name]: checked,
-        idNumber: checked ? "" : prev.idNumber, // Clear ID if underage
+        idNumber: (name === "isUnderage" && checked) ? "" : prev.idNumber, // Clear ID if underage
       }));
     } else if (name === "phone") {
       // Allow only numbers
@@ -254,17 +296,24 @@ export default function VisitorForm() {
             );
           }
 
-          // Trigger SMS only after DB commit succeeds
-          const smsMessage = `MAGTRACK\nVisitor: ${formData.name}\nID: ${formData.isUnderage ? "Minor" : formData.idNumber}\nDest: ${finalDepartmentForDB || "General"}\nGate: ${gateNameForSMS}`;
-          try {
-            await fetch(`${SERVER_URL}/api/sms/send-sms`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ phone: targetPhone, message: smsMessage }),
-            });
-            console.log(`SMS Sent to ${recipientName} (${targetPhone})`);
-          } catch (smsError) {
-            console.error("Failed to send department alert SMS", smsError);
+          // Trigger SMS only after DB commit succeeds, and ONLY if visitor is not staff
+          if (formData.nature !== 'staff') {
+            let smsMessage = `VISITRACK\nVisitor: ${formData.name}\nID: ${formData.isUnderage ? "Minor" : formData.idNumber}\nDest: ${finalDepartmentForDB || "General"}\nGate: ${gateNameForSMS}`;
+            if (formData.isDisabled) smsMessage += `\nALERT: Needs assistance/vehicle!`;
+            if (formData.isGroup) smsMessage += `\nGroup of ${formData.groupSize}`;
+            
+            try {
+              await fetch(`${SERVER_URL}/api/sms/send-sms`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone: targetPhone, message: smsMessage }),
+              });
+              console.log(`SMS Sent to ${recipientName} (${targetPhone})`);
+            } catch (smsError) {
+              console.error("Failed to send department alert SMS", smsError);
+            }
+          } else {
+            console.log("SMS bypassed for staff check-in.");
           }
 
           toast.success(`Visitor Logged & Alert Sent to ${recipientName}`);
@@ -301,6 +350,9 @@ export default function VisitorForm() {
         gate: "",
         nature: "",
         isUnderage: false,
+        isGroup: false,
+        groupSize: 1,
+        isDisabled: false,
       });
       setErrors({});
       setStep(1);
@@ -313,13 +365,13 @@ export default function VisitorForm() {
   };
 
   const InputLabel = ({ children }) => (
-    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">
+    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5">
       {children}
     </label>
   );
 
   return (
-    <div className="min-h-screen items-center justify-center bg-slate-900 font-sans text-slate-100 p-4 md:p-6 pt-24 md:pt-28 flex overflow-hidden relative">
+    <div className="min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-100 p-4 md:p-6 pt-24 md:pt-28 flex overflow-hidden relative">
       {/* Background Grid */}
       <div
         className="absolute inset-0 z-0 opacity-[0.03]"
@@ -332,16 +384,16 @@ export default function VisitorForm() {
 
       <div className="w-full max-w-5xl relative z-10">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 border-b border-slate-800 pb-4">
+        <div className="flex items-center justify-between mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center gap-4">
             <div className="p-2.5 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/20">
-              <Scan className="h-6 w-6 text-white" />
+              <Scan className="h-6 w-6 text-slate-900 dark:text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Visitor Entry Log
               </h1>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Record and Validate Visitor Details
               </p>
             </div>
@@ -354,9 +406,9 @@ export default function VisitorForm() {
             </div> */}
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+        <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
           {/* Steps Sidebar */}
-          <div className="w-full md:w-64 bg-slate-900/50 border-b md:border-b-0 md:border-r border-slate-700 p-6 flex md:flex-col justify-between md:justify-start gap-4 overflow-x-auto">
+          <div className="w-full md:w-64 bg-slate-50/50 dark:bg-slate-900/50 border-b md:border-b-0 md:border-r border-slate-300 dark:border-slate-700 p-6 flex md:flex-col justify-between md:justify-start gap-4 overflow-x-auto">
             {[1, 2, 3, 4].map((s) => (
               <button
                 key={s}
@@ -364,14 +416,14 @@ export default function VisitorForm() {
                 disabled={s > step}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all w-full whitespace-nowrap ${
                   step === s
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-900/20"
+                    ? "bg-blue-600 text-slate-900 dark:text-white shadow-md shadow-blue-900/20"
                     : step > s
-                      ? "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                      ? "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                       : "text-slate-500 cursor-not-allowed"
                 }`}
               >
                 <span
-                  className={`flex items-center justify-center w-6 h-6 rounded-full text-xs ${step === s ? "bg-white/20" : "bg-slate-700"}`}
+                  className={`flex items-center justify-center w-6 h-6 rounded-full text-xs ${step === s ? "bg-white/20" : "bg-slate-100 dark:bg-slate-700"}`}
                 >
                   {s < step ? <CheckCircle size={14} /> : s}
                 </span>
@@ -384,7 +436,7 @@ export default function VisitorForm() {
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 p-6 md:p-10 relative bg-slate-800">
+          <div className="flex-1 p-6 md:p-10 relative bg-white dark:bg-slate-800">
             <form
               onSubmit={handleSubmit}
               className="h-full flex flex-col relative z-20"
@@ -393,55 +445,80 @@ export default function VisitorForm() {
               {step === 1 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                   <div className="pb-2 mb-2">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <User className="h-5 w-5 text-blue-500" /> Personal
                       Details
                     </h3>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                       Enter visitor's official identification details.
                     </p>
                   </div>
 
-                  {/* Underage Toggle */}
-                  <label
-                    className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-all ${formData.isUnderage ? "bg-blue-600/10 border-blue-500/30" : "bg-slate-900/30 border-slate-700 hover:border-slate-600"}`}
-                  >
-                    <div
-                      className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isUnderage ? "bg-blue-600 border-blue-600" : "border-slate-500 bg-slate-800"}`}
-                    >
-                      {formData.isUnderage && (
-                        <CheckCircle size={14} className="text-white" />
-                      )}
-                    </div>
-                    <input
-                      type="checkbox"
-                      name="isUnderage"
-                      checked={formData.isUnderage}
-                      onChange={handleChange}
-                      className="hidden"
-                    />
-                    <div>
-                      <span className="text-sm font-semibold text-white block">
-                        Underage Visitor
-                      </span>
-                      <span className="text-xs text-slate-400 block mt-0.5">
-                        Waives Government ID requirement. Guardian/Parent
-                        information will be required.
-                      </span>
-                    </div>
-                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Underage Toggle */}
+                    <label className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-all ${formData.isUnderage ? "bg-blue-600/10 border-blue-500/30" : "bg-slate-50/30 dark:bg-slate-900/30 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"}`}>
+                      <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isUnderage ? "bg-blue-600 border-blue-600" : "border-slate-500 bg-white dark:bg-slate-800"}`}>
+                        {formData.isUnderage && <CheckCircle size={14} className="text-slate-900 dark:text-white" />}
+                      </div>
+                      <input type="checkbox" name="isUnderage" checked={formData.isUnderage} onChange={handleChange} className="hidden" />
+                      <div>
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white block">Underage</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">Parent details req</span>
+                      </div>
+                    </label>
+
+                    {/* Group Toggle */}
+                    <label className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-all ${formData.isGroup ? "bg-purple-600/10 border-purple-500/30" : "bg-slate-50/30 dark:bg-slate-900/30 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"}`}>
+                      <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isGroup ? "bg-purple-600 border-purple-600" : "border-slate-500 bg-white dark:bg-slate-800"}`}>
+                        {formData.isGroup && <CheckCircle size={14} className="text-slate-900 dark:text-white" />}
+                      </div>
+                      <input type="checkbox" name="isGroup" checked={formData.isGroup} onChange={handleChange} className="hidden" />
+                      <div>
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white block">Group Visit</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">Multiple visitors</span>
+                      </div>
+                    </label>
+
+                    {/* Disabled Toggle */}
+                    <label className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-all ${formData.isDisabled ? "bg-amber-600/10 border-amber-500/30" : "bg-slate-50/30 dark:bg-slate-900/30 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"}`}>
+                      <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isDisabled ? "bg-amber-600 border-amber-600" : "border-slate-500 bg-white dark:bg-slate-800"}`}>
+                        {formData.isDisabled && <CheckCircle size={14} className="text-slate-900 dark:text-white" />}
+                      </div>
+                      <input type="checkbox" name="isDisabled" checked={formData.isDisabled} onChange={handleChange} className="hidden" />
+                      <div>
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white block">Need Help</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">Request vehicle</span>
+                      </div>
+                    </label>
+                  </div>
 
                   <div className="grid grid-cols-1 gap-6">
-                    <div>
-                      <InputLabel>Full Legal Name</InputLabel>
-                      <input
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        placeholder="e.g. John Doe"
-                        className="w-full bg-slate-900/50 border border-slate-700 text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
-                      />
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <InputLabel>{formData.isGroup ? "Leader's Full Legal Name" : "Full Legal Name"}</InputLabel>
+                        <input
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                          placeholder="e.g. John Doe"
+                          className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
+                        />
+                      </div>
+                      {formData.isGroup && (
+                        <div className="w-24">
+                          <InputLabel>Group Size</InputLabel>
+                          <input
+                            type="number"
+                            name="groupSize"
+                            min="2"
+                            value={formData.groupSize}
+                            onChange={handleChange}
+                            required
+                            className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
+                          />
+                        </div>
+                      )}
                     </div>
 
                     {!formData.isUnderage && (
@@ -454,7 +531,7 @@ export default function VisitorForm() {
                             onChange={handleChange}
                             required={!formData.isUnderage}
                             placeholder="Enter ID Number"
-                            className="w-full bg-slate-900/50 border border-slate-700 text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
+                            className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
                           />
                           <IdCard className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 h-5 w-5" />
                         </div>
@@ -462,7 +539,7 @@ export default function VisitorForm() {
                     )}
                   </div>
 
-                  <div className="flex justify-end mt-8 pt-6 border-t border-slate-700/50">
+                  <div className="flex justify-end mt-8 pt-6 border-t border-slate-300/50 dark:border-slate-700/50">
                     <button
                       type="button"
                       onClick={() => setStep(2)}
@@ -470,7 +547,7 @@ export default function VisitorForm() {
                         !formData.name ||
                         (!formData.isUnderage && !formData.idNumber)
                       }
-                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
+                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-slate-900 dark:text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
                     >
                       Next Step{" "}
                       <ChevronRight
@@ -486,11 +563,11 @@ export default function VisitorForm() {
               {step === 2 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                   <div className="pb-2 mb-2">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Phone className="h-5 w-5 text-blue-500" /> Contact &
                       Vehicle
                     </h3>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                       Contact details for tracing and vehicle registration.
                     </p>
                   </div>
@@ -508,7 +585,7 @@ export default function VisitorForm() {
                         required
                         maxLength={13}
                         placeholder="07XXXXXXXX"
-                        className={`w-full bg-slate-900/50 border ${errors.phone ? "border-red-500" : "border-slate-700"} text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600`}
+                        className={`w-full bg-slate-50/50 dark:bg-slate-900/50 border ${errors.phone ? "border-red-500" : "border-slate-300 dark:border-slate-700"} text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600`}
                       />
                       {errors.phone && (
                         <div className="absolute top-full left-0 mt-1 flex items-center gap-1.5 text-xs text-red-400 font-medium">
@@ -527,18 +604,18 @@ export default function VisitorForm() {
                           value={formData.vehicleReg}
                           onChange={handleChange}
                           placeholder="KAA 000A"
-                          className="w-full bg-slate-900/50 border border-slate-700 text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600 uppercase"
+                          className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600 uppercase"
                         />
                         <Car className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 h-5 w-5" />
                       </div>
                     </div>
                   )}
 
-                  <div className="flex justify-between mt-8 pt-6 border-t border-slate-700/50">
+                  <div className="flex justify-between mt-8 pt-6 border-t border-slate-300/50 dark:border-slate-700/50">
                     <button
                       type="button"
                       onClick={() => setStep(1)}
-                      className="text-slate-400 hover:text-white text-sm font-semibold transition-colors px-4 py-2"
+                      className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-semibold transition-colors px-4 py-2"
                     >
                       Back
                     </button>
@@ -551,7 +628,7 @@ export default function VisitorForm() {
                           toast.error(err);
                         } else setStep(3);
                       }}
-                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
+                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-slate-900 dark:text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
                     >
                       Next Step{" "}
                       <ChevronRight
@@ -567,11 +644,11 @@ export default function VisitorForm() {
               {step === 3 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                   <div className="pb-2 mb-2">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <BookOpen className="h-5 w-5 text-blue-500" /> Visit
                       Details
                     </h3>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                       Specify entry point and destination.
                     </p>
                   </div>
@@ -584,7 +661,7 @@ export default function VisitorForm() {
                         value={formData.gate}
                         onChange={handleChange}
                         required
-                        className="w-full bg-slate-900/50 border border-slate-700 text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
+                        className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
                       >
                         <option value="" disabled>
                           Select Gate
@@ -603,13 +680,14 @@ export default function VisitorForm() {
                         value={formData.nature}
                         onChange={handleChange}
                         required
-                        className="w-full bg-slate-900/50 border border-slate-700 text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
+                        className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
                       >
                         <option value="" disabled>
                           Select Type
                         </option>
                         <option value="official">Official</option>
                         <option value="personal">Personal</option>
+                        <option value="staff">Staff</option>
                       </select>
                     </div>
                   </div>
@@ -622,16 +700,22 @@ export default function VisitorForm() {
                         value={formData.department}
                         onChange={handleChange}
                         required
-                        className="w-full bg-slate-900/50 border border-slate-700 text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
+                        className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
                       >
                         <option value="" disabled>
                           Select Department
                         </option>
-                        {filteredDepartments.map((dept) => (
-                          <option key={dept._id} value={dept._id}>
-                            {dept.name}
-                          </option>
-                        ))}
+                        {filteredDepartments.map((dept) => {
+                          const isStaffPresent = activeStaffDeps.includes(dept.name);
+                          const isStaffCheckIn = formData.nature === 'staff';
+                          const isDeptDisabled = !isStaffPresent && !isStaffCheckIn;
+                          
+                          return (
+                            <option key={dept._id} value={dept._id} disabled={isDeptDisabled}>
+                              {dept.name} {isDeptDisabled ? "(Absent)" : ""}
+                            </option>
+                          );
+                        })}
                         <option value="Other">Other / Specify</option>
                       </select>
                     </div>
@@ -646,16 +730,16 @@ export default function VisitorForm() {
                         onChange={handleChange}
                         required
                         placeholder="Enter destination details"
-                        className="w-full bg-slate-900/50 border border-slate-700 text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
+                        className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
                       />
                     </div>
                   )}
 
-                  <div className="flex justify-between mt-8 pt-6 border-t border-slate-700/50">
+                  <div className="flex justify-between mt-8 pt-6 border-t border-slate-300/50 dark:border-slate-700/50">
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="text-slate-400 hover:text-white text-sm font-semibold transition-colors px-4 py-2"
+                      className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-semibold transition-colors px-4 py-2"
                     >
                       Back
                     </button>
@@ -667,7 +751,7 @@ export default function VisitorForm() {
                         !formData.nature ||
                         (filteredDepartments.length > 0 && !formData.department)
                       }
-                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
+                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-slate-900 dark:text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
                     >
                       Review{" "}
                       <ChevronRight
@@ -683,30 +767,32 @@ export default function VisitorForm() {
               {step === 4 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 h-full flex flex-col">
                   <div className="pb-2 mb-2">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Shield className="h-5 w-5 text-emerald-500" /> Confirm
                       Details
                     </h3>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                       Review information before submission.
                     </p>
                   </div>
 
-                  <div className="bg-slate-900/50 p-6 border border-slate-700 rounded-xl relative overflow-hidden">
+                  <div className="bg-slate-50/50 dark:bg-slate-900/50 p-6 border border-slate-300 dark:border-slate-700 rounded-xl relative overflow-hidden">
                     <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-sm">
                       <div>
                         <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
-                          Visitor Name
+                          {formData.isGroup ? "Leader Name" : "Visitor Name"}
                         </span>
-                        <span className="text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-medium flex items-center gap-2">
                           {formData.name}
+                          {formData.isGroup && <span className="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded-full">Group of {formData.groupSize}</span>}
+                          {formData.isDisabled && <span className="text-xs px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded-full">Needs Help</span>}
                         </span>
                       </div>
                       <div>
                         <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
                           ID / Passport
                         </span>
-                        <span className="text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-medium">
                           {formData.isUnderage ? (
                             <span className="text-amber-400">
                               Underage / Minor
@@ -720,7 +806,7 @@ export default function VisitorForm() {
                         <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
                           Mobile
                         </span>
-                        <span className="text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-medium">
                           {formData.phone}
                         </span>
                       </div>
@@ -728,7 +814,7 @@ export default function VisitorForm() {
                         <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
                           Gate
                         </span>
-                        <span className="text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-medium">
                           {gates.find((g) => g._id === formData.gate)?.name ||
                             formData.gate}
                         </span>
@@ -737,7 +823,7 @@ export default function VisitorForm() {
                         <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
                           Destination
                         </span>
-                        <span className="text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-medium">
                           {formData.department === "Other"
                             ? formData.specificDepartment
                             : departments.find(
@@ -754,14 +840,14 @@ export default function VisitorForm() {
                     <button
                       type="button"
                       onClick={() => setStep(3)}
-                      className="px-6 py-3 border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 rounded-lg font-semibold text-sm transition-all"
+                      className="px-6 py-3 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-500 rounded-lg font-semibold text-sm transition-all"
                     >
                       Edit
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all shadow-lg ${loading ? "bg-slate-700 text-slate-400" : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/20"}`}
+                      className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all shadow-lg ${loading ? "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400" : "bg-emerald-600 hover:bg-emerald-500 text-slate-900 dark:text-white shadow-emerald-900/20"}`}
                     >
                       {loading && (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

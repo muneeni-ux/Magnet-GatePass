@@ -142,15 +142,27 @@ router.get('/staff-activity', async (req, res) => {
             },
             {
                 $project: {
-                    staffName: { $ifNull: ["$staffDetails.name", "Unknown Staff"] },
-                    role: { $ifNull: ["$staffDetails.role", "Unknown Role"] },
+                    staffName: { $ifNull: ["$staffDetails.username", "Unknown Staff"] },
+                    role: {
+                        $cond: {
+                            if: { $eq: ["$staffDetails.isAdmin", true] },
+                            then: "Admin",
+                            else: {
+                                $cond: {
+                                    if: { $eq: ["$staffDetails.isAdmin", false] },
+                                    then: "Security Guard",
+                                    else: "Unknown Role"
+                                }
+                            }
+                        }
+                    },
                     totalRegistered: 1,
                     missingCheckouts: 1,
                     complianceRate: {
                         $multiply: [
                             { $divide: [
                                 { $subtract: ["$totalRegistered", "$missingCheckouts"] },
-                                "$totalRegistered"
+                                { $cond: [{ $eq: ["$totalRegistered", 0] }, 1, "$totalRegistered"] }
                             ]},
                             100
                         ]

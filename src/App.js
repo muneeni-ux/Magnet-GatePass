@@ -12,6 +12,7 @@ import UsersDetails from "./Admin/UserDetails";
 import AdminDashboard from "./Admin/AdminDashboard";
 import ProtectedRoute from "./Admin/ProtectedRoute";
 import VisitordsDetails from './Admin/VisitordsDetails';
+import AdminStaffRoster from './Admin/AdminStaffRoster';
 import AdminOccurrence from './Admin/AdminOccurrence';
 import AdminFAQs from './Admin/AdminFAQs';
 // User components
@@ -101,6 +102,7 @@ const App = () => {
           <Route path="users" element={<UsersDetails />} />
           <Route path="usersignup" element={<Signup />} />
           <Route path="visitorsdetails" element={<VisitordsDetails />} />
+          <Route path="staff-roster" element={<AdminStaffRoster />} />
           <Route path="occurrence" element={<AdminOccurrence />} />
           <Route path="faq" element={<AdminFAQs />} />
           <Route path="inquiry" element={<AdminInquiry />} />

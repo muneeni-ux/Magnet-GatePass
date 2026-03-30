@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FiPlus, FiTrash2, FiBell } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiBell, FiEye, FiEyeOff } from "react-icons/fi";
 import toast, { Toaster } from "react-hot-toast";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -69,6 +69,20 @@ const AdminNotifications = () => {
     }
   };
 
+  const handleToggleStatus = async (id, currentStatus) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(`${SERVER_URL}/api/notifications/${id}/toggle`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(res.data.notification.isActive ? "Notification is now visible" : "Notification hidden");
+      setNotifications(notifications.map(n => n._id === id ? { ...n, isActive: res.data.notification.isActive } : n));
+    } catch (error) {
+      console.error("Error toggling notification:", error);
+      toast.error("Failed to toggle notification status");
+    }
+  };
+
   return (
     <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -132,7 +146,7 @@ const AdminNotifications = () => {
         {/* Notifications List */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">
-            Active Notifications
+            Broadcasted Notifications
           </h2>
           {notifications.length === 0 ? (
             <div className="p-8 text-center text-slate-500 border-2 border-dashed border-slate-100 rounded-xl bg-slate-50/50">
@@ -145,22 +159,31 @@ const AdminNotifications = () => {
                   key={notification._id}
                   className="relative group p-4 border border-slate-100 hover:border-emerald-100 rounded-xl bg-slate-50 hover:bg-emerald-50/30 transition-all flex flex-col gap-2"
                 >
-                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex justify-between items-start gap-4">
                     <div>
-                      <h3 className="font-semibold text-slate-800 leading-tight">
+                      <h3 className={`font-semibold leading-tight ${!notification.isActive ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
                         {notification.title}
                       </h3>
-                      <p className="text-slate-600 text-sm mt-1">
+                      <p className={`text-sm mt-1 ${!notification.isActive ? 'text-slate-400' : 'text-slate-600'}`}>
                         {notification.message}
                       </p>
                     </div>
-                    <button
-                      onClick={() => handleDeleteNotification(notification._id)}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
-                      title="Delete Notification"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleToggleStatus(notification._id, notification.isActive)}
+                        className={`p-2 rounded-lg transition-colors flex-shrink-0 ${notification.isActive ? 'text-emerald-500 hover:bg-emerald-50' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}
+                        title={notification.isActive ? "Hide Notification" : "Show Notification"}
+                      >
+                        {notification.isActive ? <FiEye className="w-4 h-4" /> : <FiEyeOff className="w-4 h-4" />}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteNotification(notification._id)}
+                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                        title="Delete Notification"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                   <div className="text-[11px] font-medium text-slate-400 flex items-center justify-between mt-1">
                     <span>

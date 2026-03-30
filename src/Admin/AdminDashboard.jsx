@@ -16,6 +16,7 @@ import {
   Shield,
   AlertTriangle,
   LineChart,
+  UserCheck,
 } from "lucide-react";
 
 const links = [
@@ -24,11 +25,11 @@ const links = [
     label: "Users",
     icon: <Users2 size={18} />,
   },
-  // {
-  //   to: "/magnet/admin/dashboard/usersignup",
-  //   label: "User Sign-Up",
-  //   icon: <UserPlus size={18} />,
-  // },
+  {
+    to: "/magnet/admin/dashboard/analytics",
+    label: "Analytics",
+    icon: <LineChart size={18} />,
+  },
   {
     to: "/magnet/admin/dashboard/visitorsdetails",
     label: "Visitors Details",
@@ -59,10 +60,11 @@ const links = [
     label: "Locations",
     icon: <MapPin size={18} />,
   },
+  
   {
-    to: "/magnet/admin/dashboard/analytics",
-    label: "Analytics",
-    icon: <LineChart size={18} />,
+    to: "/magnet/admin/dashboard/staff-roster",
+    label: "Staff Roster",
+    icon: <UserCheck size={18} />,
   },
 ];
 
@@ -105,7 +107,7 @@ const AdminDashboard = () => {
             <span className="p-1.5 bg-blue-600 rounded-lg shadow-sm shadow-blue-500/20">
               <Shield size={18} className="text-white" />
             </span>
-            MagTrack
+            Visitrack
           </h2>
           <button
             className="md:hidden text-slate-400 hover:text-white bg-slate-800 p-1.5 rounded-md"
@@ -179,7 +181,7 @@ const AdminDashboard = () => {
             {/* Title */}
             <div>
               <h1 className="text-base md:text-lg font-bold text-slate-900 tracking-tight">
-                <span className="md:hidden">MagTrack</span>
+                <span className="md:hidden">Visitrack</span>
                 <span className="hidden md:inline">Administration Portal</span>
               </h1>
               <p className="text-xs text-slate-500 font-medium tracking-wide uppercase hidden sm:block mt-0.5">

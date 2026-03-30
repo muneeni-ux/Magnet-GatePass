@@ -108,7 +108,7 @@ const AdminEmergency = () => {
                   EVACUATION ROSTER
                 </h2>
                 <p className="text-slate-600 font-bold mt-1 text-lg">
-                  NAMBALE MAGNET SCHOOL
+                  VISITRACK SYSTEM
                 </p>
               </div>
               <div className="text-right">
@@ -178,10 +178,19 @@ const AdminEmergency = () => {
                       className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
                     >
                       <td className="px-4 py-3 font-bold text-slate-900 border-r border-slate-100">
-                        {v.name}
+                        <div className="flex items-center gap-2">
+                          {v.name}
+                          {v.nature === 'staff' && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-orange-100 text-orange-700 uppercase tracking-widest border border-orange-200 print:border-black print:text-black">
+                              Staff
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 py-3 font-mono text-slate-700 border-r border-slate-100">
-                        {v.phone}
+                        <a href={`tel:${v.phone}`} className="text-blue-600 hover:underline hover:text-blue-800">
+                          {v.phone}
+                        </a>
                       </td>
                       <td className="px-4 py-3 text-slate-800 border-r border-slate-100">
                         {v.department}
