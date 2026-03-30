@@ -129,35 +129,37 @@ function AdminInquiry() {
   }, []);
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen text-slate-800 font-sans pb-10">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center gap-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="p-3 bg-amber-100 text-amber-600 rounded-xl">
+        <div className="flex items-center gap-5 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="p-4 bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-2xl shadow-lg relative z-10 w-fit">
             <Users className="w-6 h-6" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <div className="relative z-10">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Manage Inquiry Staff
             </h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-slate-500 text-sm md:text-base mt-1 font-medium">
               Add and organize contact personnel for visitor inquiries.
             </p>
           </div>
         </div>
 
         {/* Add/Edit Staff Form */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2 mb-4 border-b border-slate-100 pb-4">
-              <PlusCircle size={20} className="text-amber-500" />
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.06)]">
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3 mb-6 border-b border-white/60 pb-5" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <span className="p-2 bg-amber-100/50 text-amber-600 rounded-lg"><PlusCircle size={18} /></span>
               {editId ? "Edit Staff Member" : "Add New Staff Member"}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
-                  <UserCircle size={14} className="text-slate-400" /> Full Name
+                <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px] flex items-center gap-2">
+                  <UserCircle size={14} className="text-amber-500" /> Full Name
                 </label>
                 <input
                   type="text"
@@ -166,14 +168,14 @@ function AdminInquiry() {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors text-sm"
+                  className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-sm shadow-inner"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
-                  <Briefcase size={14} className="text-slate-400" /> Role
+                <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px] flex items-center gap-2">
+                  <Briefcase size={14} className="text-amber-500" /> Role
                 </label>
                 <input
                   type="text"
@@ -182,14 +184,14 @@ function AdminInquiry() {
                   onChange={(e) =>
                     setFormData({ ...formData, role: e.target.value })
                   }
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors text-sm"
+                  className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-sm shadow-inner"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
-                  <Mail size={14} className="text-slate-400" /> Email Address
+                <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px] flex items-center gap-2">
+                  <Mail size={14} className="text-amber-500" /> Email Address
                 </label>
                 <input
                   type="email"
@@ -198,14 +200,14 @@ function AdminInquiry() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors text-sm"
+                  className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-sm shadow-inner"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
-                  <Phone size={14} className="text-slate-400" /> Phone Number
+                <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px] flex items-center gap-2">
+                  <Phone size={14} className="text-amber-500" /> Phone Number
                 </label>
                 <input
                   type="tel"
@@ -214,15 +216,14 @@ function AdminInquiry() {
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
                   }
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors text-sm"
+                  className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-sm shadow-inner"
                   required
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
-                  <ImagePlus size={14} className="text-slate-400" /> Profile
-                  Image
+                <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px] flex items-center gap-2">
+                  <ImagePlus size={14} className="text-amber-500" /> Profile Image
                 </label>
                 <div className="flex items-center gap-4">
                   <div className="relative flex-1">
@@ -235,7 +236,7 @@ function AdminInquiry() {
                     />
                     <label
                       htmlFor="file-upload"
-                      className="flex items-center justify-center w-full px-4 py-2.5 bg-slate-50 border border-dashed border-slate-300 rounded-xl hover:bg-slate-100 cursor-pointer transition-colors text-sm text-slate-600 font-medium"
+                      className="flex items-center justify-center w-full px-4 py-3 bg-white/40 border border-dashed border-slate-300 rounded-xl hover:bg-white/60 hover:border-amber-300 cursor-pointer transition-all text-sm text-slate-600 font-bold backdrop-blur-sm"
                     >
                       {loading ? "Uploading..." : "Click to select image"}
                     </label>
@@ -246,9 +247,9 @@ function AdminInquiry() {
                       <img
                         src={formData.image}
                         alt="Preview"
-                        className="w-12 h-12 object-cover rounded-full border-2 border-amber-200 shadow-sm"
+                        className="w-14 h-14 object-cover rounded-full border-[3px] border-amber-200 shadow-md transform hover:scale-105 transition-transform"
                       />
-                      <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
                         <CheckCircle2 size={16} className="text-white" />
                       </div>
                     </div>
@@ -257,16 +258,16 @@ function AdminInquiry() {
               </div>
             </div>
 
-            <div className="pt-4 flex items-center gap-3 border-t border-slate-100">
+            <div className="pt-6 flex flex-col sm:flex-row items-center gap-4 border-t border-white/60">
               <button
                 type="submit"
                 disabled={loading}
-                className={`px-6 py-2.5 rounded-xl font-medium transition-all text-white text-sm shadow-sm ${
+                className={`px-8 py-3.5 rounded-xl font-bold transition-all text-white text-sm shadow-lg w-full sm:w-auto flex-1 ${
                   loading
-                    ? "bg-slate-400 cursor-not-allowed"
+                    ? "bg-slate-400 cursor-not-allowed shadow-none"
                     : editId
-                      ? "bg-amber-600 hover:bg-amber-700"
-                      : "bg-blue-600 hover:bg-blue-700"
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 shadow-amber-500/30"
+                      : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-500/30"
                 }`}
               >
                 {loading
@@ -288,9 +289,9 @@ function AdminInquiry() {
                       image: "",
                     });
                   }}
-                  className="px-6 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-sm font-medium transition-colors"
+                  className="px-8 py-3.5 rounded-xl border border-white/60 bg-white/50 hover:bg-white/80 text-slate-600 text-sm font-bold transition-all backdrop-blur-md w-full sm:w-auto"
                 >
-                  Cancel
+                  Cancel Edit
                 </button>
               )}
             </div>
@@ -298,50 +299,46 @@ function AdminInquiry() {
         </div>
 
         {/* Staff Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
+        <div className="glass-panel overflow-hidden rounded-3xl border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left border-collapse text-sm whitespace-nowrap">
               <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-100 text-slate-500">
-                  <th className="px-6 py-4 font-semibold w-16">Profile</th>
-                  <th className="px-6 py-4 font-semibold">Name</th>
-                  <th className="px-6 py-4 font-semibold">Role</th>
-                  <th className="px-6 py-4 font-semibold hidden md:table-cell">
-                    Contact Info
-                  </th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    Actions
-                  </th>
+                <tr className="bg-white/40 border-b border-white/60 text-slate-600 uppercase tracking-widest text-[11px] font-extrabold backdrop-blur-md">
+                  <th className="px-6 py-5 w-16 text-center">Profile</th>
+                  <th className="px-6 py-5">Name</th>
+                  <th className="px-6 py-5">Role</th>
+                  <th className="px-6 py-5 hidden md:table-cell">Contact Info</th>
+                  <th className="px-6 py-5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/20">
                 {staff.map((member) => (
                   <tr
                     key={member._id}
-                    className="hover:bg-slate-50/50 transition-colors group"
+                    className="bg-transparent hover:bg-white/60 transition-all duration-200 group border-b border-white/40 last:border-0 hover:shadow-[0_4px_15px_rgba(0,0,0,0.02)]"
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 flex justify-center">
                       <img
                         src={member.image || "https://via.placeholder.com/50"}
                         alt={member.name}
-                        className="w-10 h-10 object-cover rounded-full border border-slate-200 shadow-sm"
+                        className="w-12 h-12 object-cover rounded-full border-[3px] border-white shadow-sm"
                       />
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-800">
+                    <td className="px-6 py-4 font-bold text-slate-800">
                       {member.name}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 tracking-wide">
                         {member.role}
                       </span>
                     </td>
                     <td className="px-6 py-4 hidden md:table-cell">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-slate-600 text-xs flex items-center gap-1.5">
-                          <Mail size={12} /> {member.email}
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-slate-600 text-xs font-medium flex items-center gap-1.5">
+                          <Mail size={12} className="text-indigo-400" /> {member.email}
                         </span>
-                        <span className="text-slate-600 text-xs flex items-center gap-1.5">
-                          <Phone size={12} /> {member.phone}
+                        <span className="text-slate-600 text-xs font-medium flex items-center gap-1.5">
+                          <Phone size={12} className="text-emerald-400" /> {member.phone}
                         </span>
                       </div>
                     </td>
@@ -349,17 +346,17 @@ function AdminInquiry() {
                       <div className="flex justify-end gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleEdit(member)}
-                          className="p-1.5 text-slate-400 hover:text-amber-600 bg-white border border-slate-200 hover:border-amber-200 rounded-lg shadow-sm transition-all"
+                          className="p-2 text-slate-400 hover:text-amber-600 bg-white/50 border border-white/60 hover:bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all"
                           title="Edit"
                         >
                           <Pencil size={14} />
                         </button>
                         <button
                           onClick={() => handleDelete(member._id)}
-                          className="p-1.5 text-slate-400 hover:text-red-600 bg-white border border-slate-200 hover:border-red-200 rounded-lg shadow-sm transition-all"
+                          className="p-2 text-slate-400 hover:text-red-600 bg-white/50 border border-white/60 hover:bg-red-50 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all"
                           title="Delete"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>

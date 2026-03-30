@@ -193,15 +193,24 @@ const VisitorsDetails = () => {
       )
     : departments;
 
-  const filteredExportData = filteredVisitors.map(
-    ({ _id, __v, createdAt, updatedAt, timeOut, ...rest }) => ({
-      ...rest,
-      "Check In": format(new Date(createdAt), "dd/MM/yyyy HH:mm"),
-      "Check Out": timeOut
-        ? format(new Date(timeOut), "dd/MM/yyyy HH:mm")
-        : "Still Inside",
-    }),
-  );
+  const filteredExportData = filteredVisitors.map((v) => ({
+    "Name": v.name,
+    "ID Number": maskIdNumber(v.idNumber),
+    "Phone": v.phone,
+    "Vehicle Reg": v.vehicleReg || "-",
+    "Department": v.department,
+    "Gate": v.gate,
+    "Nature": v.nature,
+    "Group Visit": v.isGroup ? `Yes (${v.groupSize})` : "No",
+    "Needs Help": v.isDisabled ? "Yes" : "No",
+    "Underage": v.isUnderage ? "Yes" : "No",
+    "Check In": format(new Date(v.createdAt), "dd/MM/yyyy HH:mm"),
+    "Check Out": v.timeOut
+      ? format(new Date(v.timeOut), "dd/MM/yyyy HH:mm")
+      : "Still Inside",
+    "Recorded By": v.recordedBy?.username || "-",
+    "Timed Out By": v.timedOutBy?.username || "-",
+  }));
 
   const columns = [
     {
@@ -269,12 +278,12 @@ const VisitorsDetails = () => {
       name: "Actions",
       cell: (row) => (
         <div className="flex gap-2">
-          <button
+          {/* <button
             className="text-blue-600 hover:text-blue-800"
             onClick={() => alert("Edit visitor coming soon")}
           >
             <Edit size={18} />
-          </button>
+          </button> */}
           <button
             className="text-red-600 hover:text-red-800"
             onClick={() => handleDelete(row._id)}
@@ -289,37 +298,47 @@ const VisitorsDetails = () => {
   const customStyles = {
     headRow: {
       style: {
-        backgroundColor: "#f8fafc",
-        color: "#64748b",
-        fontWeight: "600",
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
+        color: "#475569",
+        fontWeight: "800",
         textTransform: "uppercase",
         fontSize: "0.75rem",
-        letterSpacing: "0.05em",
-        borderBottom: "1px solid #f1f5f9",
+        letterSpacing: "0.1em",
+        borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+        backdropFilter: "blur(10px)",
       },
     },
     rows: {
       style: {
         fontSize: "0.875rem",
-        color: "#334155",
-        backgroundColor: "#ffffff",
+        color: "#1e293b",
+        fontWeight: "500",
+        backgroundColor: "transparent",
         "&:hover": {
-          backgroundColor: "#f8fafc",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.02)",
+          transform: "translateY(-1px)",
+          transition: "all 0.2s ease",
+          zIndex: 1,
         },
       },
     },
     pagination: {
       style: {
-        borderTop: "1px solid #f1f5f9",
+        borderTop: "1px solid rgba(0, 0, 0, 0.05)",
+        backgroundColor: "transparent",
       },
     },
   };
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen text-slate-800 font-sans pb-10">
+      <div className="w-full space-y-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+          {/* Subtle decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
           <div className="flex items-center gap-4">
             <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
               <Users className="w-7 h-7" />
@@ -354,7 +373,7 @@ const VisitorsDetails = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+        <div className="glass-panel p-5 md:p-6 rounded-3xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-5">
           <div className="relative">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -478,7 +497,7 @@ const VisitorsDetails = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden p-2">
+        <div className="glass-panel rounded-3xl overflow-hidden p-2 sm:p-4">
           <DataTable
             columns={columns}
             data={filteredVisitors}

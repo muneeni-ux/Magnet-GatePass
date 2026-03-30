@@ -132,37 +132,39 @@ const AdminOccurrence = () => {
   };
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center gap-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="p-3 bg-indigo-100 text-indigo-600 rounded-xl">
+    <div className="min-h-screen text-slate-800 font-sans pb-10">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="p-4 bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-2xl shadow-lg relative z-10 w-fit">
             <FileClock className="w-6 h-6" />
           </div>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <div className="flex-1 relative z-10">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Security Occurrences
             </h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-slate-500 text-sm md:text-base mt-1 font-medium">
               Review and track all reported security events and shift logs.
             </p>
           </div>
           <button
             onClick={exportToPDF}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-white/80 hover:bg-white text-indigo-700 px-6 py-3 rounded-2xl font-extrabold transition-all shadow-[0_2px_15px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] relative z-10 w-full sm:w-auto justify-center group"
           >
-            <Download size={16} />
+            <Download size={18} className="group-hover:-translate-y-0.5 transition-transform" />
             Export PDF
           </button>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-4">
+        <div className="glass-panel p-5 md:p-6 rounded-3xl flex flex-col md:flex-row items-center gap-5">
           <div className="relative w-full md:w-64">
             <Filter
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               size={18}
             />
             <select
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm appearance-none"
+              className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm appearance-none shadow-inner cursor-pointer"
               value={filterGate}
               onChange={(e) => setFilterGate(e.target.value)}
             >
@@ -177,12 +179,12 @@ const AdminOccurrence = () => {
 
           <div className="relative w-full md:w-56">
             <Calendar
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               size={18}
             />
             <input
               type="date"
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm"
+              className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm shadow-inner cursor-pointer"
               value={filterDate}
               onChange={(e) => setFilterDate(e.target.value)}
             />
@@ -190,49 +192,49 @@ const AdminOccurrence = () => {
 
           <div className="relative flex-1 w-full">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               size={18}
             />
             <input
               type="text"
               placeholder="Search by gate, remarks, or user..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm"
+              className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm shadow-inner"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="glass-panel overflow-hidden rounded-3xl border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <ClipLoader color="#6366f1" size={40} />
             </div>
           ) : currentItems.length === 0 ? (
-            <div className="text-center py-16 bg-slate-50 border border-slate-100 rounded-xl m-4">
+            <div className="text-center py-16 bg-white/40 border border-white/60 rounded-2xl m-6 backdrop-blur-md">
               <FileClock size={48} className="mx-auto text-slate-300 mb-4" />
-              <p className="text-slate-500 font-medium">
+              <p className="text-slate-500 font-bold">
                 No occurrences found matching criteria.
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full text-left border-collapse text-sm whitespace-nowrap">
                 <thead>
-                  <tr className="bg-slate-50/80 border-b border-slate-100 text-slate-500">
-                    <th className="px-6 py-4 font-semibold">Gate</th>
-                    <th className="px-6 py-4 font-semibold">End Time</th>
-                    <th className="px-6 py-4 font-semibold">Unusual?</th>
-                    <th className="px-6 py-4 font-semibold hidden md:table-cell">Remarks</th>
-                    <th className="px-6 py-4 font-semibold">Submitted By</th>
-                    <th className="px-6 py-4 font-semibold">Submitted At</th>
-                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                  <tr className="bg-white/40 border-b border-white/60 text-slate-600 uppercase tracking-widest text-[11px] font-extrabold backdrop-blur-md">
+                    <th className="px-6 py-5">Gate</th>
+                    <th className="px-6 py-5">End Time</th>
+                    <th className="px-6 py-5">Unusual?</th>
+                    <th className="px-6 py-5 hidden md:table-cell">Remarks</th>
+                    <th className="px-6 py-5">Submitted By</th>
+                    <th className="px-6 py-5">Submitted At</th>
+                    <th className="px-6 py-5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-white/20">
                   {currentItems.map((o) => (
-                    <tr key={o._id} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-6 py-4 font-medium text-slate-800">{o.gate || "—"}</td>
+                    <tr key={o._id} className="bg-transparent hover:bg-white/60 transition-all duration-200 group border-b border-white/40 last:border-0 hover:shadow-[0_4px_15px_rgba(0,0,0,0.02)]">
+                      <td className="px-6 py-4 font-semibold text-slate-800">{o.gate || "—"}</td>
                       <td className="px-6 py-4 text-slate-600">
                         {o.endTime ? format(new Date(o.endTime), "dd/MM/yyyy HH:mm") : "—"}
                       </td>
@@ -252,13 +254,13 @@ const AdminOccurrence = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-end gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
+                          {/* <button
                             onClick={() => toast("Editing is under development", { icon: "ℹ️" })}
                             className="p-1.5 text-slate-400 hover:text-indigo-600 bg-white border border-slate-200 hover:border-indigo-200 rounded-lg shadow-sm transition-all"
                             title="Edit"
                           >
                             <Edit size={14} />
-                          </button>
+                          </button> */}
                           <button
                             onClick={() => handleDelete(o._id)}
                             className="p-1.5 text-slate-400 hover:text-red-600 bg-white border border-slate-200 hover:border-red-200 rounded-lg shadow-sm transition-all"
@@ -274,8 +276,8 @@ const AdminOccurrence = () => {
               </table>
 
               {totalPages > 1 && (
-                <div className="flex justify-between items-center px-6 py-4 border-t border-slate-100 bg-white">
-                  <span className="text-sm font-medium text-slate-500">
+                <div className="flex justify-between items-center px-6 py-5 border-t border-white/60 bg-white/20 backdrop-blur-md">
+                  <span className="text-sm font-bold text-slate-500">
                     Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, filteredOccurrences.length)} of {filteredOccurrences.length} entries
                   </span>
                   <div className="flex gap-2">

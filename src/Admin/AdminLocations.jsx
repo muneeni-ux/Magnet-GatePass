@@ -145,47 +145,50 @@ const AdminLocations = () => {
   };
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen text-slate-800 font-sans pb-10">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center gap-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
+        <div className="flex items-center gap-5 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+          {/* Subtle decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="p-4 bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-2xl shadow-lg relative z-10">
             <FiMapPin className="w-6 h-6" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <div className="relative z-10">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Manage Locations
             </h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-slate-500 text-sm md:text-base mt-1 font-medium">
               Configure entry gates and link designated departments for visitor
               routing.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* GATES SECTION */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Create Gate Form */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <FiPlus className="text-blue-500" /> Add New Gate
+            <div className="glass-panel p-6 sm:p-8 rounded-3xl relative group hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300">
+              <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <span className="p-2 bg-blue-100/50 text-blue-600 rounded-lg"><FiPlus size={18} /></span> Add New Gate
               </h2>
-              <form onSubmit={handleCreateGate} className="space-y-4">
+              <form onSubmit={handleCreateGate} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px]">
                     Gate Name
                   </label>
                   <input
                     type="text"
                     value={gateName}
                     onChange={(e) => setGateName(e.target.value)}
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+                    className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm shadow-inner"
                     placeholder="E.g., Gate A (Main Entry)"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px]">
                     Fallback Phone (Optional)
                   </label>
                   <input
@@ -195,18 +198,18 @@ const AdminLocations = () => {
                       const numericValue = e.target.value.replace(/\D/g, "");
                       setGatePhone(numericValue);
                     }}
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+                    className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm shadow-inner"
                     placeholder="07XXXXXXXX"
                     maxLength={13}
                   />
-                  <p className="text-[10px] text-slate-400 mt-1">
+                  <p className="text-[11px] font-medium text-slate-400 mt-2">
                     Used if the gate itself is the final destination.
                   </p>
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm transition-all shadow-sm disabled:opacity-70"
+                  className="w-full px-6 py-3.5 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 disabled:opacity-70 disabled:hover:shadow-none"
                 >
                   Save Gate
                 </button>
@@ -214,32 +217,34 @@ const AdminLocations = () => {
             </div>
 
             {/* List Gates */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">
+            <div className="glass-panel p-6 sm:p-8 rounded-3xl">
+              <h2 className="text-xl font-bold text-slate-900 mb-6" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 Active Gates
               </h2>
               {gates.length === 0 ? (
-                <p className="text-sm text-slate-500">No gates configured.</p>
+                <div className="bg-white/40 p-6 rounded-2xl text-center border border-white/60">
+                  <p className="text-sm font-bold text-slate-400">No gates configured.</p>
+                </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {gates.map((gate) => (
                     <div
                       key={gate._id}
-                      className="flex items-center justify-between p-3 border border-slate-100 rounded-lg bg-slate-50 hover:border-blue-200 transition-colors"
+                      className="flex items-center justify-between p-4 border border-white/60 rounded-2xl bg-white/40 hover:bg-white/80 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-300"
                     >
                       <div>
-                        <p className="font-semibold text-slate-800">
+                        <p className="font-extrabold text-slate-800">
                           {gate.name}
                         </p>
                         {gate.phone && (
-                          <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                            <FiPhone size={10} /> {gate.phone}
+                          <p className="text-xs font-bold text-slate-500 flex items-center gap-1.5 mt-1">
+                            <FiPhone size={12} className="text-indigo-400" /> {gate.phone}
                           </p>
                         )}
                       </div>
                       <button
                         onClick={() => handleDeleteGate(gate._id)}
-                        className="p-2 text-slate-400 hover:text-red-500 transition-colors bg-white rounded-lg shadow-sm"
+                        className="p-2.5 text-slate-400 hover:text-red-600 transition-colors bg-white/80 hover:bg-red-50 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
                       >
                         <FiTrash2 size={16} />
                       </button>
@@ -251,34 +256,34 @@ const AdminLocations = () => {
           </div>
 
           {/* DEPARTMENTS SECTION */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Create Department Form */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <FiPlus className="text-emerald-500" /> Add Target Department
+            <div className="glass-panel p-6 sm:p-8 rounded-3xl relative group hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300">
+              <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <span className="p-2 bg-emerald-100/50 text-emerald-600 rounded-lg"><FiPlus size={18} /></span> Add Target Department
               </h2>
-              <form onSubmit={handleCreateDepartment} className="space-y-4">
+              <form onSubmit={handleCreateDepartment} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px]">
                     Department Name
                   </label>
                   <input
                     type="text"
                     value={deptName}
                     onChange={(e) => setDeptName(e.target.value)}
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-sm"
+                    className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm shadow-inner"
                     placeholder="E.g., HR Office"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px]">
                       Assigned Gate
                     </label>
                     <select
                       value={deptGateId}
                       onChange={(e) => setDeptGateId(e.target.value)}
-                      className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-sm"
+                      className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm shadow-inner cursor-pointer"
                     >
                       <option value="">Select Gate</option>
                       {gates.map((g) => (
@@ -289,7 +294,7 @@ const AdminLocations = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px]">
                       SMS Alert Phone
                     </label>
                     <input
@@ -299,7 +304,7 @@ const AdminLocations = () => {
                         const numericValue = e.target.value.replace(/\D/g, "");
                         setDeptPhone(numericValue);
                       }}
-                      className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-sm"
+                    className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm shadow-inner"
                       placeholder="07XXXXXXXX"
                       maxLength={13}
                     />
@@ -308,7 +313,7 @@ const AdminLocations = () => {
                 <button
                   type="submit"
                   disabled={loading || gates.length === 0}
-                  className="w-full px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg text-sm transition-all shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full px-6 py-3.5 mt-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 disabled:opacity-70 disabled:hover:shadow-none"
                 >
                   Save Department
                 </button>
@@ -316,37 +321,39 @@ const AdminLocations = () => {
             </div>
 
             {/* List Departments */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">
+            <div className="glass-panel p-6 sm:p-8 rounded-3xl">
+              <h2 className="text-xl font-bold text-slate-900 mb-6" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 Configured Destinations
               </h2>
               {departments.length === 0 ? (
-                <p className="text-sm text-slate-500">
-                  No departments configured.
-                </p>
+                <div className="bg-white/40 p-6 rounded-2xl text-center border border-white/60">
+                  <p className="text-sm font-bold text-slate-400">
+                    No departments configured.
+                  </p>
+                </div>
               ) : (
-                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                <div className="space-y-4 max-h-[460px] overflow-y-auto px-1 custom-scrollbar">
                   {departments.map((dept) => (
                     <div
                       key={dept._id}
-                      className="flex items-center justify-between p-3 border border-slate-100 rounded-lg bg-slate-50 hover:border-emerald-200 transition-colors"
+                      className="flex items-center justify-between p-4 border border-white/60 rounded-2xl bg-white/40 hover:bg-white/80 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-300 group"
                     >
                       <div>
-                        <p className="font-semibold text-slate-800">
+                        <p className="font-extrabold text-slate-800">
                           {dept.name}
                         </p>
-                        <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                          <span className="bg-slate-200 px-2 py-0.5 rounded text-slate-700 font-medium">
-                            Via {dept.gateId?.name || "Unknown Gate"}
+                        <div className="flex flex-wrap md:flex-nowrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500 mt-1.5 font-bold">
+                          <span className="bg-white/60 border border-slate-200/50 px-2 py-0.5 rounded-md text-emerald-700 shadow-sm">
+                            Via {dept.gateId?.name || "Unknown"}
                           </span>
-                          <span className="flex items-center gap-1">
-                            <FiPhone size={10} /> {dept.phone}
+                          <span className="flex items-center gap-1 text-indigo-500">
+                            <FiPhone size={12} /> {dept.phone}
                           </span>
                         </div>
                       </div>
                       <button
                         onClick={() => handleDeleteDepartment(dept._id)}
-                        className="p-2 text-slate-400 hover:text-red-500 transition-colors bg-white rounded-lg shadow-sm"
+                        className="p-2.5 text-slate-400 hover:text-red-600 transition-colors bg-white/80 hover:bg-red-50 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
                       >
                         <FiTrash2 size={16} />
                       </button>

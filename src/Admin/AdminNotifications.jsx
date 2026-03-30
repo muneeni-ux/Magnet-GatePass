@@ -84,58 +84,64 @@ const AdminNotifications = () => {
   };
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen text-slate-800 font-sans pb-10">
+      <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center gap-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
+        <div className="flex items-center gap-5 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="p-4 bg-gradient-to-br from-emerald-500 to-teal-500 text-white rounded-2xl shadow-lg relative z-10 w-fit">
             <FiBell className="w-6 h-6" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <div className="relative z-10">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Manage Notifications
             </h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-slate-500 text-sm md:text-base mt-1 font-medium">
               Broadcast new notifications to all platform users.
             </p>
           </div>
         </div>
 
         {/* Create Form */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <FiPlus className="text-emerald-500" /> Create New Notification
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.06)]">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3 mb-6 border-b border-white/60 pb-5" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <span className="p-2 bg-emerald-100/50 text-emerald-600 rounded-lg"><FiPlus size={18} /></span> Create New Notification
           </h2>
-          <form onSubmit={handleCreateNotification} className="space-y-4">
+          <form onSubmit={handleCreateNotification} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px]">
                 Title
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-sm"
+                className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm shadow-inner"
                 placeholder="E.g., System Maintenance Update"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label className="block text-sm font-bold text-slate-700 mb-2 tracking-wide uppercase text-[11px]">
                 Message
               </label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                rows="3"
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-sm resize-none"
+                rows="4"
+                className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm resize-none shadow-inner"
                 placeholder="Enter your detailed notification message here..."
               />
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-4">
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg text-sm transition-all shadow-sm hover:shadow active:scale-95 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                className={`px-8 py-3.5 rounded-xl font-bold transition-all text-white text-sm shadow-lg w-full sm:w-auto flex flex-1 sm:flex-none justify-center items-center gap-2 ${
+                  loading
+                    ? "bg-slate-400 cursor-not-allowed shadow-none"
+                    : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-emerald-500/30"
+                }`}
               >
                 {loading ? "Broadcasting..." : "Broadcast Notification"}
               </button>
@@ -144,48 +150,48 @@ const AdminNotifications = () => {
         </div>
 
         {/* Notifications List */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-white/60">
+          <h2 className="text-xl font-bold text-slate-900 mb-6" style={{ fontFamily: 'Outfit, sans-serif' }}>
             Broadcasted Notifications
           </h2>
           {notifications.length === 0 ? (
-            <div className="p-8 text-center text-slate-500 border-2 border-dashed border-slate-100 rounded-xl bg-slate-50/50">
+            <div className="p-10 text-center text-slate-500 border-2 border-dashed border-white/60 rounded-2xl bg-white/40 backdrop-blur-sm font-medium">
               No active notifications found.
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-5">
               {notifications.map((notification) => (
                 <div
                   key={notification._id}
-                  className="relative group p-4 border border-slate-100 hover:border-emerald-100 rounded-xl bg-slate-50 hover:bg-emerald-50/30 transition-all flex flex-col gap-2"
+                  className="relative group p-5 border border-white/60 hover:border-emerald-300/50 rounded-2xl bg-white/40 hover:bg-white/70 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300 flex flex-col gap-3 backdrop-blur-sm"
                 >
-                    <div className="flex justify-between items-start gap-4">
-                    <div>
-                      <h3 className={`font-semibold leading-tight ${!notification.isActive ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
+                    <div className="flex justify-between items-start gap-5">
+                    <div className="flex-1">
+                      <h3 className={`font-extrabold text-base md:text-lg leading-tight ${!notification.isActive ? 'text-slate-400 line-through' : 'text-slate-800'}`} style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
                         {notification.title}
                       </h3>
-                      <p className={`text-sm mt-1 ${!notification.isActive ? 'text-slate-400' : 'text-slate-600'}`}>
+                      <p className={`text-sm md:text-base mt-2 font-medium leading-relaxed ${!notification.isActive ? 'text-slate-400' : 'text-slate-600'}`}>
                         {notification.message}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleToggleStatus(notification._id, notification.isActive)}
-                        className={`p-2 rounded-lg transition-colors flex-shrink-0 ${notification.isActive ? 'text-emerald-500 hover:bg-emerald-50' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}
+                        className={`p-2 rounded-xl transition-all shadow-sm flex-shrink-0 ${notification.isActive ? 'bg-white border border-emerald-100 text-emerald-500 hover:bg-emerald-50' : 'bg-white/50 border border-white/60 text-slate-400 hover:bg-white hover:text-slate-600'}`}
                         title={notification.isActive ? "Hide Notification" : "Show Notification"}
                       >
                         {notification.isActive ? <FiEye className="w-4 h-4" /> : <FiEyeOff className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={() => handleDeleteNotification(notification._id)}
-                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                        className="p-2 text-slate-400 bg-white/50 border border-white/60 hover:text-red-500 hover:bg-red-50 hover:border-red-100 rounded-xl shadow-sm transition-all flex-shrink-0"
                         title="Delete Notification"
                       >
                         <FiTrash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
-                  <div className="text-[11px] font-medium text-slate-400 flex items-center justify-between mt-1">
+                  <div className="text-[11px] font-bold text-slate-400 flex items-center justify-between mt-2 tracking-wide uppercase">
                     <span>
                       {new Date(notification.createdAt).toLocaleString(
                         undefined,
@@ -198,7 +204,7 @@ const AdminNotifications = () => {
                         },
                       )}
                     </span>
-                    <span className="bg-white border border-slate-200 px-2 py-0.5 rounded-full text-slate-500 shadow-sm">
+                    <span className="bg-white/60 border border-white/80 px-2.5 py-1 rounded-full text-slate-600 shadow-[0_2px_10px_rgba(0,0,0,0.02)] backdrop-blur-md">
                       {notification.readBy?.length || 0} views
                     </span>
                   </div>

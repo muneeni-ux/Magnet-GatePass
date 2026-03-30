@@ -153,34 +153,37 @@ export default function AdminReports() {
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <Activity className="h-6 w-6 text-blue-600" />
+    <div className="min-h-screen pb-10 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 font-sans text-slate-800">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="relative z-10">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 flex items-center gap-4 tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl shadow-lg">
+              <Activity className="h-6 w-6" />
+            </div>
             Traffic & Analytics
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 text-sm md:text-base mt-2 font-medium">
             Site-wide visitor patterns and departmental load distribution.
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-4 relative z-10 w-full md:w-auto">
           <button
             onClick={exportToPDF}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 flex-shrink-0 rounded-xl text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-6 py-3.5 flex-shrink-0 rounded-xl text-sm font-bold transition-all shadow-lg shadow-blue-500/30 w-full sm:w-auto"
           >
-            <Download size={16} />
+            <Download size={18} />
             Export PDF
           </button>
-          <div className="bg-white px-6 py-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-            <div className="p-3 bg-blue-50 rounded-lg">
+          <div className="bg-white/40 px-6 py-4 rounded-2xl border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] sm:flex items-center gap-4 backdrop-blur-md hidden">
+            <div className="p-3 bg-white/60 border border-white rounded-xl shadow-inner">
               <Users className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
                 Monthly Volume
               </p>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-2xl font-extrabold text-slate-900" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
                 {data.totalVisits.toLocaleString()}
               </p>
             </div>
@@ -189,18 +192,18 @@ export default function AdminReports() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-slate-400" />
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-white/60 flex flex-col relative overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10">
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <span className="p-2 bg-slate-100/50 text-slate-600 rounded-lg backdrop-blur-sm"><Clock className="w-5 h-5" /></span>
               Peak Entry Hours
             </h2>
-            <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md">
+            <span className="text-xs font-bold px-3 py-1.5 bg-white/50 border border-white/80 text-slate-600 rounded-lg shadow-sm backdrop-blur-md">
               24H Aggregate
             </span>
           </div>
 
-          <div className="flex-1 w-full min-h-[300px]">
+          <div className="flex-1 w-full min-h-[300px] relative z-10">
             {data.hourly.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
@@ -210,33 +213,35 @@ export default function AdminReports() {
                   <CartesianGrid
                     strokeDasharray="3 3"
                     vertical={false}
-                    stroke="#e2e8f0"
+                    stroke="rgba(255,255,255,0.4)"
                   />
                   <XAxis
                     dataKey="time"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#64748b", fontSize: 12 }}
+                    tick={{ fill: "#64748b", fontSize: 12, fontWeight: 600 }}
                     dy={10}
                   />
                   <YAxis
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#64748b", fontSize: 12 }}
+                    tick={{ fill: "#64748b", fontSize: 12, fontWeight: 600 }}
                   />
                   <Tooltip
-                    cursor={{ fill: "#f1f5f9" }}
+                    cursor={{ fill: "rgba(255,255,255,0.4)" }}
                     contentStyle={{
-                      borderRadius: "8px",
-                      border: "none",
-                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                      borderRadius: "16px",
+                      border: "1px solid rgba(255,255,255,0.6)",
+                      background: "rgba(255,255,255,0.9)",
+                      backdropFilter: "blur(8px)",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
                     }}
                   />
                   <Bar
                     dataKey="visitors"
                     name="Entries"
                     fill="#3b82f6"
-                    radius={[4, 4, 0, 0]}
+                    radius={[6, 6, 0, 0]}
                     barSize={32}
                   />
                 </BarChart>
@@ -249,18 +254,18 @@ export default function AdminReports() {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-slate-400" />
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-white/60 flex flex-col relative overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10">
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <span className="p-2 bg-indigo-100/50 text-indigo-600 rounded-lg backdrop-blur-sm"><Activity className="w-5 h-5" /></span>
               Department Load
             </h2>
-            <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md">
+            <span className="text-xs font-bold px-3 py-1.5 bg-white/50 border border-white/80 text-slate-600 rounded-lg shadow-sm backdrop-blur-md">
               This Month
             </span>
           </div>
 
-          <div className="flex-1 w-full min-h-[300px]">
+          <div className="flex-1 w-full min-h-[300px] relative z-10">
             {data.departments.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -282,9 +287,11 @@ export default function AdminReports() {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      borderRadius: "8px",
-                      border: "none",
-                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                      borderRadius: "16px",
+                      border: "1px solid rgba(255,255,255,0.6)",
+                      background: "rgba(255,255,255,0.9)",
+                      backdropFilter: "blur(8px)",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
                     }}
                     formatter={(value, name) => [`${value} Visitors`, name]}
                   />
@@ -309,34 +316,34 @@ export default function AdminReports() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col mt-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <ShieldAlert className="w-5 h-5 text-red-500" />
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-white/60 flex flex-col mt-8 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-8 relative z-10">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <span className="p-2 bg-red-100/50 text-red-600 rounded-lg backdrop-blur-sm"><ShieldAlert className="w-5 h-5" /></span>
             Security Occurrences by Gate
           </h2>
-          <span className="text-xs font-semibold px-2.5 py-1 bg-red-100 text-red-700 rounded-md">
+          <span className="text-xs font-bold px-3 py-1.5 bg-red-50 border border-red-200 text-red-700 rounded-lg shadow-[0_2px_10px_rgba(239,68,68,0.1)] backdrop-blur-md">
             Incident Tracking
           </span>
         </div>
         
-        <div className="flex-1 w-full min-h-[300px]">
+        <div className="flex-1 w-full min-h-[300px] relative z-10">
           {occurrenceData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={occurrenceData}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="_id" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.4)" />
+                <XAxis dataKey="_id" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12, fontWeight: 600 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12, fontWeight: 600 }} />
                 <Tooltip
-                  cursor={{ fill: "#f1f5f9" }}
-                  contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                  cursor={{ fill: "rgba(255,255,255,0.4)" }}
+                  contentStyle={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
                 />
                 <Legend verticalAlign="top" height={36} />
-                <Bar dataKey="totalLogs" name="Standard Logs" stackId="a" fill="#3b82f6" radius={[0, 0, 4, 4]} barSize={40} />
-                <Bar dataKey="unusualEvents" name="Unusual Events" stackId="a" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={40} />
+                <Bar dataKey="totalLogs" name="Standard Logs" stackId="a" fill="#3b82f6" radius={[0, 0, 6, 6]} barSize={40} />
+                <Bar dataKey="unusualEvents" name="Unusual Events" stackId="a" fill="#ef4444" radius={[6, 6, 0, 0]} barSize={40} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -351,18 +358,18 @@ export default function AdminReports() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-amber-500" />
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-white/60 flex flex-col relative overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10">
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <span className="p-2 bg-amber-100/50 text-amber-600 rounded-lg backdrop-blur-sm"><FileText className="w-5 h-5" /></span>
               Visitor Compliance
             </h2>
-            <span className="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-700 rounded-md">
+            <span className="text-xs font-bold px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-700 rounded-lg shadow-[0_2px_10px_rgba(245,158,11,0.1)] backdrop-blur-md">
               Check-outs
             </span>
           </div>
 
-          <div className="flex-1 w-full min-h-[250px] mb-4">
+          <div className="flex-1 w-full min-h-[250px] mb-4 relative z-10">
             {complianceData && complianceData.byNature?.length > 0 ? (
                <ResponsiveContainer width="100%" height="100%">
                <PieChart>
@@ -380,7 +387,7 @@ export default function AdminReports() {
                      <Cell key={`cell-${index}`} fill={entry._id === 'official' ? "#3b82f6" : "#f59e0b"} />
                    ))}
                  </Pie>
-                 <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }} />
+                  <Tooltip contentStyle={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }} />
                  <Legend verticalAlign="bottom" height={36} iconType="circle" formatter={(value) => <span style={{ textTransform: 'capitalize' }}>{value}</span>} />
                </PieChart>
              </ResponsiveContainer>
@@ -394,14 +401,14 @@ export default function AdminReports() {
             )}
           </div>
           
-          <div className="border-t border-slate-100 pt-4">
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Overstay Warnings (No Check-out)</h3>
+          <div className="border-t border-white/60 pt-6 relative z-10">
+            <h3 className="text-[11px] uppercase tracking-widest font-extrabold text-slate-500 mb-4">Overstay Warnings (No Check-out)</h3>
              {complianceData && complianceData.overstays?.length > 0 ? (
-               <ul className="space-y-2">
+               <ul className="space-y-3">
                  {complianceData.overstays.map((dept, i) => (
-                   <li key={i} className="flex justify-between items-center text-sm p-2 bg-red-50/50 rounded-lg border border-red-100">
-                     <span className="text-slate-700 font-medium">{dept._id}</span>
-                     <span className="font-bold text-red-600 flex items-center gap-1">
+                   <li key={i} className="flex justify-between items-center text-sm p-3.5 bg-red-50/50 rounded-xl border border-red-100 shadow-sm backdrop-blur-sm transition-all hover:bg-red-50/80">
+                     <span className="text-slate-800 font-bold">{dept._id}</span>
+                     <span className="font-extrabold text-red-600 flex items-center gap-1.5 bg-white/60 px-2.5 py-1 rounded-lg border border-red-100">
                         <Clock className="w-4 h-4" />
                         {dept.count} overstays
                      </span>
@@ -417,29 +424,29 @@ export default function AdminReports() {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-emerald-500" />
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-white/60 flex flex-col relative overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10">
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <span className="p-2 bg-emerald-100/50 text-emerald-600 rounded-lg backdrop-blur-sm"><UserCheck className="w-5 h-5" /></span>
               Staff Efficiency
             </h2>
-            <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-md">
+            <span className="text-xs font-bold px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg shadow-[0_2px_10px_rgba(16,185,129,0.1)] backdrop-blur-md">
               Performance
             </span>
           </div>
 
-          <div className="flex-1 w-full overflow-y-auto max-h-[350px] pr-2 scrollbar-thin scrollbar-thumb-slate-200">
+          <div className="flex-1 w-full overflow-y-auto max-h-[350px] pr-2 custom-scrollbar relative z-10">
              {staffData.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {staffData.map((staff, i) => (
-                    <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                    <div key={i} className="flex items-center justify-between p-4 sm:p-5 rounded-2xl border border-white/60 bg-white/40 hover:bg-white/70 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] backdrop-blur-sm">
                       <div>
-                        <p className="font-semibold text-slate-800">{staff.staffName}</p>
-                        <p className="text-xs text-slate-500 capitalize">{staff.role}</p>
+                        <p className="font-extrabold text-slate-800 text-base" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{staff.staffName}</p>
+                        <p className="text-[11px] font-bold tracking-widest uppercase text-slate-500 mt-1">{staff.role}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-slate-700">{staff.totalRegistered} Registered</p>
-                        <p className={`text-xs font-semibold mt-1 px-2 py-0.5 rounded-full inline-block ${staff.complianceRate >= 90 ? 'bg-emerald-100 text-emerald-700' : staff.complianceRate >= 70 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
+                        <p className="text-sm font-bold text-slate-700">{staff.totalRegistered} Registered</p>
+                        <p className={`text-xs font-extrabold mt-1.5 px-3 py-1 rounded-lg inline-block shadow-sm ${staff.complianceRate >= 90 ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : staff.complianceRate >= 70 ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
                            {staff.complianceRate ? staff.complianceRate.toFixed(1) : 0}% check-out rate
                         </p>
                       </div>

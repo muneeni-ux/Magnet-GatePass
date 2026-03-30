@@ -48,16 +48,17 @@ const AdminEmergency = () => {
   });
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
+    <div className="min-h-screen text-slate-800 font-sans pb-10 relative">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Warning Banner Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-red-600 outline outline-4 outline-red-200 p-6 rounded-2xl shadow-lg">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden bg-red-600/95 backdrop-blur-xl border border-red-500 shadow-[0_0_40px_rgba(220,38,38,0.3)] p-6 sm:p-8 rounded-3xl z-10">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diagonal-striped-brick.png')] opacity-10 pointer-events-none mix-blend-overlay" />
           <div className="flex items-center gap-4">
             <div className="p-3 bg-red-700 text-white rounded-xl shadow-inner">
               <AlertTriangle className="w-8 h-8 animate-pulse" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight uppercase tracking-widest">
+              <h1 className="text-2xl md:text-3xl font-black text-white tracking-widest uppercase relative z-10 drop-shadow-md" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 Emergency Evacuation Roster
               </h1>
               <p className="text-red-100 font-medium mt-1">
@@ -78,9 +79,9 @@ const AdminEmergency = () => {
             <button
               onClick={handlePrint}
               disabled={loading}
-              className="flex items-center gap-2 bg-white hover:bg-red-50 text-red-700 font-bold px-6 py-3 rounded-xl transition-all shadow-md disabled:opacity-50"
+              className="relative z-10 flex items-center gap-2 bg-white/95 backdrop-blur-sm hover:bg-white text-red-700 font-extrabold px-6 py-3 rounded-2xl transition-all shadow-[0_4px_20px_rgba(255,255,255,0.3)] hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
             >
-              <Printer size={18} /> Print Roster
+              <Printer size={18} /> Print Force Roster
             </button>
           </div>
         </div>
@@ -97,14 +98,14 @@ const AdminEmergency = () => {
 
         {/* Printable Area */}
         <div
-          className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-8"
+          className="glass-panel rounded-3xl shadow-[0_10px_40px_rgb(0,0,0,0.03)] border-white/60 overflow-hidden p-6 sm:p-8"
           ref={contentRef}
         >
           {/* Print-Only Header (Hidden on Screen) */}
           <div className="hidden print:block mb-8 border-b-2 border-red-600 pb-4">
             <div className="flex justify-between items-end">
               <div>
-                <h2 className="text-3xl font-black text-red-700 uppercase tracking-tight">
+                <h2 className="text-3xl font-black text-red-700 uppercase tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   EVACUATION ROSTER
                 </h2>
                 <p className="text-slate-600 font-bold mt-1 text-lg">

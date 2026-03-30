@@ -139,13 +139,52 @@ const AdminStaffRoster = () => {
     },
   ];
 
+  const customStyles = {
+    headRow: {
+      style: {
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
+        color: "#475569",
+        fontWeight: "800",
+        textTransform: "uppercase",
+        fontSize: "0.75rem",
+        letterSpacing: "0.1em",
+        borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+        backdropFilter: "blur(10px)",
+      },
+    },
+    rows: {
+      style: {
+        fontSize: "0.875rem",
+        color: "#1e293b",
+        fontWeight: "500",
+        backgroundColor: "transparent",
+        "&:hover": {
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.02)",
+          transform: "translateY(-1px)",
+          transition: "all 0.2s ease",
+          zIndex: 1,
+        },
+      },
+    },
+    pagination: {
+      style: {
+        borderTop: "1px solid rgba(0, 0, 0, 0.05)",
+        backgroundColor: "transparent",
+      },
+    },
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-      <h2 className="text-2xl font-bold mb-4 text-slate-800">Staff Attendance Roster</h2>
-      <p className="text-slate-500 text-sm mb-6">Real-time attendance tracking of all staff members currently clocked in and historical records.</p>
+    <div className="glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden mb-10">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       
-      {/* Controls */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 gap-4">
+      <div className="relative z-10">
+        <h2 className="text-2xl md:text-3xl font-extrabold mb-2 text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>Staff Attendance Roster</h2>
+        <p className="text-slate-500 text-sm mb-8 font-medium">Real-time attendance tracking of all staff members currently clocked in and historical records.</p>
+        
+        {/* Controls */}
+        <div className="flex flex-col md:flex-row justify-between items-center bg-white/40 backdrop-blur-md p-5 rounded-2xl border border-white/60 shadow-sm mb-6 gap-4">
         <div className="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
           <div className="flex flex-col w-full md:w-auto">
             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Start Date</label>
@@ -191,17 +230,19 @@ const AdminStaffRoster = () => {
         </div>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={filteredLogs}
-        pagination
-        responsive
-        highlightOnHover
-        striped
-        progressPending={loading}
-      />
-
-      
+      <div className="bg-white/40 backdrop-blur-md rounded-2xl overflow-hidden border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+        <DataTable
+          columns={columns}
+          data={filteredLogs}
+          pagination
+          responsive
+          highlightOnHover
+          striped
+          progressPending={loading}
+          customStyles={customStyles}
+        />
+      </div>
+      </div>
     </div>
   );
 };

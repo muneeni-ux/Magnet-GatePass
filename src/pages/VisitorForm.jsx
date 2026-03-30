@@ -22,6 +22,16 @@ import {
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
+const maskIdNumber = (idStr) => {
+  if (!idStr) return "-";
+  const str = idStr.toString();
+  if (str.length <= 4) return str.replace(/./g, '*');
+  const first = str.slice(0, 3);
+  const last = str.slice(-3);
+  const asterisks = '*'.repeat(Math.max(3, str.length - 6));
+  return `${first}${asterisks}${last}`;
+};
+
 export default function VisitorForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -798,7 +808,7 @@ export default function VisitorForm() {
                               Underage / Minor
                             </span>
                           ) : (
-                            formData.idNumber
+                            maskIdNumber(formData.idNumber)
                           )}
                         </span>
                       </div>

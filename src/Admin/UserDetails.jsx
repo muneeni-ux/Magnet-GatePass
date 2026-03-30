@@ -42,8 +42,8 @@ const Modal = ({ open, title, children, onClose }) => {
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
         onClick={onClose}
       ></div>
-      <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-6 relative border border-slate-100 z-10 animate-in fade-in zoom-in-95 duration-200">
-        <h3 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">
+      <div className="glass-panel w-full max-w-lg rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] p-6 sm:p-8 relative border-white/60 z-10 animate-in fade-in zoom-in-95 duration-200 backdrop-blur-xl">
+        <h3 className="text-2xl font-extrabold text-slate-900 mb-6 tracking-tight border-b border-white/60 pb-4" style={{ fontFamily: 'Outfit, sans-serif' }}>
           {title}
         </h3>
         {children}
@@ -192,29 +192,31 @@ export default function UserDetails() {
   if (error) return <div className="p-6 text-red-600">{error}</div>;
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen text-slate-800 font-sans pb-10">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="flex items-center gap-5 relative z-10">
+            <div className="p-4 bg-gradient-to-br from-emerald-500 to-teal-500 text-white rounded-2xl shadow-lg">
               <ShieldCheck className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 System Access & Users
               </h1>
-              <div className="flex items-center gap-4 mt-1">
-                <p className="text-sm text-slate-500 font-medium tracking-wide">
+              <div className="flex items-center gap-4 mt-2">
+                <p className="text-sm md:text-base text-slate-500 font-medium tracking-wide">
                   Total Registered:{" "}
-                  <span className="font-bold text-slate-700">
+                  <span className="font-extrabold text-slate-700">
                     {users.length}
                   </span>
                 </p>
-                <div className="w-1 h-1 rounded-full bg-slate-300"></div>
-                <p className="text-sm text-slate-500 font-medium tracking-wide">
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+                <p className="text-sm md:text-base text-slate-500 font-medium tracking-wide">
                   Administrators:{" "}
-                  <span className="font-bold text-emerald-600">
+                  <span className="font-extrabold text-emerald-600">
                     {totalAdmins}
                   </span>
                 </p>
@@ -226,17 +228,17 @@ export default function UserDetails() {
               setShowAdd(true);
               setFormData(initialForm);
             }}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl transition-all shadow-sm shadow-blue-200"
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-blue-500/30 w-full sm:w-auto relative z-10"
           >
             <Plus size={18} /> New Account
           </button>
         </div>
 
         {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-5">
           <div className="relative flex-1">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               size={18}
             />
             <input
@@ -244,12 +246,12 @@ export default function UserDetails() {
               onChange={(e) => setSearch(e.target.value)}
               type="text"
               placeholder="Search by username or email address..."
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm shadow-sm"
+              className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm shadow-inner"
             />
           </div>
-          <div className="relative w-full sm:w-56 shrink-0">
+          <div className="relative w-full sm:w-64 shrink-0">
             <Filter
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               size={18}
             />
             <select
@@ -258,7 +260,7 @@ export default function UserDetails() {
                 setRoleFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm appearance-none shadow-sm cursor-pointer"
+              className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm appearance-none shadow-inner cursor-pointer"
             >
               <option value="all">All Clearance Levels</option>
               <option value="admin">Administrators Only</option>
@@ -268,22 +270,18 @@ export default function UserDetails() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
+        <div className="glass-panel overflow-hidden rounded-3xl border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left border-collapse text-sm whitespace-nowrap">
               <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-100 text-slate-500">
-                  <th className="px-6 py-4 font-semibold">Account Identity</th>
-                  <th className="px-6 py-4 font-semibold hidden sm:table-cell">
-                    Contact Email
-                  </th>
-                  <th className="px-6 py-4 font-semibold">Clearance</th>
-                  <th className="px-6 py-4 font-semibold text-right">
-                    Settings
-                  </th>
+                <tr className="bg-white/40 border-b border-white/60 text-slate-600 uppercase tracking-widest text-[11px] font-extrabold backdrop-blur-md">
+                  <th className="px-6 py-5">Account Identity</th>
+                  <th className="px-6 py-5 hidden sm:table-cell">Contact Email</th>
+                  <th className="px-6 py-5">Clearance</th>
+                  <th className="px-6 py-5 text-right">Settings</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/20">
                 {paginated.length === 0 ? (
                   <tr>
                     <td
@@ -301,31 +299,31 @@ export default function UserDetails() {
                   paginated.map((u) => (
                     <tr
                       key={u._id}
-                      className="hover:bg-slate-50/50 transition-colors group"
+                      className="bg-transparent hover:bg-white/60 transition-all duration-200 group border-b border-white/40 last:border-0 hover:shadow-[0_4px_15px_rgba(0,0,0,0.02)]"
                     >
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-600">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-white border border-white/80 shadow-[0_2px_10px_rgba(0,0,0,0.03)] flex items-center justify-center font-extrabold text-slate-600 text-base">
                             {u.username.charAt(0).toUpperCase()}
                           </div>
-                          <span className="font-semibold text-slate-800">
+                          <span className="font-bold text-slate-800" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
                             {u.username}
                           </span>
                         </div>
-                        <span className="text-slate-500 text-xs sm:hidden mt-1 block">
+                        <span className="text-slate-500 text-xs sm:hidden mt-2 inline-block bg-white/50 px-2 py-1 rounded-md">
                           {u.email}
                         </span>
                       </td>
-                      <td className="px-6 py-4 hidden sm:table-cell text-slate-600">
+                      <td className="px-6 py-4 hidden sm:table-cell text-slate-600 font-medium tracking-wide">
                         {u.email}
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm ${
                             u.isAdmin
-                              ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                              : "bg-blue-50 text-blue-700 border-blue-100"
-                          } border`}
+                              ? "bg-emerald-50 text-emerald-800 border-[1.5px] border-emerald-200/60"
+                              : "bg-blue-50 text-blue-700 border-[1.5px] border-blue-200/60"
+                          }`}
                         >
                           {u.isAdmin ? "Admin" : "Standard"}
                         </span>
@@ -338,7 +336,7 @@ export default function UserDetails() {
                               setFormData({ ...u, password: "" });
                               setShowEdit(true);
                             }}
-                            className="p-1.5 text-slate-400 hover:text-blue-600 bg-white border border-slate-200 hover:border-blue-200 rounded-lg shadow-sm transition-all"
+                            className="p-2 text-slate-400 hover:text-blue-600 bg-white/50 border border-white/60 hover:bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all flex items-center justify-center gap-1.5"
                             title="Edit Details"
                           >
                             <Pencil size={15} />
@@ -348,7 +346,7 @@ export default function UserDetails() {
                               setSelection(u);
                               setShowDel(true);
                             }}
-                            className="p-1.5 text-slate-400 hover:text-red-600 bg-white border border-slate-200 hover:border-red-200 rounded-lg shadow-sm transition-all"
+                            className="p-2 text-slate-400 hover:text-red-600 bg-white/50 border border-white/60 hover:bg-red-50 hover:border-red-100 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all flex items-center justify-center"
                             title="Revoke Access"
                           >
                             <Trash2 size={15} />
@@ -364,22 +362,22 @@ export default function UserDetails() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-between items-center px-6 py-4 border-t border-slate-100 bg-white">
-              <span className="text-sm font-medium text-slate-500">
+            <div className="flex justify-between items-center px-6 py-5 border-t border-white/60 bg-white/20 backdrop-blur-md">
+              <span className="text-sm font-bold text-slate-500">
                 Page {currentPage} of {totalPages}
               </span>
               <div className="flex gap-2">
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                  className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
+                  className="px-4 py-2 text-sm font-bold rounded-xl border border-white/60 bg-white/40 text-slate-600 hover:bg-white/70 disabled:opacity-50 disabled:hover:bg-white/40 transition-all shadow-sm"
                 >
                   Previous
                 </button>
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-                  className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
+                  className="px-4 py-2 text-sm font-bold rounded-xl border border-white/60 bg-white/40 text-slate-600 hover:bg-white/70 disabled:opacity-50 disabled:hover:bg-white/40 transition-all shadow-sm"
                 >
                   Next
                 </button>
@@ -417,7 +415,7 @@ export default function UserDetails() {
           className="space-y-5"
         >
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-[11px] uppercase tracking-widest font-extrabold text-slate-700 mb-2">
               Username
             </label>
             <input
@@ -426,12 +424,12 @@ export default function UserDetails() {
               onChange={(e) =>
                 setFormData({ ...formData, username: e.target.value })
               }
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+              className="w-full px-4 py-3 bg-white/40 border border-white/60 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white/80 outline-none transition-all text-sm shadow-inner"
               placeholder="e.g. jdoe"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-[11px] uppercase tracking-widest font-extrabold text-slate-700 mb-2">
               Email Address
             </label>
             <input
@@ -441,12 +439,12 @@ export default function UserDetails() {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+              className="w-full px-4 py-3 bg-white/40 border border-white/60 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white/80 outline-none transition-all text-sm shadow-inner"
               placeholder="jdoe@company.com"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-[11px] uppercase tracking-widest font-extrabold text-slate-700 mb-2">
               {showEdit ? "New Password (Optional)" : "Initial Password"}
             </label>
             <div className="relative group">
@@ -457,7 +455,7 @@ export default function UserDetails() {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="w-full pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+                className="w-full pl-4 pr-10 py-3 bg-white/40 border border-white/60 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white/80 outline-none transition-all text-sm shadow-inner"
                 placeholder={
                   showEdit ? "Leave blank to keep current" : "Secure password"
                 }
@@ -476,14 +474,14 @@ export default function UserDetails() {
               </button>
             </div>
             {formData.password && (
-              <div className="mt-2 text-xs">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-slate-500 font-medium">Strength:</span>
-                  <span className={`font-bold ${getPasswordStrength(formData.password).text === "Weak" ? "text-red-500" : getPasswordStrength(formData.password).text === "Fair" ? "text-orange-500" : "text-emerald-500"}`}>
+              <div className="mt-3 text-xs bg-white/40 border border-white/60 p-3 rounded-xl shadow-sm">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="text-slate-500 font-extrabold uppercase tracking-wide">Strength:</span>
+                  <span className={`font-extrabold px-2 py-0.5 rounded-md ${getPasswordStrength(formData.password).text === "Weak" ? "bg-red-100 text-red-600" : getPasswordStrength(formData.password).text === "Fair" ? "bg-orange-100 text-orange-600" : "bg-emerald-100 text-emerald-600"}`}>
                     {getPasswordStrength(formData.password).text}
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-slate-200/50 rounded-full overflow-hidden shadow-inner">
                   <div 
                     className={`h-full transition-all duration-300 ${getPasswordStrength(formData.password).color}`}
                     style={{ width: getPasswordStrength(formData.password).width }}
@@ -492,12 +490,12 @@ export default function UserDetails() {
               </div>
             )}
           </div>
-          <label className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors">
+          <label className="flex items-center gap-4 p-4 bg-white/40 rounded-xl border border-white/60 cursor-pointer hover:bg-white/60 transition-all shadow-sm group">
             <div
-              className={`w-5 h-5 rounded border flex items-center justify-center ${formData.isAdmin ? "bg-blue-600 border-blue-600" : "bg-white border-slate-300"}`}
+              className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${formData.isAdmin ? "bg-blue-600 border-blue-600 shadow-[0_2px_8px_rgba(37,99,235,0.4)]" : "bg-white border-slate-300 group-hover:border-blue-400"}`}
             >
               {formData.isAdmin && (
-                <ShieldCheck size={14} className="text-white" />
+                <ShieldCheck size={12} className="text-white" />
               )}
             </div>
             <input
@@ -509,29 +507,29 @@ export default function UserDetails() {
               className="hidden"
             />
             <div className="flex flex-col">
-              <span className="text-sm font-semibold text-slate-800">
+              <span className="text-sm font-extrabold text-slate-800 tracking-wide">
                 Administrator Access
               </span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-500 font-medium">
                 Grant full access to all system modules
               </span>
             </div>
           </label>
 
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
+          <div className="pt-6 flex items-center justify-end gap-3 mt-4">
             <button
               type="button"
               onClick={() => {
                 setShowAdd(false);
                 setShowEdit(false);
               }}
-              className="px-5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              className="px-6 py-2.5 text-sm font-bold text-slate-600 bg-white/50 border border-white/80 rounded-xl hover:bg-white/80 transition-all backdrop-blur-sm shadow-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors"
+              className="px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-xl shadow-[0_4px_15px_rgba(37,99,235,0.3)] transition-all"
             >
               {showEdit ? "Save Changes" : "Provision Account"}
             </button>
@@ -545,32 +543,32 @@ export default function UserDetails() {
         title="Revoke Access"
         onClose={() => setShowDel(false)}
       >
-        <div className="flex items-start gap-4 mb-6">
-          <div className="p-3 bg-red-100 text-red-600 rounded-full shrink-0">
+        <div className="flex items-start gap-5 mb-8">
+          <div className="p-4 bg-red-100/80 border border-red-200 text-red-600 rounded-2xl shrink-0 shadow-inner">
             <Trash2 size={24} />
           </div>
           <div>
-            <p className="text-slate-800 font-medium">
+            <p className="text-slate-800 font-bold text-lg leading-snug">
               Are you sure you want to delete the account for{" "}
-              <strong>{selection?.username}</strong>?
+              <strong className="text-red-600">{selection?.username}</strong>?
             </p>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 mt-2 font-medium">
               This action cannot be undone. All access will be permanently
               revoked.
             </p>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={() => setShowDel(false)}
-            className="px-5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 text-sm font-bold text-slate-600 bg-white/50 border border-white/80 rounded-xl hover:bg-white/80 transition-all backdrop-blur-sm shadow-sm"
           >
             Cancel
           </button>
           <button
             onClick={() => deleteUser(selection._id)}
-            className="px-5 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-colors"
+            className="w-full sm:w-auto px-6 py-3 text-sm font-bold text-white bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 rounded-xl shadow-[0_4px_15px_rgba(220,38,38,0.3)] transition-all"
           >
             Yes, Revoke Access
           </button>

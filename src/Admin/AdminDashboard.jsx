@@ -95,22 +95,22 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex h-screen font-sans bg-slate-50 text-slate-800 selection:bg-blue-100 selection:text-blue-900">
-      {/* ───── Sidebar ───── */}
+        {/* ───── Sidebar ───── */}
       <aside
-        className={`fixed z-30 top-0 h-full w-64 transform bg-slate-900 border-r border-slate-800 transition-transform duration-300 md:translate-x-0 ${
-          open ? "translate-x-0 shadow-2xl md:shadow-none" : "-translate-x-full"
+        className={`fixed z-30 top-[20px] bottom-[20px] left-[20px] rounded-3xl h-[calc(100vh-40px)] w-[260px] transform bg-[#09090b]/95 backdrop-blur-3xl border border-white/10 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:translate-x-0 ${
+          open ? "translate-x-0" : "-translate-x-[120%]"
         }`}
       >
         {/* Brand */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-800 bg-slate-900">
-          <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-            <span className="p-1.5 bg-blue-600 rounded-lg shadow-sm shadow-blue-500/20">
+        <div className="flex items-center justify-between px-6 py-6 border-b border-white/5">
+          <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-3">
+            <span className="p-2 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.4)] border border-white/20">
               <Shield size={18} className="text-white" />
             </span>
-            Visitrack
+            <span style={{ fontFamily: 'Outfit, sans-serif' }}>Visitrack</span>
           </h2>
           <button
-            className="md:hidden text-slate-400 hover:text-white bg-slate-800 p-1.5 rounded-md"
+            className="md:hidden text-slate-400 hover:text-white bg-white/5 p-1.5 rounded-lg border border-white/10"
             onClick={() => setOpen(false)}
           >
             <CloseIcon size={18} />
@@ -118,7 +118,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Nav links */}
-        <nav className="mt-6 px-4 space-y-1.5 overflow-y-auto h-[calc(100vh-160px)] pb-10 custom-scrollbar">
+        <nav className="mt-6 px-4 space-y-2 overflow-y-auto h-[calc(100vh-200px)] pb-10 custom-scrollbar">
           {links.map(({ to, label, icon }) => (
             <NavLink
               key={to}
@@ -129,32 +129,39 @@ const AdminDashboard = () => {
                 }
               }}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 ${
+                `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 ${
                   isActive
-                    ? "bg-blue-600 text-white font-semibold shadow-sm"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-white font-medium"
+                    ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/10 text-cyan-50 font-bold border border-cyan-500/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] relative overflow-hidden"
+                    : "text-slate-400 hover:bg-white/5 hover:text-white font-semibold border border-transparent"
                 }`
               }
             >
-              <span
-                className={`${window.location.pathname.includes(to) ? "text-blue-100" : "text-slate-500"}`}
-              >
-                {icon}
-              </span>
-              <span className="text-sm">{label}</span>
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-cyan-400 rounded-r-full shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+                  )}
+                  <span
+                    className={`${isActive ? "text-cyan-400" : "text-slate-500 group-hover:text-slate-300"}`}
+                  >
+                    {icon}
+                  </span>
+                  <span className="text-sm tracking-wide">{label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
 
         {/* Logout button */}
-        <div className="absolute bottom-6 inset-x-0 px-4 pt-4 bg-slate-900">
+        <div className="absolute bottom-6 inset-x-0 px-4">
           <button
             onClick={handleLogout}
-            className="flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-red-500/10 text-slate-300 hover:text-red-400 border border-slate-700 hover:border-red-500/30 text-sm font-semibold transition-all group"
+            className="flex w-full items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/5 hover:bg-red-500/20 text-slate-300 hover:text-red-400 border border-white/10 hover:border-red-500/50 text-sm font-bold transition-all duration-300 group shadow-lg"
           >
             <LogOut
               size={16}
-              className="group-hover:-translate-x-0.5 transition-transform"
+              className="group-hover:-translate-x-1 transition-transform"
             />
             Secure Logout
           </button>
@@ -163,16 +170,16 @@ const AdminDashboard = () => {
 
       {/* ───── Main Content ───── */}
       <main
-        className={`flex-1 flex flex-col h-full overflow-hidden transition-all duration-300 ${
-          open ? "md:ml-64" : ""
+        className={`flex-1 flex flex-col h-full overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          open ? "md:ml-[300px]" : "md:ml-[20px]"
         }`}
       >
-        {/* Top bar */}
-        <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200 shrink-0 z-10 backdrop-blur-md bg-white/90 sticky top-0">
+        {/* Top bar (Apple Glassmorphism) */}
+        <div className="mx-4 md:mx-6 mt-4 md:mt-5 mb-2 px-6 py-4 bg-white/60 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl shrink-0 z-10 sticky top-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             {/* Mobile menu button */}
             <button
-              className="md:hidden text-slate-500 hover:text-blue-600 bg-slate-50 p-2 rounded-lg"
+              className="md:hidden text-slate-600 hover:text-blue-600 bg-white/50 p-2.5 rounded-xl border border-white/50 shadow-sm"
               onClick={() => setOpen(true)}
             >
               <MenuIcon size={20} />
@@ -180,49 +187,49 @@ const AdminDashboard = () => {
 
             {/* Title */}
             <div>
-              <h1 className="text-base md:text-lg font-bold text-slate-900 tracking-tight">
+              <h1 className="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 <span className="md:hidden">Visitrack</span>
                 <span className="hidden md:inline">Administration Portal</span>
               </h1>
-              <p className="text-xs text-slate-500 font-medium tracking-wide uppercase hidden sm:block mt-0.5">
+              <p className="text-xs text-slate-500 font-semibold tracking-wider uppercase hidden sm:block mt-1">
                 System Overview & Management
               </p>
             </div>
           </div>
 
           {/* Profile & Emergency */}
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-3 md:gap-5">
             {/* Emergency Button */}
             <Link
               to="/magnet/admin/dashboard/emergency"
-              className="flex items-center gap-2 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 hover:border-red-600 px-3 md:px-4 py-2 rounded-xl transition-all shadow-sm group"
+              className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500 text-red-600 hover:text-white border border-red-500/20 hover:border-red-500 px-4 py-2.5 rounded-2xl transition-all duration-300 shadow-sm group font-bold tracking-wide"
             >
-              <AlertTriangle size={16} className="group-hover:animate-pulse" />
-              <span className="font-bold text-sm hidden md:inline">
-                Emergency
+              <AlertTriangle size={18} className="group-hover:animate-pulse" />
+              <span className="text-sm hidden lg:inline">
+                Emergency Protocol
               </span>
             </Link>
 
-            <div className="hidden sm:flex flex-col items-end mr-2">
-              <span className="text-sm font-bold text-slate-800 leading-tight">
+            <div className="hidden sm:flex flex-col items-end mr-1 border-l border-slate-200/60 pl-5 h-10 justify-center">
+              <span className="text-sm font-extrabold text-slate-800 leading-tight">
                 Admin User
               </span>
-              <span className="text-xs text-slate-500 font-medium">
-                Clearance Level 1
+              <span className="text-[10px] text-cyan-600 font-bold uppercase tracking-widest mt-0.5">
+                Clearance Lvl 1
               </span>
             </div>
-            <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold shadow-md shadow-blue-200 cursor-pointer hover:shadow-lg transition-all border border-blue-400/30">
-              A
+            <div className="w-11 h-11 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg shadow-slate-900/20 cursor-pointer hover:scale-105 transition-all border border-slate-700 relative group overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-transparent p-[1px] opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="relative z-10" style={{ fontFamily: 'Outfit, sans-serif' }}>A</span>
             </div>
           </div>
         </div>
 
-        {/* Routed Content - Make this area scrollable */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:max-w-[1600px] w-full mx-auto relative">
+        {/* Routed Content */}
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 pb-6 pt-2 lg:max-w-[1600px] w-full relative custom-scrollbar">
           <Outlet />
         </div>
-      </main>
-    </div>
+      </main>    </div>
   );
 };
 
