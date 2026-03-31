@@ -75,7 +75,6 @@ export default function VisitorForm() {
     };
     fetchLocations();
 
-    // Setup Offline Sync Listener
     const syncOfflineVisitors = async () => {
       try {
         const queued = await getQueuedVisitors();
@@ -86,9 +85,7 @@ export default function VisitorForm() {
         });
 
         for (const visitor of queued) {
-          // Send to backend
           await axios.post(`${SERVER_URL}/api/visitors`, visitor);
-          // Only remove if successful
           await removeVisitorFromQueue(visitor.id);
         }
 
@@ -104,16 +101,12 @@ export default function VisitorForm() {
     };
 
     window.addEventListener("online", syncOfflineVisitors);
-
-    // Initial check just in case we opened the app and it reconnected while sleeping
     if (navigator.onLine) {
       syncOfflineVisitors();
     }
-
     return () => window.removeEventListener("online", syncOfflineVisitors);
   }, []);
 
-  // Autofill debounce effect
   useEffect(() => {
     const queryPhone = formData.phone?.length >= 10 ? formData.phone : null;
     const queryId = formData.idNumber?.length >= 6 ? formData.idNumber : null;
@@ -162,24 +155,20 @@ export default function VisitorForm() {
       setFormData((prev) => ({
         ...prev,
         gate: value,
-        department: "", // reset dependent field
+        department: "", 
         specificDepartment: "",
       }));
-      // Filter departments based on selected gate
       const filtered = departments.filter((d) => d.gateId._id === value);
       setFilteredDepartments(filtered);
     } else if (type === "checkbox" && (name === "isUnderage" || name === "isGroup" || name === "isDisabled")) {
       setFormData((prev) => ({
         ...prev,
         [name]: checked,
-        idNumber: (name === "isUnderage" && checked) ? "" : prev.idNumber, // Clear ID if underage
+        idNumber: (name === "isUnderage" && checked) ? "" : prev.idNumber,
       }));
     } else if (name === "phone") {
-      // Allow only numbers
       const numericValue = value.replace(/\D/g, "");
       setFormData((prev) => ({ ...prev, [name]: numericValue }));
-
-      // Real-time validation
       const error = validatePhone(numericValue);
       setErrors((prev) => ({ ...prev, phone: error }));
     } else {
@@ -201,8 +190,6 @@ export default function VisitorForm() {
     if (!formData.gate) newErrors.gate = "Entry Gate is required";
     if (!formData.nature) newErrors.nature = "Nature of Visit is required";
 
-    // Replaced specific Gate A checks with dynamic logic
-    const selectedGate = gates.find((g) => g._id === formData.gate);
     const hasDepartments = departments.some(
       (d) => d.gateId._id === formData.gate,
     );
@@ -233,21 +220,15 @@ export default function VisitorForm() {
     setLoading(true);
 
     try {
-      // Get current user from localStorage
       const user = JSON.parse(localStorage.getItem("user"));
-
-      // 1. Resolve Dynamic Phone Number for SMS Alert
       let targetPhone = "";
       let recipientName = "Admin";
-
       const selectedGate = gates.find((g) => g._id === formData.gate);
 
       if (formData.department === "Other" || !formData.department) {
-        // If no specific parsed department, default to the Gate's fallback phone
-        targetPhone = selectedGate?.phone || "0711111111"; // Global fallback
+        targetPhone = selectedGate?.phone || "0711111111"; 
         recipientName = selectedGate?.name || "Gate Admin";
       } else {
-        // Fetch the exact department the user selected
         const selectedDept = departments.find(
           (d) => d._id === formData.department,
         );
@@ -255,12 +236,11 @@ export default function VisitorForm() {
           targetPhone = selectedDept.phone;
           recipientName = selectedDept.name;
         } else {
-          targetPhone = selectedGate?.phone || "0711111111"; // Fallback to gate phone
+          targetPhone = selectedGate?.phone || "0711111111"; 
           recipientName = selectedGate?.name || "Gate Admin";
         }
       }
 
-      // Convert ID to Name for final SMS message viewing
       const gateNameForSMS = selectedGate ? selectedGate.name : formData.gate;
       let finalDepartmentForDB = formData.department;
       if (formData.department === "Other") {
@@ -276,19 +256,16 @@ export default function VisitorForm() {
         ...formData,
         department: finalDepartmentForDB,
         gate: gateNameForSMS,
-        // Ensure idNumber is not sent if empty (backend handles optional)
         idNumber: formData.idNumber || undefined,
-        recordedBy: user?.id, // Add recordedBy field
+        recordedBy: user?.id, 
       };
 
       if (!navigator.onLine) {
-        // --- OFFLINE ROUTING ---
         await addVisitorToQueue(payload);
         toast.success("No Internet. Saved locally to sync when connected.", {
           icon: "📡",
         });
       } else {
-        // --- ONLINE ROUTING ---
         try {
           const response = await fetch(`${SERVER_URL}/api/visitors`, {
             method: "POST",
@@ -306,7 +283,6 @@ export default function VisitorForm() {
             );
           }
 
-          // Trigger SMS only after DB commit succeeds, and ONLY if visitor is not staff
           if (formData.nature !== 'staff') {
             let smsMessage = `VISITRACK\nVisitor: ${formData.name}\nID: ${formData.isUnderage ? "Minor" : formData.idNumber}\nDest: ${finalDepartmentForDB || "General"}\nGate: ${gateNameForSMS}`;
             if (formData.isDisabled) smsMessage += `\nALERT: Needs assistance/vehicle!`;
@@ -332,24 +308,15 @@ export default function VisitorForm() {
             fetchErr.message === "SERVER_DOWN" ||
             fetchErr.name === "TypeError"
           ) {
-            // DB Down or Backend Network Socket closed
-            console.warn(
-              "Backend/DB Offline intercepted. Queuing locally.",
-              fetchErr,
-            );
+            console.warn("Backend/DB Offline intercepted. Queuing locally.", fetchErr);
             await addVisitorToQueue(payload);
-            toast.success(
-              "Service Unreachable. Saved locally to sync when reconnected.",
-              { icon: "📡" },
-            );
+            toast.success("Service Unreachable. Saved locally to sync when reconnected.", { icon: "📡" });
           } else {
-            // Real Validation Error
             throw fetchErr;
           }
         }
       }
 
-      // Reset Form
       setFormData({
         name: "",
         idNumber: "",
@@ -375,149 +342,138 @@ export default function VisitorForm() {
   };
 
   const InputLabel = ({ children }) => (
-    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5">
+    <label className="block text-[10px] uppercase font-extrabold tracking-widest text-slate-500 dark:text-slate-400 mb-2 font-mono">
       {children}
     </label>
   );
 
   return (
-    <div className="min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-100 p-4 md:p-6 pt-24 md:pt-28 flex overflow-hidden relative">
-      {/* Background Grid */}
-      <div
-        className="absolute inset-0 z-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      ></div>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] font-sans text-slate-800 dark:text-slate-100 p-4 md:p-6 pt-24 md:pt-[100px] flex justify-center items-start overflow-hidden relative cyber-grid selection:bg-blue-500/30 dark:selection:bg-emerald-500/30">
+      
+      {/* Decorative Orbs */}
+      <div className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-blue-500/10 dark:bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-1/4 -right-32 w-[600px] h-[600px] bg-indigo-500/10 dark:bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse delay-700"></div>
 
-      <div className="w-full max-w-5xl relative z-10">
+      <div className="w-full max-w-5xl relative z-10 animate-in fade-in zoom-in-95 duration-500">
+        
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
-          <div className="flex items-center gap-4">
-            <div className="p-2.5 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/20">
-              <Scan className="h-6 w-6 text-slate-900 dark:text-white" />
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-white/60 dark:border-slate-800/80 gap-4">
+          <div className="flex items-center gap-5">
+            <div className="p-3.5 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-emerald-500/10 dark:to-cyan-500/10 rounded-2xl border border-blue-500/20 dark:border-emerald-500/20 shadow-inner group">
+              <Scan className="h-7 w-7 text-blue-600 dark:text-emerald-400 group-hover:scale-110 transition-transform" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                Visitor Entry Log
+              <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                 ENTRY <span className="text-blue-600 dark:text-emerald-400">LOG</span>
               </h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Record and Validate Visitor Details
+              <p className="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono mt-1">
+                Record & Validate Identity
               </p>
             </div>
           </div>
-          {/* <div className="hidden md:block text-right">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                     <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                     <span className="text-xs text-emerald-500 font-medium uppercase tracking-wide">System Online</span>
-                </div>
-            </div> */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 shadow-inner self-start md:self-auto">
+             <span className="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
+             <span className="text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-widest font-mono">System Online</span>
+          </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+        <div className="glass-panel dark:glass-panel-dark border border-white/60 dark:border-slate-700/50 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col md:flex-row relative">
+          
           {/* Steps Sidebar */}
-          <div className="w-full md:w-64 bg-slate-50/50 dark:bg-slate-900/50 border-b md:border-b-0 md:border-r border-slate-300 dark:border-slate-700 p-6 flex md:flex-col justify-between md:justify-start gap-4 overflow-x-auto">
+          <div className="w-full md:w-64 bg-white/40 dark:bg-[#0a0f1c]/80 border-b md:border-b-0 md:border-r border-white/60 dark:border-slate-700/50 p-6 flex md:flex-col justify-between md:justify-start gap-3 overflow-x-auto backdrop-blur-md">
             {[1, 2, 3, 4].map((s) => (
               <button
                 key={s}
                 onClick={() => (s < step ? setStep(s) : null)}
                 disabled={s > step}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all w-full whitespace-nowrap ${
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-[11px] font-extrabold uppercase tracking-widest transition-all w-full whitespace-nowrap shadow-sm font-mono ${
                   step === s
-                    ? "bg-blue-600 text-slate-900 dark:text-white shadow-md shadow-blue-900/20"
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 text-white shadow-[0_4px_15px_rgba(59,130,246,0.3)] dark:shadow-[0_4px_15px_rgba(16,185,129,0.3)] border border-transparent"
                     : step > s
-                      ? "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-                      : "text-slate-500 cursor-not-allowed"
+                      ? "bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-800 border border-white/60 dark:border-slate-700/60"
+                      : "text-slate-400 dark:text-slate-600 cursor-not-allowed border border-transparent"
                 }`}
               >
                 <span
-                  className={`flex items-center justify-center w-6 h-6 rounded-full text-xs ${step === s ? "bg-white/20" : "bg-slate-100 dark:bg-slate-700"}`}
+                  className={`flex items-center justify-center w-6 h-6 rounded-lg text-[10px] ${step === s ? "bg-white/20" : step > s ? "bg-white dark:bg-slate-700 shadow-inner" : "bg-slate-100 dark:bg-slate-800/50"}`}
                 >
-                  {s < step ? <CheckCircle size={14} /> : s}
+                  {s < step ? <CheckCircle size={14} className="text-emerald-500" /> : s}
                 </span>
-                {s === 1 && "Personal Info"}
-                {s === 2 && "Contact Info"}
-                {s === 3 && "Purpose"}
-                {s === 4 && "Confirm"}
+                {s === 1 && "Identity Data"}
+                {s === 2 && "Visit Infomation"}
+                {s === 3 && "Vector Routing"}
+                {s === 4 && "Confirmation"}
               </button>
             ))}
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 p-6 md:p-10 relative bg-white dark:bg-slate-800">
-            <form
-              onSubmit={handleSubmit}
-              className="h-full flex flex-col relative z-20"
-            >
+          <div className="flex-1 p-6 md:p-10 relative bg-white/20 dark:bg-transparent backdrop-blur-sm">
+            <form onSubmit={handleSubmit} className="h-full flex flex-col relative z-20">
+              
               {/* STEP 1: IDENTITY */}
               {step === 1 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                  <div className="pb-2 mb-2">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <User className="h-5 w-5 text-blue-500" /> Personal
-                      Details
+                <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="pb-4 mb-4 border-b border-white/60 dark:border-slate-700/50">
+                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      <User className="h-5 w-5 text-blue-600 dark:text-emerald-400" /> Identity verification
                     </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      Enter visitor's official identification details.
-                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Underage Toggle */}
-                    <label className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-all ${formData.isUnderage ? "bg-blue-600/10 border-blue-500/30" : "bg-slate-50/30 dark:bg-slate-900/30 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"}`}>
-                      <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isUnderage ? "bg-blue-600 border-blue-600" : "border-slate-500 bg-white dark:bg-slate-800"}`}>
-                        {formData.isUnderage && <CheckCircle size={14} className="text-slate-900 dark:text-white" />}
+                    <label className={`flex items-start gap-4 p-4 border rounded-xl cursor-pointer transition-all ${formData.isUnderage ? "bg-blue-600/10 dark:bg-emerald-500/10 border-blue-500/30 dark:border-emerald-500/30 shadow-inner" : "glass-panel dark:glass-panel-dark border-white/60 dark:border-slate-700/50 hover:border-blue-400 dark:hover:border-emerald-500/50"}`}>
+                      <div className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${formData.isUnderage ? "bg-blue-600 dark:bg-emerald-500 border-blue-600 dark:border-emerald-500" : "border-slate-400 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50"}`}>
+                        {formData.isUnderage && <CheckCircle size={14} className="text-white dark:text-slate-900" />}
                       </div>
                       <input type="checkbox" name="isUnderage" checked={formData.isUnderage} onChange={handleChange} className="hidden" />
                       <div>
-                        <span className="text-sm font-semibold text-slate-900 dark:text-white block">Underage</span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">Parent details req</span>
+                        <span className="text-[11px] font-extrabold text-slate-900 dark:text-white block uppercase tracking-wide font-mono">Underage</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-1 font-medium">Guardian req.</span>
                       </div>
                     </label>
 
                     {/* Group Toggle */}
-                    <label className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-all ${formData.isGroup ? "bg-purple-600/10 border-purple-500/30" : "bg-slate-50/30 dark:bg-slate-900/30 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"}`}>
-                      <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isGroup ? "bg-purple-600 border-purple-600" : "border-slate-500 bg-white dark:bg-slate-800"}`}>
-                        {formData.isGroup && <CheckCircle size={14} className="text-slate-900 dark:text-white" />}
+                    <label className={`flex items-start gap-4 p-4 border rounded-xl cursor-pointer transition-all ${formData.isGroup ? "bg-purple-600/10 dark:bg-indigo-500/10 border-purple-500/30 dark:border-indigo-500/30 shadow-inner" : "glass-panel dark:glass-panel-dark border-white/60 dark:border-slate-700/50 hover:border-blue-400 dark:hover:border-emerald-500/50"}`}>
+                      <div className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${formData.isGroup ? "bg-purple-600 dark:bg-indigo-500 border-purple-600 dark:border-indigo-500" : "border-slate-400 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50"}`}>
+                        {formData.isGroup && <CheckCircle size={14} className="text-white dark:text-slate-900" />}
                       </div>
                       <input type="checkbox" name="isGroup" checked={formData.isGroup} onChange={handleChange} className="hidden" />
                       <div>
-                        <span className="text-sm font-semibold text-slate-900 dark:text-white block">Group Visit</span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">Multiple visitors</span>
+                        <span className="text-[11px] font-extrabold text-slate-900 dark:text-white block uppercase tracking-wide font-mono">Group Visit</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-1 font-medium">Multiple pax</span>
                       </div>
                     </label>
 
                     {/* Disabled Toggle */}
-                    <label className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-all ${formData.isDisabled ? "bg-amber-600/10 border-amber-500/30" : "bg-slate-50/30 dark:bg-slate-900/30 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"}`}>
-                      <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isDisabled ? "bg-amber-600 border-amber-600" : "border-slate-500 bg-white dark:bg-slate-800"}`}>
-                        {formData.isDisabled && <CheckCircle size={14} className="text-slate-900 dark:text-white" />}
+                    <label className={`flex items-start gap-4 p-4 border rounded-xl cursor-pointer transition-all ${formData.isDisabled ? "bg-amber-600/10 border-amber-500/30 shadow-inner" : "glass-panel dark:glass-panel-dark border-white/60 dark:border-slate-700/50 hover:border-amber-400 dark:hover:border-amber-500/50"}`}>
+                      <div className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${formData.isDisabled ? "bg-amber-500 border-amber-500" : "border-slate-400 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50"}`}>
+                        {formData.isDisabled && <CheckCircle size={14} className="text-white dark:text-slate-900" />}
                       </div>
                       <input type="checkbox" name="isDisabled" checked={formData.isDisabled} onChange={handleChange} className="hidden" />
                       <div>
-                        <span className="text-sm font-semibold text-slate-900 dark:text-white block">Need Help</span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">Request vehicle</span>
+                        <span className="text-[11px] font-extrabold text-slate-900 dark:text-white block uppercase tracking-wide font-mono">Disabled</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-1 font-medium">Req. assistance</span>
                       </div>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-1 gap-6">
                     <div className="flex gap-4">
-                      <div className="flex-1">
-                        <InputLabel>{formData.isGroup ? "Leader's Full Legal Name" : "Full Legal Name"}</InputLabel>
+                      <div className="flex-1 space-y-2">
+                        <InputLabel>{formData.isGroup ? "Leader's Full Name" : "Official Full Name"}</InputLabel>
                         <input
                           name="name"
                           value={formData.name}
                           onChange={handleChange}
                           required
                           placeholder="e.g. John Doe"
-                          className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
+                          className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600"
                         />
                       </div>
                       {formData.isGroup && (
-                        <div className="w-24">
-                          <InputLabel>Group Size</InputLabel>
+                        <div className="w-24 space-y-2">
+                          <InputLabel>Size</InputLabel>
                           <input
                             type="number"
                             name="groupSize"
@@ -525,31 +481,31 @@ export default function VisitorForm() {
                             value={formData.groupSize}
                             onChange={handleChange}
                             required
-                            className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
+                            className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600 text-center"
                           />
                         </div>
                       )}
                     </div>
 
                     {!formData.isUnderage && (
-                      <div>
-                        <InputLabel>ID / Passport Number</InputLabel>
+                      <div className="space-y-2">
+                        <InputLabel>ID / Passport Num</InputLabel>
                         <div className="relative">
                           <input
                             name="idNumber"
                             value={formData.idNumber}
                             onChange={handleChange}
                             required={!formData.isUnderage}
-                            placeholder="Enter ID Number"
-                            className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
+                            placeholder="Enter Identity Document #"
+                            className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600"
                           />
-                          <IdCard className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 h-5 w-5" />
+                          <IdCard className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 h-4 w-4" />
                         </div>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex justify-end mt-8 pt-6 border-t border-slate-300/50 dark:border-slate-700/50">
+                  <div className="flex justify-end mt-8 pt-6 border-t border-white/60 dark:border-slate-700/50">
                     <button
                       type="button"
                       onClick={() => setStep(2)}
@@ -557,12 +513,12 @@ export default function VisitorForm() {
                         !formData.name ||
                         (!formData.isUnderage && !formData.idNumber)
                       }
-                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-slate-900 dark:text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
+                      className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-emerald-500 dark:hover:to-cyan-500 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-800 dark:disabled:to-slate-800 disabled:text-slate-500 text-white px-8 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-blue-500/20 dark:shadow-emerald-500/20 hover:shadow-blue-500/40 dark:hover:shadow-emerald-500/40 hover:-translate-y-0.5 border border-transparent hover:border-white/20 disabled:border-transparent disabled:shadow-none disabled:transform-none"
                     >
-                      Next Step{" "}
+                      Next
                       <ChevronRight
                         size={16}
-                        className="group-hover:translate-x-0.5 transition-transform"
+                        className="group-hover:translate-x-1 transition-transform"
                       />
                     </button>
                   </div>
@@ -571,18 +527,14 @@ export default function VisitorForm() {
 
               {/* STEP 2: CONTACT */}
               {step === 2 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                  <div className="pb-2 mb-2">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <Phone className="h-5 w-5 text-blue-500" /> Contact &
-                      Vehicle
+                <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="pb-4 mb-4 border-b border-white/60 dark:border-slate-700/50">
+                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      <Phone className="h-5 w-5 text-blue-600 dark:text-emerald-400" /> Visit Info
                     </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      Contact details for tracing and vehicle registration.
-                    </p>
                   </div>
 
-                  <div>
+                  <div className="space-y-2">
                     <InputLabel>
                       Mobile Number {formData.isUnderage && "(Parent/Guardian)"}
                     </InputLabel>
@@ -595,10 +547,10 @@ export default function VisitorForm() {
                         required
                         maxLength={13}
                         placeholder="07XXXXXXXX"
-                        className={`w-full bg-slate-50/50 dark:bg-slate-900/50 border ${errors.phone ? "border-red-500" : "border-slate-300 dark:border-slate-700"} text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600`}
+                        className={`w-full bg-white/50 dark:bg-[#0a0f1c]/60 border ${errors.phone ? "border-red-500/50 dark:border-red-500/50" : "border-white/60 dark:border-slate-700/60"} text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600`}
                       />
                       {errors.phone && (
-                        <div className="absolute top-full left-0 mt-1 flex items-center gap-1.5 text-xs text-red-400 font-medium">
+                        <div className="absolute top-full left-0 mt-2 p-2 bg-red-500/10 border border-red-500/20 rounded-md flex items-center gap-1.5 text-[10px] text-red-500 dark:text-red-400 font-extrabold uppercase tracking-wide">
                           <Info size={12} /> {errors.phone}
                         </div>
                       )}
@@ -606,28 +558,28 @@ export default function VisitorForm() {
                   </div>
 
                   {!formData.isUnderage && (
-                    <div>
-                      <InputLabel>Vehicle Registration (If driving)</InputLabel>
+                    <div className="space-y-2">
+                      <InputLabel>Vehicle Registration (Optional)</InputLabel>
                       <div className="relative">
                         <input
                           name="vehicleReg"
                           value={formData.vehicleReg}
                           onChange={handleChange}
                           placeholder="KAA 000A"
-                          className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600 uppercase"
+                          className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600 uppercase"
                         />
-                        <Car className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 h-5 w-5" />
+                        <Car className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 h-4 w-4" />
                       </div>
                     </div>
                   )}
 
-                  <div className="flex justify-between mt-8 pt-6 border-t border-slate-300/50 dark:border-slate-700/50">
+                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/60 dark:border-slate-700/50">
                     <button
                       type="button"
                       onClick={() => setStep(1)}
-                      className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-semibold transition-colors px-4 py-2"
+                      className="text-[11px] uppercase tracking-widest font-extrabold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors px-4 py-2"
                     >
-                      Back
+                      Go Back
                     </button>
                     <button
                       type="button"
@@ -638,12 +590,12 @@ export default function VisitorForm() {
                           toast.error(err);
                         } else setStep(3);
                       }}
-                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-slate-900 dark:text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
+                      className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-emerald-500 dark:hover:to-cyan-500 text-white px-8 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-blue-500/20 dark:shadow-emerald-500/20 hover:shadow-blue-500/40 dark:hover:shadow-emerald-500/40 hover:-translate-y-0.5 border border-transparent hover:border-white/20"
                     >
-                      Next Step{" "}
+                      Verify Data
                       <ChevronRight
                         size={16}
-                        className="group-hover:translate-x-0.5 transition-transform"
+                        className="group-hover:translate-x-1 transition-transform"
                       />
                     </button>
                   </div>
@@ -652,106 +604,111 @@ export default function VisitorForm() {
 
               {/* STEP 3: PURPOSE */}
               {step === 3 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                  <div className="pb-2 mb-2">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <BookOpen className="h-5 w-5 text-blue-500" /> Visit
-                      Details
+                <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="pb-4 mb-4 border-b border-white/60 dark:border-slate-700/50">
+                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      <BookOpen className="h-5 w-5 text-blue-600 dark:text-emerald-400" /> Vector Routing
                     </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      Specify entry point and destination.
-                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <InputLabel>Entry Gate</InputLabel>
-                      <select
-                        name="gate"
-                        value={formData.gate}
-                        onChange={handleChange}
-                        required
-                        className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
-                      >
-                        <option value="" disabled>
-                          Select Gate
-                        </option>
-                        {gates.map((gate) => (
-                          <option key={gate._id} value={gate._id}>
-                            {gate.name}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="space-y-2">
+                      <InputLabel>Facility Gate</InputLabel>
+                      <div className="relative">
+                        <select
+                          name="gate"
+                          value={formData.gate}
+                          onChange={handleChange}
+                          required
+                          className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] appearance-none cursor-pointer"
+                        >
+                          <option className="bg-white dark:bg-slate-900" value="" disabled>Select Checkpoint</option>
+                          {gates.map((gate) => (
+                            <option className="bg-white dark:bg-slate-900" key={gate._id} value={gate._id}>
+                              {gate.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                      </div>
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <InputLabel>Nature of Visit</InputLabel>
-                      <select
-                        name="nature"
-                        value={formData.nature}
-                        onChange={handleChange}
-                        required
-                        className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
-                      >
-                        <option value="" disabled>
-                          Select Type
-                        </option>
-                        <option value="official">Official</option>
-                        <option value="personal">Personal</option>
-                        <option value="staff">Staff</option>
-                      </select>
+                      <div className="relative">
+                        <select
+                          name="nature"
+                          value={formData.nature}
+                          onChange={handleChange}
+                          required
+                          className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] appearance-none cursor-pointer"
+                        >
+                          <option className="bg-white dark:bg-slate-900" value="" disabled>Select Type</option>
+                          <option className="bg-white dark:bg-slate-900" value="official">Official</option>
+                          <option className="bg-white dark:bg-slate-900" value="personal">Personal</option>
+                          <option className="bg-white dark:bg-slate-900" value="staff">Staff</option>
+                        </select>
+                         <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                          </div>
+                      </div>
                     </div>
                   </div>
 
                   {filteredDepartments.length > 0 && (
-                    <div>
-                      <InputLabel>Target Department</InputLabel>
-                      <select
-                        name="department"
-                        value={formData.department}
-                        onChange={handleChange}
-                        required
-                        className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm appearance-none"
-                      >
-                        <option value="" disabled>
-                          Select Department
-                        </option>
-                        {filteredDepartments.map((dept) => {
-                          const isStaffPresent = activeStaffDeps.includes(dept.name);
-                          const isStaffCheckIn = formData.nature === 'staff';
-                          const isDeptDisabled = !isStaffPresent && !isStaffCheckIn;
-                          
-                          return (
-                            <option key={dept._id} value={dept._id} disabled={isDeptDisabled}>
-                              {dept.name} {isDeptDisabled ? "(Absent)" : ""}
-                            </option>
-                          );
-                        })}
-                        <option value="Other">Other / Specify</option>
-                      </select>
+                    <div className="space-y-2">
+                      <InputLabel>Target Node System</InputLabel>
+                      <div className="relative">
+                        <select
+                          name="department"
+                          value={formData.department}
+                          onChange={handleChange}
+                          required
+                          className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] appearance-none cursor-pointer"
+                        >
+                          <option className="bg-white dark:bg-slate-900" value="" disabled>Select Target Dept.</option>
+                          {filteredDepartments.map((dept) => {
+                            const isStaffPresent = activeStaffDeps.includes(dept.name);
+                            const isStaffCheckIn = formData.nature === 'staff';
+                            const isDeptDisabled = !isStaffPresent && !isStaffCheckIn;
+                            
+                            return (
+                              <option className="bg-white dark:bg-slate-900" key={dept._id} value={dept._id} disabled={isDeptDisabled}>
+                                {dept.name} {isDeptDisabled ? "(Offline)" : ""}
+                              </option>
+                            );
+                          })}
+                          <option className="bg-white dark:bg-slate-900" value="Other">Other</option>
+                        </select>
+                         <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                          </div>
+                      </div>
                     </div>
                   )}
 
                   {formData.department === "Other" && (
-                    <div>
-                      <InputLabel>Specify Destination</InputLabel>
+                    <div className="space-y-2 animate-in slide-in-from-top-2">
+                      <InputLabel>Specify Node Coordinates</InputLabel>
                       <input
                         name="specificDepartment"
                         value={formData.specificDepartment}
                         onChange={handleChange}
                         required
-                        placeholder="Enter destination details"
-                        className="w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-sm placeholder-slate-600"
+                        placeholder="Log Exact Info..."
+                        className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600"
                       />
                     </div>
                   )}
 
-                  <div className="flex justify-between mt-8 pt-6 border-t border-slate-300/50 dark:border-slate-700/50">
+                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/60 dark:border-slate-700/50">
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-semibold transition-colors px-4 py-2"
+                      className="text-[11px] uppercase tracking-widest font-extrabold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors px-4 py-2"
                     >
-                      Back
+                      Go Back
                     </button>
                     <button
                       type="button"
@@ -761,12 +718,12 @@ export default function VisitorForm() {
                         !formData.nature ||
                         (filteredDepartments.length > 0 && !formData.department)
                       }
-                      className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-slate-900 dark:text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-lg shadow-blue-900/20"
+                      className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-emerald-500 dark:hover:to-cyan-500 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-800 dark:disabled:to-slate-800 disabled:text-slate-500 text-white px-8 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-blue-500/20 dark:shadow-emerald-500/20 hover:shadow-blue-500/40 dark:hover:shadow-emerald-500/40 hover:-translate-y-0.5 border border-transparent hover:border-white/20 disabled:border-transparent disabled:shadow-none disabled:transform-none"
                     >
-                      Review{" "}
+                      Preview
                       <ChevronRight
                         size={16}
-                        className="group-hover:translate-x-0.5 transition-transform"
+                        className="group-hover:translate-x-1 transition-transform"
                       />
                     </button>
                   </div>
@@ -776,36 +733,34 @@ export default function VisitorForm() {
               {/* STEP 4: SUBMIT */}
               {step === 4 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 h-full flex flex-col">
-                  <div className="pb-2 mb-2">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <Shield className="h-5 w-5 text-emerald-500" /> Confirm
-                      Details
+                  <div className="pb-4 mb-2 border-b border-white/60 dark:border-slate-700/50">
+                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      <Shield className="h-5 w-5 text-emerald-500" /> Confirm Sequence
                     </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      Review information before submission.
-                    </p>
                   </div>
 
-                  <div className="bg-slate-50/50 dark:bg-slate-900/50 p-6 border border-slate-300 dark:border-slate-700 rounded-xl relative overflow-hidden">
-                    <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-sm">
+                  <div className="glass-panel dark:glass-panel-dark bg-white/40 dark:bg-slate-900/40 p-6 sm:p-8 rounded-[1.5rem] border border-white/60 dark:border-slate-700/50 relative overflow-hidden shadow-inner">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-emerald-500 dark:from-emerald-500 dark:to-cyan-500"></div>
+                    
+                    <div className="grid grid-cols-2 gap-y-6 gap-x-8 text-sm">
                       <div>
-                        <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
-                          {formData.isGroup ? "Leader Name" : "Visitor Name"}
+                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] font-extrabold font-mono uppercase tracking-widest mb-1.5">
+                          {formData.isGroup ? "Leader Target" : "Entity Name"}
                         </span>
-                        <span className="text-slate-900 dark:text-white font-medium flex items-center gap-2">
+                        <span className="text-slate-900 dark:text-white font-bold flex items-center gap-2 font-mono text-sm">
                           {formData.name}
-                          {formData.isGroup && <span className="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded-full">Group of {formData.groupSize}</span>}
-                          {formData.isDisabled && <span className="text-xs px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded-full">Needs Help</span>}
+                          {formData.isGroup && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 rounded-md">Size: {formData.groupSize}</span>}
+                          {formData.isDisabled && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-md">Assistance req.</span>}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
-                          ID / Passport
+                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] font-extrabold font-mono uppercase tracking-widest mb-1.5">
+                          ID Num
                         </span>
-                        <span className="text-slate-900 dark:text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-bold font-mono text-sm">
                           {formData.isUnderage ? (
-                            <span className="text-amber-400">
-                              Underage / Minor
+                            <span className="text-amber-500 dark:text-amber-400">
+                              Minor/Guardian
                             </span>
                           ) : (
                             maskIdNumber(formData.idNumber)
@@ -813,27 +768,27 @@ export default function VisitorForm() {
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
-                          Mobile
+                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] font-extrabold font-mono uppercase tracking-widest mb-1.5">
+                          Freq
                         </span>
-                        <span className="text-slate-900 dark:text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-bold font-mono text-sm">
                           {formData.phone}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
+                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] font-extrabold font-mono uppercase tracking-widest mb-1.5">
                           Gate
                         </span>
-                        <span className="text-slate-900 dark:text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-bold font-mono text-sm">
                           {gates.find((g) => g._id === formData.gate)?.name ||
                             formData.gate}
                         </span>
                       </div>
-                      <div className="col-span-2">
-                        <span className="text-slate-500 block text-xs uppercase tracking-wide mb-1">
-                          Destination
+                      <div className="col-span-2 pt-4 border-t border-white/60 dark:border-slate-700/50">
+                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] font-extrabold font-mono uppercase tracking-widest mb-1.5">
+                          Target Location
                         </span>
-                        <span className="text-slate-900 dark:text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-bold font-mono text-sm">
                           {formData.department === "Other"
                             ? formData.specificDepartment
                             : departments.find(
@@ -846,23 +801,23 @@ export default function VisitorForm() {
                     </div>
                   </div>
 
-                  <div className="flex gap-4 mt-auto pt-4">
+                  <div className="flex gap-4 mt-auto pt-6 border-t border-white/60 dark:border-slate-700/50">
                     <button
                       type="button"
                       onClick={() => setStep(3)}
-                      className="px-6 py-3 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-500 rounded-lg font-semibold text-sm transition-all"
+                      className="px-6 py-3.5 bg-white/50 dark:bg-slate-800/50 border border-white/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-sm"
                     >
-                      Edit
+                      Back
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition-all shadow-lg ${loading ? "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400" : "bg-emerald-600 hover:bg-emerald-500 text-slate-900 dark:text-white shadow-emerald-900/20"}`}
+                      className={`flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg border border-transparent ${loading ? "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed" : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 hover:border-white/20"}`}
                     >
                       {loading && (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       )}
-                      {loading ? "Authorizing..." : "Submit Entry"}
+                      {loading ? "Submitting..." : "Submit"}
                     </button>
                   </div>
                 </div>

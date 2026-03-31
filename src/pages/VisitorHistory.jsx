@@ -9,6 +9,7 @@ import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
+  Database
 } from "lucide-react";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -121,67 +122,64 @@ export default function VisitorHistory() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-sans p-4 md:p-6 pt-24 md:pt-28 relative">
-      {/* Background Grid */}
-      <div
-        className="absolute inset-0 z-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      ></div>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] text-slate-800 dark:text-slate-100 font-sans p-4 md:p-6 pt-24 md:pt-[100px] relative cyber-grid selection:bg-blue-500/30 dark:selection:bg-emerald-500/30 overflow-hidden flex justify-center items-start">
+      
+      {/* Decorative Orbs */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-500/10 dark:bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-1/4 left-1/4 w-[600px] h-[600px] bg-indigo-500/10 dark:bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse delay-700"></div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="w-full max-w-7xl relative z-10 animate-in fade-in zoom-in-95 duration-500">
+        
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
-          <div className="flex items-center gap-4">
-            <div className="p-2.5 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/20">
-              <Clock className="h-6 w-6 text-slate-900 dark:text-white" />
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-white/60 dark:border-slate-800/80 pb-6">
+          <div className="flex items-center gap-5">
+            <div className="p-3.5 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-emerald-500/10 dark:to-cyan-500/10 rounded-2xl border border-blue-500/20 dark:border-emerald-500/20 shadow-inner group">
+              <Database className="h-7 w-7 text-blue-600 dark:text-emerald-400 group-hover:scale-110 transition-transform" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                Visitor Logs
+              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                 VISITOR <span className="text-blue-600 dark:text-emerald-400">DATABASE</span>
               </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Comprehensive Access Records
+              <p className="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono mt-1">
+                Active & Archived Access Records
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg">
-            <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></div>
-            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-              Live Database
+          <div className="flex items-center gap-3 px-4 py-2 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 rounded-lg shadow-inner">
+            <div className="h-2 w-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></div>
+            <span className="text-[10px] uppercase font-extrabold tracking-widest text-slate-600 dark:text-slate-300 font-mono">
+              Live Link
             </span>
           </div>
         </div>
 
         {/* Controls Toolbar */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-4 rounded-xl mb-6 flex flex-col md:flex-row gap-4 items-center justify-between shadow-sm">
+        <div className="glass-panel dark:glass-panel-dark border border-white/60 dark:border-slate-700/50 p-5 rounded-[2rem] mb-6 flex flex-col xl:flex-row gap-5 items-center justify-between shadow-lg">
+          
           {/* Search */}
-          <div className="relative w-full md:w-auto">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+          <div className="relative w-full xl:w-96">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm" />
             <input
               type="text"
-              placeholder="Search visitors, departments..."
+              placeholder="Query Name or Designation..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-72 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 pl-9 pr-4 py-2.5 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm placeholder-slate-500 transition-all"
+              className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white pl-11 pr-5 py-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 text-sm font-mono shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600 transition-all"
             />
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-1">
+          <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
+            <div className="flex bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 rounded-xl p-1.5 shadow-inner">
               {["all", "active", "completed"].map((item) => (
                 <button
                   key={item}
                   onClick={() => setFilterStatus(item)}
-                  className={`px-4 py-1.5 text-xs font-semibold capitalize rounded-md transition-all ${
+                  className={`px-5 py-2 text-[10px] uppercase tracking-widest font-extrabold rounded-lg transition-all font-mono border ${
                     filterStatus === item
-                      ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
-                      : "text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-white dark:hover:bg-slate-800"
+                      ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-emerald-400 shadow-sm border-white/60 dark:border-slate-600"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-800/50 border-transparent"
                   }`}
                 >
                   {item}
@@ -189,14 +187,14 @@ export default function VisitorHistory() {
               ))}
             </div>
 
-            <div className="h-6 w-px bg-slate-100 dark:bg-slate-700 mx-1 hidden md:block"></div>
+            <div className="h-8 w-px bg-white/60 dark:bg-slate-700/50 mx-2 hidden md:block"></div>
 
             <button
               onClick={() => setShowTodayOnly((p) => !p)}
-              className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center justify-center gap-2 px-5 py-3 border rounded-xl text-[10px] uppercase font-extrabold tracking-widest transition-all font-mono min-w-[140px] ${
                 showTodayOnly
-                  ? "bg-blue-600/10 border-blue-500/30 text-blue-400"
-                  : "bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300"
+                  ? "bg-blue-600/10 dark:bg-emerald-500/10 border-blue-500/30 dark:border-emerald-500/30 text-blue-600 dark:text-emerald-400 shadow-inner"
+                  : "bg-white/50 dark:bg-[#0a0f1c]/60 border-white/60 dark:border-slate-700/60 text-slate-500 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-slate-700 dark:hover:text-slate-200"
               }`}
             >
               <Filter size={14} />
@@ -205,7 +203,7 @@ export default function VisitorHistory() {
 
             <button
               onClick={() => setSortAsc((prev) => !prev)}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-all"
+              className="flex items-center justify-center gap-2 px-5 py-3 bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 rounded-xl text-[10px] uppercase font-extrabold tracking-widest text-slate-500 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-slate-700 dark:hover:text-slate-200 transition-all font-mono shadow-sm min-w-[140px]"
             >
               <FaSort />
               {sortAsc ? "Oldest First" : "Newest First"}
@@ -213,26 +211,28 @@ export default function VisitorHistory() {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden shadow-xl flex flex-col">
+        {/* Table Container */}
+        <div className="glass-panel dark:glass-panel-dark border border-white/60 dark:border-slate-700/50 rounded-[2rem] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-300 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wide">
-                  <th className="p-5">Visitor Details</th>
-                  <th className="p-5">Department / Dest</th>
-                  <th className="p-5">Log Info</th>
-                  <th className="p-5">Time In</th>
-                  <th className="p-5">Status / Action</th>
+                <tr className="bg-white/40 dark:bg-slate-900/40 border-b border-white/60 dark:border-slate-700/50 text-[10px] text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-widest font-mono backdrop-blur-md">
+                  <th className="p-6">Identity / Comm</th>
+                  <th className="p-6">Vector / Dest</th>
+                  <th className="p-6">Log Info</th>
+                  <th className="p-6">Time Stamp</th>
+                  <th className="p-6 whitespace-nowrap">Status Control</th>
                 </tr>
               </thead>
-              <tbody className="text-sm divide-y divide-slate-700/50">
+              <tbody className="text-sm divide-y divide-white/60 dark:divide-slate-700/50">
                 {currentItems.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="p-12 text-center text-slate-500">
-                      <div className="flex flex-col items-center justify-center gap-3">
-                        <FileText size={32} className="opacity-20" />
-                        <p>No records found matching your criteria.</p>
+                    <td colSpan="5" className="p-20 text-center text-slate-500 dark:text-slate-400 animate-in fade-in">
+                      <div className="flex flex-col items-center justify-center gap-4">
+                        <div className="p-4 bg-slate-100/50 dark:bg-slate-800/50 rounded-2xl">
+                           <FileText size={32} className="opacity-40" />
+                        </div>
+                        <p className="text-[11px] font-extrabold uppercase tracking-widest font-mono">Database Query Zero Match</p>
                       </div>
                     </td>
                   </tr>
@@ -240,56 +240,56 @@ export default function VisitorHistory() {
                   currentItems.map((v) => (
                     <tr
                       key={v._id}
-                      className="hover:bg-slate-100/30 dark:hover:bg-slate-700/30 transition-colors"
+                      className="hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors backdrop-blur-sm group"
                     >
-                      <td className="p-5">
-                        <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <td className="p-6">
+                        <div className="font-extrabold text-slate-900 dark:text-white flex flex-wrap items-center gap-2 font-mono text-sm leading-tight">
                           {v.name}
-                          {v.isGroup && <span className="text-[10px] px-1.5 py-0.5 bg-purple-500/20 text-purple-300 rounded-full" title="Group Size">Grp: {v.groupSize}</span>}
-                          {v.isDisabled && <span className="text-[10px] px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded-full" title="Needs Assistance">Asst</span>}
+                          {v.isGroup && <span className="text-[9px] uppercase tracking-widest px-2 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 rounded-md">Size: {v.groupSize}</span>}
+                          {v.isDisabled && <span className="text-[9px] uppercase tracking-widest px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-md">Asst</span>}
                         </div>
-                        <div className="text-xs text-slate-500 mt-1 flex items-center gap-2">
+                        <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2 font-mono">
                           {v.phone} 
-                          {v.nature === 'staff' && <span className="px-1.5 py-0.5 bg-blue-500/20 text-blue-300 rounded-full text-[10px]">Staff</span>}
+                          {v.nature === 'staff' && <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 rounded-md text-[9px] uppercase tracking-widest">Staff</span>}
                         </div>
                       </td>
-                      <td className="p-5">
-                        <div className="text-slate-600 dark:text-slate-300">{v.department}</div>
-                        <div className="text-xs text-slate-500 mt-1">
-                          {v.nature} Visit
+                      <td className="p-6">
+                        <div className="text-slate-800 dark:text-slate-300 font-bold text-sm tracking-tight">{v.department}</div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-widest font-bold font-mono mt-1.5">
+                          {v.nature} Type
                         </div>
                       </td>
-                      <td className="p-5 text-slate-500 dark:text-slate-400 text-xs">
-                        <div>
-                          Entry:{" "}
-                          <span className="text-slate-600 dark:text-slate-300">
+                      <td className="p-6 text-slate-500 dark:text-slate-500 text-[11px] font-bold font-mono uppercase tracking-wide">
+                        <div className="flex items-center gap-2">
+                          <span className="opacity-60">Entry:</span>
+                          <span className="text-slate-700 dark:text-slate-300">
                             {gatesMap[v.gate] || v.gate}
                           </span>
                         </div>
-                        {v.vehicleReg && <div>Ref: {v.vehicleReg}</div>}
+                        {v.vehicleReg && <div className="mt-1.5 flex items-center gap-2"><span className="opacity-60">Ref:</span> <span className="text-slate-700 dark:text-slate-300">{v.vehicleReg}</span></div>}
                       </td>
-                      <td className="p-5">
-                        <div className="text-slate-600 dark:text-slate-300 font-medium">
+                      <td className="p-6">
+                        <div className="text-slate-800 dark:text-white font-bold text-base font-mono">
                           {new Date(v.createdAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
                         </div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">
                           {new Date(v.createdAt).toLocaleDateString()}
                         </div>
                       </td>
-                      <td className="p-5">
+                      <td className="p-6">
                         {!v.timeOut ? (
                           <div className="flex items-center gap-4">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20">
-                              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                            <span className="inline-flex items-center justify-center min-w-[70px] gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[9px] uppercase font-extrabold tracking-widest shadow-inner">
+                              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
                               Active
                             </span>
                             <button
                               onClick={() => handleTimeOut(v._id)}
                               disabled={loadingTimeout === v._id}
-                              className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-600 text-slate-900 dark:text-white rounded text-xs font-medium transition-colors border border-slate-400 dark:border-slate-600 shadow-sm"
+                              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-slate-900 dark:text-white rounded-xl text-[10px] uppercase tracking-widest font-extrabold transition-all border border-slate-300/60 dark:border-slate-600 shadow-sm disabled:opacity-50 group/btn"
                             >
                               {loadingTimeout === v._id
                                 ? "Logging..."
@@ -297,17 +297,20 @@ export default function VisitorHistory() {
                             </button>
                           </div>
                         ) : (
-                          <div className="flex flex-col items-start gap-1">
-                            <span className="inline-flex items-center gap-1.5 text-slate-500 text-xs font-medium">
-                              <CheckCircle size={12} /> Closed
+                          <div className="flex items-center gap-4">
+                            <span className="inline-flex items-center justify-center min-w-[70px] gap-1.5 px-3 py-1.5 rounded-lg bg-slate-200/50 dark:bg-slate-800/50 border border-slate-300/50 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 text-[9px] uppercase font-extrabold tracking-widest shadow-inner">
+                              <CheckCircle size={10} className="text-slate-400" />
+                              Closed
                             </span>
-                            <span className="text-xs text-slate-500">
-                              Out:{" "}
-                              {new Date(v.timeOut).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </span>
+                            <div className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-widest font-mono bg-white/40 dark:bg-slate-900/40 px-3 py-1.5 rounded-lg border border-white/60 dark:border-slate-800 shadow-inner">
+                              OUT: {" "}
+                              <span className="text-slate-700 dark:text-slate-300">
+                                {new Date(v.timeOut).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                            </div>
                           </div>
                         )}
                       </td>
@@ -319,42 +322,36 @@ export default function VisitorHistory() {
           </div>
 
           {/* Pagination Footer */}
-          <div className="bg-white dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
-            <div className="text-xs text-slate-500">
-              Showing{" "}
-              <span className="text-slate-900 dark:text-white font-medium">
-                {indexOfFirstItem + 1}
+          <div className="bg-white/40 dark:bg-slate-900/40 border-t border-white/60 dark:border-slate-700/50 p-6 flex flex-col md:flex-row items-center justify-between gap-6 backdrop-blur-md">
+            <div className="text-[11px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400 font-mono">
+              Displaying {" "}
+              <span className="text-blue-600 dark:text-emerald-400 font-extrabold text-sm mx-1">
+                {filteredVisitors.length > 0 ? indexOfFirstItem + 1 : 0}
               </span>{" "}
-              to{" "}
-              <span className="text-slate-900 dark:text-white font-medium">
+              - {" "}
+              <span className="text-blue-600 dark:text-emerald-400 font-extrabold text-sm mx-1">
                 {Math.min(indexOfLastItem, filteredVisitors.length)}
               </span>{" "}
-              of{" "}
-              <span className="text-slate-900 dark:text-white font-medium">
+              of {" "}
+              <span className="text-blue-600 dark:text-emerald-400 font-extrabold text-sm mx-1">
                 {filteredVisitors.length}
               </span>{" "}
-              records
+              Log Entries
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="p-2.5 rounded-xl border border-white/60 dark:border-slate-700/60 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm bg-white/50 dark:bg-[#0a0f1c]/60"
               >
                 <ChevronLeft size={16} />
               </button>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  // Logic to show limited page numbers around current page could go here
-                  // For simplicity showing first 5 or using a simple range if needed
-                  // But let's just show current page for now with simple prev/next if many pages
-
-                  // Let's implement a smart visible page logic
                   let p = i + 1;
                   if (totalPages > 5) {
-                    // Simple shifting window
                     if (currentPage > 3) p = currentPage - 2 + i;
                     if (p > totalPages) return null;
                   }
@@ -363,10 +360,10 @@ export default function VisitorHistory() {
                     <button
                       key={p}
                       onClick={() => paginate(p)}
-                      className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-medium transition-all ${
+                      className={`w-10 h-10 flex items-center justify-center rounded-xl text-[11px] font-extrabold font-mono transition-all ${
                         currentPage === p
-                          ? "bg-blue-600 text-slate-900 dark:text-white border border-blue-500"
-                          : "bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+                          ? "bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 text-white shadow-[0_4px_15px_rgba(59,130,246,0.3)] dark:shadow-[0_4px_15px_rgba(16,185,129,0.3)] border border-transparent"
+                          : "bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white shadow-sm"
                       }`}
                     >
                       {p}
@@ -378,7 +375,7 @@ export default function VisitorHistory() {
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages || totalPages === 0}
-                className="p-2 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="p-2.5 rounded-xl border border-white/60 dark:border-slate-700/60 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm bg-white/50 dark:bg-[#0a0f1c]/60"
               >
                 <ChevronRight size={16} />
               </button>
@@ -389,6 +386,7 @@ export default function VisitorHistory() {
     </div>
   );
 }
+
 // Helper icon component for closed status
 function CheckCircle({ size, className }) {
   return (
@@ -399,7 +397,7 @@ function CheckCircle({ size, className }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}

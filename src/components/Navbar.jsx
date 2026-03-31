@@ -144,43 +144,43 @@ const Navbar = ({ setIsLoggedIn }) => {
   }, []);
 
   return (
-    <div className="fixed top-0 w-full z-50 shadow-lg font-sans">
+    <div className="fixed top-0 w-full z-50 shadow-[0_10px_30px_rgb(0,0,0,0.05)] font-sans">
       {/* Main Navbar */}
-      <div className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-3 flex items-center justify-between min-h-[70px] backdrop-blur-md bg-opacity-95">
+      <div className="glass-panel border-x-0 border-t-0 border-b border-white/60 dark:border-slate-800/80 px-6 py-3 flex items-center justify-between min-h-[70px] transition-all duration-300">
         {/* Logo */}
         <div
-          className="flex items-center gap-4 cursor-pointer"
+          className="flex items-center gap-4 cursor-pointer group"
           onClick={() => navigate("/home")}
         >
-          <div className="relative group">
-            <div className="absolute inset-0 bg-blue-500 rounded-full blur opacity-10 group-hover:opacity-20 transition-opacity duration-500"></div>
+          <div className="relative">
+            <div className="absolute inset-0 bg-blue-500 rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
             <img
               src={base64Logo}
               alt="Institution Logo"
-              className="relative w-10 h-10 object-cover rounded-full border border-slate-300 dark:border-slate-700 shadow-md"
+              className="relative w-10 h-10 object-cover rounded-xl border border-white/80 dark:border-slate-700 shadow-md group-hover:scale-105 transition-transform duration-300"
             />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-lg font-bold text-slate-800 dark:text-gray-100 tracking-tight leading-none">
-              Visitrack
+            <h1 className="text-xl font-extrabold text-slate-800 dark:text-gray-100 tracking-tight leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              VISITRACK<span className="text-blue-600 dark:text-emerald-400">.OS</span>
             </h1>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium tracking-wide">
-              Visitor Management System
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-widest uppercase mt-0.5">
+              Secure Terminal
             </span>
           </div>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center bg-slate-50/50 dark:bg-slate-800/50 rounded-full px-2 py-1 border border-slate-300/50 dark:border-slate-700/50">
+        <nav className="hidden md:flex items-center bg-white/40 dark:bg-slate-800/40 rounded-2xl px-2 py-1.5 border border-white/60 dark:border-slate-700/60 shadow-inner backdrop-blur-md">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-2 text-sm font-medium px-5 py-2 rounded-full transition-all duration-300 ${
+                `flex items-center gap-2 text-sm font-bold px-5 py-2 rounded-xl transition-all duration-300 ${
                   isActive
-                    ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/50 dark:hover:bg-slate-700/50"
+                    ? "bg-white dark:bg-slate-700/80 text-blue-600 dark:text-emerald-400 shadow-[0_2px_10px_rgba(0,0,0,0.05)] border border-white/80 dark:border-slate-600 scale-105"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50"
                 }`
               }
             >
@@ -198,10 +198,10 @@ const Navbar = ({ setIsLoggedIn }) => {
           {/* Theme Toggle Button */}
           <button
             onClick={() => setIsDark(!isDark)}
-            className="p-2 mr-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="w-10 h-10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-emerald-400 rounded-xl bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm transition-all"
             title="Toggle theme"
           >
-            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
           {/* Emergency Call Button */}
@@ -218,40 +218,40 @@ const Navbar = ({ setIsLoggedIn }) => {
             </a>
           </div>
 
-          {/* Notifications Dropdown (Desktop & Mobile share this bell structure for simplicity or we can duplicate. We will put it here for Desktop, and add another for mobile if needed, but it's flexed here so it shows on Desktop) */}
+          {/* Notifications Dropdown */}
           <div className="relative" ref={notifRef}>
             <div
-              className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              className={`flex items-center justify-center w-10 h-10 rounded-xl cursor-pointer transition-all border shadow-sm ${notifOpen ? 'bg-white dark:bg-slate-900 border-white/80 dark:border-slate-600 text-blue-600 dark:text-emerald-400 scale-105' : 'bg-white/40 dark:bg-slate-900/40 border-white/60 dark:border-slate-700/60 text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-emerald-400'}`}
               onClick={() => setNotifOpen(!notifOpen)}
             >
               <Bell size={18} />
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-[8px] text-white font-bold ring-2 ring-white dark:ring-slate-900">
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] text-white font-extrabold shadow-[0_0_10px_rgba(239,68,68,0.5)] border-2 border-slate-50 dark:border-slate-900">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
             </div>
 
             {notifOpen && (
-              <div className="absolute top-12 right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 w-72 md:w-80 bg-white dark:bg-slate-900 border border-slate-300/50 dark:border-slate-700/50 rounded-xl shadow-2xl z-50 overflow-hidden animate-in zoom-in-95 duration-200">
-                <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+              <div className="absolute top-14 right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[320px] md:w-[380px] bg-white dark:bg-slate-900 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] z-50 overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200 dark:border-slate-700">
+                <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 flex justify-between items-center">
+                  <h3 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-widest">
                     Notifications
                   </h3>
                   {unreadCount > 0 && (
-                    <span className="text-xs bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full font-medium">
-                      {unreadCount} New
+                    <span className="text-[10px] font-extrabold uppercase tracking-wide bg-red-500/20 text-red-600 dark:text-red-400 px-2.5 py-1 rounded-lg border border-red-500/30">
+                      {unreadCount} Unread
                     </span>
                   )}
                 </div>
 
-                <div className="max-h-[300px] overflow-y-auto overscroll-contain">
+                <div className="max-h-[350px] overflow-y-auto overscroll-contain custom-scrollbar">
                   {notifications.length === 0 ? (
-                    <div className="p-6 text-center text-slate-500 text-sm">
-                      No notifications yet
+                    <div className="p-8 text-center text-slate-500 dark:text-slate-400 text-sm font-bold bg-white/20 dark:bg-slate-900/20">
+                      SYSTEM CLEAR. NO ACTIVE ALERTS.
                     </div>
                   ) : (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col p-2 space-y-2">
                       {notifications.map((notif) => {
                         const isUnread =
                           currentUser && !notif.readBy.includes(currentUser.id);
@@ -259,29 +259,31 @@ const Navbar = ({ setIsLoggedIn }) => {
                           <div
                             key={notif._id}
                             onClick={() => isUnread && markAsRead(notif._id)}
-                            className={`p-4 border-b border-slate-200 dark:border-slate-800 transition-colors cursor-pointer ${
+                            className={`p-4 rounded-xl border transition-all cursor-pointer ${
                               isUnread
-                                ? "bg-slate-50/80 dark:bg-slate-800/80 hover:bg-slate-100/80 dark:hover:bg-slate-700/80"
-                                : "bg-transparent hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
+                                ? "bg-white/60 dark:bg-slate-800/80 border-blue-200 dark:border-emerald-500/30 shadow-[0_2px_10px_rgba(0,0,0,0.05)]"
+                                : "bg-transparent border-transparent hover:bg-white/40 dark:hover:bg-slate-800/40 hover:border-white/20 dark:hover:border-slate-700/30"
                             }`}
                           >
-                            <div className="flex justify-between items-start mb-1 gap-2">
+                            <div className="flex justify-between items-start mb-1.5 gap-2">
                               <h4
-                                className={`text-sm ${isUnread ? "font-semibold text-slate-900 dark:text-white" : "font-medium text-slate-600 dark:text-slate-300"}`}
+                                className={`text-sm tracking-tight ${isUnread ? "font-extrabold text-slate-900 dark:text-emerald-400" : "font-bold text-slate-600 dark:text-slate-300"}`}
                               >
                                 {notif.title}
                               </h4>
                               {isUnread && (
-                                <span className="w-2 h-2 rounded-full bg-blue-500 mt-1 flex-shrink-0"></span>
+                                <span className="w-2.5 h-2.5 rounded-full bg-blue-500 dark:bg-emerald-500 mt-1 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
                               )}
                             </div>
                             <p
-                              className={`text-xs ${isUnread ? "text-slate-600 dark:text-slate-300" : "text-slate-500"}`}
+                              className={`text-xs leading-relaxed ${isUnread ? "text-slate-700 dark:text-slate-200 font-medium" : "text-slate-500 dark:text-slate-400"}`}
                             >
                               {notif.message}
                             </p>
-                            <span className="text-[10px] text-slate-500 mt-2 block">
-                              {new Date(notif.createdAt).toLocaleDateString()}
+                            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-3 block uppercase tracking-widest font-mono">
+                              {new Date(notif.createdAt).toLocaleString(undefined, {
+                                month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                              })}
                             </span>
                           </div>
                         );
@@ -299,38 +301,42 @@ const Navbar = ({ setIsLoggedIn }) => {
             className="flex items-center gap-3 cursor-pointer group"
           >
             <div className="hidden md:flex flex-col items-end">
-              <span className="text-xs text-slate-700 dark:text-gray-200 font-semibold">
-                Administrator
+              <span className="text-[11px] text-slate-800 dark:text-gray-200 font-extrabold uppercase tracking-widest">
+                {currentUser?.username || "Administrator"}
               </span>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span className="text-[10px] text-emerald-500 font-medium">
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
+                <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-extrabold uppercase tracking-widest font-mono">
                   Online
                 </span>
               </div>
             </div>
-            <div className="p-2 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 group-hover:border-slate-400 dark:group-hover:border-slate-600 transition-colors">
+            <div className="p-2.5 rounded-xl bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/60 group-hover:bg-white dark:group-hover:bg-slate-800 group-hover:border-blue-200 dark:group-hover:border-emerald-500/50 shadow-sm transition-all">
               <User
                 size={18}
-                className="text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white"
+                className="text-slate-600 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-emerald-400"
               />
             </div>
           </div>
 
-          {/* Dropdown */}
           {dropdownOpen && (
-            <div className="absolute top-14 right-0 bg-white dark:bg-slate-900 text-slate-700 dark:text-gray-200 rounded-lg shadow-xl w-60 py-2 z-50 border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200 ring-1 ring-black/5">
-              <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 mb-1">
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">
-                  Account
+            <div className="absolute top-16 right-0 bg-white dark:bg-slate-900 text-slate-700 dark:text-gray-200 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] w-64 p-2 z-50 animate-in fade-in zoom-in-95 duration-200 border border-slate-200 dark:border-slate-700">
+              <div className="px-4 py-3 mb-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/50">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-widest">
+                  System Account
+                </p>
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate mt-0.5">
+                  {currentUser?.email || "admin@visitrack.com"}
                 </p>
               </div>
 
               <button
                 onClick={handleOccurrenceClick}
-                className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm transition-colors text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/60 dark:hover:bg-slate-800/80 text-sm font-bold transition-all text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-emerald-400"
               >
-                <Book size={16} className="text-blue-500" />
+                <div className="p-1.5 bg-blue-100/50 dark:bg-emerald-500/10 rounded-lg text-blue-600 dark:text-emerald-400">
+                  <Book size={16} />
+                </div>
                 Incident Report
               </button>
 
@@ -339,19 +345,23 @@ const Navbar = ({ setIsLoggedIn }) => {
                   navigate("/profile");
                   setDropdownOpen(false);
                 }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm transition-colors text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/60 dark:hover:bg-slate-800/80 text-sm font-bold transition-all text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-emerald-400"
               >
-                <Shield size={16} className="text-emerald-500" />
+                <div className="p-1.5 bg-indigo-100/50 dark:bg-teal-500/10 rounded-lg text-indigo-600 dark:text-teal-400">
+                  <Shield size={16} />
+                </div>
                 Security Profile
               </button>
 
-              <div className="border-t border-slate-200 dark:border-slate-800 my-1"></div>
+              <div className="border-t border-white/40 dark:border-slate-700/50 my-2"></div>
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-900/10 text-sm text-red-400/90 hover:text-red-400 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 dark:hover:bg-red-500/20 text-sm font-bold text-red-500 dark:text-red-400 transition-all border border-transparent hover:border-red-500/30"
               >
-                <LogOut size={16} />
+                <div className="p-1.5 bg-red-100/50 dark:bg-red-500/10 rounded-lg">
+                  <LogOut size={16} />
+                </div>
                 Sign Out
               </button>
             </div>
@@ -369,32 +379,32 @@ const Navbar = ({ setIsLoggedIn }) => {
 
       {/* Mobile Sidebar */}
       <nav
-        className={`fixed top-0 left-0 w-72 h-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl text-slate-800 dark:text-gray-100 z-40 transform ${
+        className={`fixed top-0 left-0 w-80 h-full glass-panel dark:glass-panel-dark bg-white/95 dark:bg-slate-900/95 backdrop-blur-3xl text-slate-800 dark:text-gray-100 z-40 transform ${
           menuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 md:hidden shadow-2xl border-r border-slate-200 dark:border-slate-800`}
+        } transition-transform duration-500 md:hidden shadow-2xl border-r border-white/50 dark:border-slate-700/50 flex flex-col`}
       >
-        <div className="flex items-center gap-4 p-6 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-4 p-8 border-b border-white/40 dark:border-slate-800">
           <img
             src="./magnetlogo.jpg"
             alt="Institution Logo"
-            className="w-10 h-10 rounded-full border border-slate-300 dark:border-slate-700"
+            className="w-12 h-12 rounded-2xl border border-white/80 dark:border-slate-700 shadow-md"
           />
           <div>
-            <h1 className="text-lg font-bold">Visitrack</h1>
-            <p className="text-xs text-slate-500">System Mobile</p>
+            <h1 className="text-xl font-extrabold" style={{ fontFamily: 'Outfit, sans-serif' }}>VISITRACK<span className="text-blue-600 dark:text-emerald-400">.OS</span></h1>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mobile Terminal</p>
           </div>
         </div>
 
-        <ul className="mt-6 space-y-1 px-3">
+        <ul className="flex-1 overflow-y-auto mt-6 space-y-2 px-5">
           {navItems.map((item) => (
             <li key={item.path}>
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  `flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all border ${
                     isActive
-                      ? "bg-blue-600/10 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                      ? "bg-white/80 dark:bg-slate-800 border-white dark:border-slate-600 text-blue-600 dark:text-emerald-400 shadow-[0_4px_15px_rgba(0,0,0,0.05)]"
+                      : "bg-transparent border-transparent text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white"
                   }`
                 }
                 onClick={() => setMenuOpen(false)}
@@ -406,13 +416,13 @@ const Navbar = ({ setIsLoggedIn }) => {
           ))}
         </ul>
 
-        <div className="absolute bottom-0 w-full p-4 border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
+        <div className="p-6 border-t border-white/40 dark:border-slate-800 bg-white/20 dark:bg-slate-900/20">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-red-900/20 text-slate-600 dark:text-slate-300 hover:text-red-400 rounded-lg transition-all border border-slate-300 dark:border-slate-700 hover:border-red-900/30"
+            className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold rounded-2xl transition-all border border-red-500/20 hover:border-red-500/40"
           >
-            <LogOut size={16} />
-            <span className="text-sm font-medium">Log Out</span>
+            <LogOut size={18} />
+            <span className="uppercase tracking-widest text-[11px]">Sign Out</span>
           </button>
         </div>
       </nav>

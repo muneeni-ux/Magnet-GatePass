@@ -8,7 +8,8 @@ import {
   LayoutDashboard,
   Activity,
   Server,
-  Database
+  Database,
+  Terminal
 } from "lucide-react";
 
 const Home = () => {
@@ -31,63 +32,62 @@ const Home = () => {
       title: "Authentication",
       desc: "Secure login credential verification.",
       icon: ShieldCheck,
-      status: "Secure",
+      status: "SECURE",
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20"
+      border: "border-emerald-500/30"
     },
     {
       title: "Entry Logging",
       desc: "Capture and validate visitor data.",
       icon: Users,
-      status: "Active",
+      status: "ACTIVE",
       color: "text-blue-500",
       bg: "bg-blue-500/10",
-      border: "border-blue-500/20"
+      border: "border-blue-500/30"
     },
     {
       title: "Time Tracking",
       desc: "Precise entry and exit timestamps.",
       icon: Clock,
-      status: "Synced",
+      status: "SYNCED",
       color: "text-amber-500",
       bg: "bg-amber-500/10",
-      border: "border-amber-500/20"
+      border: "border-amber-500/30"
     },
     {
       title: "Administration",
       desc: "Centralized control and oversight.",
       icon: LayoutDashboard,
-      status: "Restricted",
+      status: "RESTRICTED",
       color: "text-rose-500",
       bg: "bg-rose-500/10",
-      border: "border-rose-500/20"
+      border: "border-rose-500/30"
     },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-gray-100 font-sans relative overflow-hidden flex flex-col pt-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] text-slate-800 dark:text-gray-100 font-sans relative overflow-hidden flex flex-col pt-[70px] cyber-grid">
       
-      {/* Background Subtle Grid */}
-      <div className="absolute inset-0 z-0 opacity-[0.03]" 
-           style={{
-             backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
-             backgroundSize: "60px 60px"
-           }}>
-      </div>
+      {/* Decorative Orbs */}
+      <div className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-blue-500/10 dark:bg-blue-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-1/4 -right-32 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse delay-700"></div>
 
-      {/* Header Status Bar */}
-      <div className="w-full bg-white/80 dark:bg-slate-800/80 border-b border-slate-300/50 dark:border-slate-700/50 py-2 flex justify-between items-center px-6 backdrop-blur-sm z-10 text-xs font-medium">
-          <div className="flex items-center gap-3">
-              <span className="text-slate-500 dark:text-slate-400">System Status:</span>
-              <span className={`px-2 py-0.5 rounded-full ${systemStatus === "Online" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"}`}>
+      {/* Header Status Bar (Sub-nav) */}
+      <div className="w-full glass-panel dark:glass-panel-dark border-x-0 border-t-0 border-b border-white/60 dark:border-slate-800/80 py-2.5 flex justify-between items-center px-8 z-10 text-[10px] uppercase tracking-widest font-extrabold font-mono shadow-sm">
+          <div className="flex items-center gap-4">
+              <span className="text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                <Terminal size={12} />
+                Network Status:
+              </span>
+              <span className={`px-2.5 py-1 rounded-md border ${systemStatus === "Online" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30" : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"} shadow-inner`}>
                   {systemStatus}
               </span>
           </div>
-          <div className="flex items-center gap-4 text-slate-500">
-              <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                  <span>Server Connected</span>
+          <div className="hidden sm:flex items-center gap-4 text-slate-500 dark:text-slate-400">
+              <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${systemStatus === "Online" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" : "bg-amber-500"}`}></span>
+                  <span>Uplink Maintained</span>
               </div>
           </div>
       </div>
@@ -95,56 +95,68 @@ const Home = () => {
       <div className="flex-grow flex flex-col items-center justify-center p-6 relative z-10">
         
         {/* Main Content */}
-        <div className="max-w-6xl w-full">
+        <div className="max-w-6xl w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             
             {/* Hero Section */}
-            <div className="text-center mb-16 relative">
-                 {/* Soft Blur Behind Title */}
-                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-500/5 blur-[120px] rounded-full -z-10"></div>
+            <div className="text-center mb-20 relative pt-10">
                  
-                 <div className="inline-flex items-center gap-2 border border-slate-300/50 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/50 rounded-full px-4 py-1.5 mb-8">
-                     <Activity size={14} className="text-blue-400" />
-                     <span className="text-xs font-semibold text-blue-300 tracking-wide uppercase">Version 2.0.0 Stable</span>
+                 <div className="inline-flex items-center gap-2 border border-blue-200/50 dark:border-blue-500/30 bg-blue-50/50 dark:bg-blue-500/10 rounded-full px-5 py-2 mb-8 shadow-inner">
+                     <Activity size={14} className="text-blue-600 dark:text-blue-400" />
+                     <span className="text-[10px] font-extrabold text-blue-700 dark:text-blue-300 tracking-widest uppercase font-mono">Core System v2.0.0</span>
                  </div>
 
-                 <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
-                    Visitrack <span className="text-blue-500">OS</span>
+                 <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 drop-shadow-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    VISITRACK<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500 dark:from-emerald-400 dark:to-cyan-400">.OS</span>
                  </h1>
                  
-                 <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-                    Advanced Visitor Management Protocol for Nambale Magnet School.<br/>
-                    <span className="text-slate-500">Secure. Efficient. Compliant.</span>
+                 <p className="text-slate-600 dark:text-slate-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-medium">
+                    Advanced Physical Access Protocol & Security Telemetry.<br/>
+                    <span className="text-slate-400 dark:text-slate-500 font-bold tracking-widest uppercase text-xs mt-2 block">Secure // Efficient // Compliant</span>
                  </p>
             </div>
 
             {/* Dashboard Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 {steps.map((step, i) => (
-                    <div key={i} className="bg-white/50 dark:bg-slate-800/50 border border-slate-300/50 dark:border-slate-700/50 p-6 rounded-xl relative group hover:bg-white dark:hover:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-300 shadow-sm hover:shadow-xl">
+                    <div key={i} className="glass-panel dark:glass-panel-dark p-6 rounded-3xl relative group hover:bg-white/90 dark:hover:bg-[#0a0f1c]/80 transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 hover:shadow-xl border border-white/60 dark:border-slate-700/50">
                         
-                        <div className="flex justify-between items-start mb-5">
-                            <div className={`p-3 rounded-lg ${step.bg} ${step.color}`}>
+                        <div className="flex justify-between items-start mb-8 transition-transform group-hover:scale-105">
+                            <div className={`p-3.5 rounded-2xl ${step.bg} ${step.color} shadow-inner`}>
                                 <step.icon size={24} />
                             </div>
-                            <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${step.bg} ${step.color} border ${step.border}`}>
+                            <span className={`text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-md ${step.bg} ${step.color} border ${step.border} font-mono`}>
                                 {step.status}
                             </span>
                         </div>
                         
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{step.title}</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{step.desc}</p>
+                        <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2" style={{ fontFamily: 'Outfit, sans-serif' }}>{step.title}</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">{step.desc}</p>
                     </div>
                 ))}
             </div>
 
             {/* Action Button */}
-            <div className="text-center pb-10">
+            <div className="text-center pb-20 mt-10">
                 <button
                     onClick={handleGetStarted}
-                    className="group relative inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-slate-900 dark:text-white rounded-lg font-semibold text-sm tracking-wide shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-0.5"
+                    disabled={loading}
+                    className={`group relative inline-flex items-center gap-3 px-10 py-4 rounded-xl font-bold text-sm tracking-widest uppercase transition-all duration-300 shadow-xl border border-transparent hover:border-white/20 ${
+                      loading
+                        ? "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 dark:from-emerald-600 dark:to-cyan-600 dark:hover:from-emerald-500 dark:hover:to-cyan-500 text-white shadow-blue-500/20 dark:shadow-emerald-500/20 hover:shadow-blue-500/40 dark:hover:shadow-emerald-500/40 hover:-translate-y-1"
+                    }`}
                 >
-                    {loading ? "Initializing..." : "Access Dashboard"}
-                    {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
+                    {loading ? (
+                      <>
+                        <Server className="h-5 w-5 animate-pulse" />
+                        Establishing Link...
+                      </>
+                    ) : (
+                      <>
+                        Initialize Dashboard
+                        <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform" />
+                      </>
+                    )}
                 </button>
             </div>
 
