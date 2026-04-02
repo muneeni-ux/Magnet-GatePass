@@ -1,6 +1,6 @@
 import { openDB } from 'idb';
 
-const DB_NAME = 'NambaleMagnetMMS';
+const DB_NAME = 'NambaleVisiTrackMMS';
 const STORE_NAME = 'sync-visitors';
 
 // Initialize the IndexedDB

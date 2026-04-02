@@ -21,48 +21,48 @@ import {
 
 const links = [
   {
-    to: "/magnet/admin/dashboard/users",
+    to: "/visitrack/admin/dashboard/users",
     label: "Users",
     icon: <Users2 size={18} />,
   },
   {
-    to: "/magnet/admin/dashboard/analytics",
+    to: "/visitrack/admin/dashboard/analytics",
     label: "Analytics",
     icon: <LineChart size={18} />,
   },
   {
-    to: "/magnet/admin/dashboard/visitorsdetails",
+    to: "/visitrack/admin/dashboard/visitorsdetails",
     label: "Visitors Details",
     icon: <FileText size={18} />,
   },
   {
-    to: "/magnet/admin/dashboard/occurrence",
+    to: "/visitrack/admin/dashboard/occurrence",
     label: "Occurrences",
     icon: <FileClockIcon size={18} />,
   },
   {
-    to: "/magnet/admin/dashboard/inquiry",
+    to: "/visitrack/admin/dashboard/inquiry",
     label: "Inquiry",
     icon: <User size={18} />,
   },
   {
-    to: "/magnet/admin/dashboard/faq",
+    to: "/visitrack/admin/dashboard/faq",
     label: "FAQ",
     icon: <MessageCircleDashed size={18} />,
   },
   {
-    to: "/magnet/admin/dashboard/notifications",
+    to: "/visitrack/admin/dashboard/notifications",
     label: "Notifications",
     icon: <Bell size={18} />,
   },
   {
-    to: "/magnet/admin/dashboard/locations",
+    to: "/visitrack/admin/dashboard/locations",
     label: "Locations",
     icon: <MapPin size={18} />,
   },
   
   {
-    to: "/magnet/admin/dashboard/staff-roster",
+    to: "/visitrack/admin/dashboard/staff-roster",
     label: "Staff Roster",
     icon: <UserCheck size={18} />,
   },
@@ -80,6 +80,13 @@ const AdminDashboard = () => {
   }, [navigate]);
 
   useEffect(() => {
+    // 🎨 Force Light Mode Restoration
+    // This removes the 'dark' class from the document root whenever an Admin enters the portal.
+    // Preserves the vibrant, premium light-ui design regardless of Guard's theme setting.
+    document.documentElement.classList.remove('dark');
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem("adminToken");
     if (!token) return;
 
@@ -94,7 +101,10 @@ const AdminDashboard = () => {
   }, [handleLogout]);
 
   return (
-    <div className="flex h-screen font-sans bg-slate-50 text-slate-800 selection:bg-blue-100 selection:text-blue-900">
+    <div className="flex h-screen font-sans bg-[#f8fafc] text-slate-800 selection:bg-cyan-100 selection:text-cyan-900 overflow-hidden relative">
+      {/* Background Ambient Glows */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.03),transparent)] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/5 blur-[120px] rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none" />
         {/* ───── Sidebar ───── */}
       <aside
         className={`fixed z-30 top-[20px] bottom-[20px] left-[20px] rounded-3xl h-[calc(100vh-40px)] w-[260px] transform bg-[#09090b]/95 backdrop-blur-3xl border border-white/10 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:translate-x-0 ${
@@ -174,8 +184,8 @@ const AdminDashboard = () => {
           open ? "md:ml-[300px]" : "md:ml-[20px]"
         }`}
       >
-        {/* Top bar (Apple Glassmorphism) */}
-        <div className="mx-4 md:mx-6 mt-4 md:mt-5 mb-2 px-6 py-4 bg-white/60 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl shrink-0 z-10 sticky top-4 flex items-center justify-between">
+        {/* Top bar (Premium Ultra-Glass) */}
+        <div className="mx-4 md:mx-6 mt-4 md:mt-5 mb-2 px-8 py-5 bg-white/70 backdrop-blur-[40px] border border-white/80 shadow-[0_20px_50px_rgba(0,0,0,0.04),0_1px_1px_rgba(0,0,0,0.02)] rounded-[2.5rem] shrink-0 z-10 sticky top-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             {/* Mobile menu button */}
             <button
@@ -187,12 +197,12 @@ const AdminDashboard = () => {
 
             {/* Title */}
             <div>
-              <h1 className="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-[-0.02em] leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 <span className="md:hidden">Visitrack</span>
                 <span className="hidden md:inline">Administration Portal</span>
               </h1>
-              <p className="text-xs text-slate-500 font-semibold tracking-wider uppercase hidden sm:block mt-1">
-                System Overview & Management
+              <p className="text-[10px] text-slate-400 font-bold tracking-[0.15em] uppercase hidden sm:block mt-2">
+                System Intelligence & Oversight
               </p>
             </div>
           </div>
@@ -201,12 +211,12 @@ const AdminDashboard = () => {
           <div className="flex items-center gap-3 md:gap-5">
             {/* Emergency Button */}
             <Link
-              to="/magnet/admin/dashboard/emergency"
-              className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500 text-red-600 hover:text-white border border-red-500/20 hover:border-red-500 px-4 py-2.5 rounded-2xl transition-all duration-300 shadow-sm group font-bold tracking-wide"
+              to="/visitrack/admin/dashboard/emergency"
+              className="flex items-center gap-3 bg-rose-500/10 hover:bg-rose-500 text-rose-600 hover:text-white border border-rose-500/20 hover:border-rose-500 px-5 py-3 rounded-2xl transition-all duration-500 shadow-[0_0_20px_rgba(244,63,94,0.1)] hover:shadow-[0_10px_25px_rgba(244,63,94,0.3)] group font-black tracking-tighter"
             >
-              <AlertTriangle size={18} className="group-hover:animate-pulse" />
-              <span className="text-sm hidden lg:inline">
-                Emergency Protocol
+              <AlertTriangle size={18} className="group-hover:rotate-12 transition-transform" />
+              <span className="text-xs hidden lg:inline uppercase tracking-widest pt-0.5">
+                SOS Protocol
               </span>
             </Link>
 

@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 const AdminRoute = ({ children }) => {
   const token = localStorage.getItem('adminToken');
-  return token ? children : <Navigate to="/magnet/admin" replace />;
+  return token ? children : <Navigate to="/visitrack/admin" replace />;
 };
 
 export default AdminRoute;

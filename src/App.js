@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Login from './components/Login';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollTop';
+import ResetPassword from './pages/ResetPassword';
 import { Toaster } from 'react-hot-toast';
 // Admin components
 import Signup from './components/SignUp';
@@ -38,7 +39,7 @@ const App = () => {
   const isAdmin = user?.isAdmin;
 
   // Paths where Navbar/Footer should be hidden
-  const hideNavAndFooterPaths = ['/', '/magnet/admin'];
+  const hideNavAndFooterPaths = ['/', '/visitrack/admin'];
 
   const shouldHideNavAndFooter = hideNavAndFooterPaths.includes(location.pathname);
 
@@ -75,6 +76,7 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<Login onLogin={() => { }} />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {isLoggedIn && !isAdmin && (
           <>
@@ -89,9 +91,9 @@ const App = () => {
         )}
 
         {/* Admin Routes */}
-        <Route path="/magnet/admin" element={<Login />} />
+        <Route path="/visitrack/admin" element={<Login />} />
         <Route
-          path="/magnet/admin/dashboard/*"
+          path="/visitrack/admin/dashboard/*"
           element={
             <ProtectedRoute>
               <AdminDashboard />

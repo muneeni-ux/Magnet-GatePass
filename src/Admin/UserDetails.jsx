@@ -152,6 +152,34 @@ export default function UserDetails() {
     }
   };
 
+  const resetPassword = async (id) => {
+    try {
+      const token = localStorage.getItem("adminToken") || localStorage.getItem("token");
+      await axios.put(`${SERVER_URL}/api/auth/users/${id}/reset-password`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Password reset to: VisiTrack@123", { duration: 5000 });
+    } catch (err) {
+      console.error(err);
+      toast.error("Password reset failed");
+    }
+  };
+
+  const toggleStatus = async (id) => {
+    try {
+      const token = localStorage.getItem("adminToken") || localStorage.getItem("token");
+      const res = await axios.patch(`${SERVER_URL}/api/auth/users/${id}/toggle-status`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(res.data.message);
+      // Optimistically update local state
+      setUsers(prev => prev.map(u => u._id === id ? { ...u, isActive: res.data.isActive } : u));
+    } catch (err) {
+      console.error(err);
+      toast.error("Status toggle failed");
+    }
+  };
+
   // ──────────────────────────────────
   // derived list (filter + search)
   // ──────────────────────────────────
@@ -196,28 +224,35 @@ export default function UserDetails() {
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
           
-          <div className="flex items-center gap-5 relative z-10">
-            <div className="p-4 bg-gradient-to-br from-emerald-500 to-teal-500 text-white rounded-2xl shadow-lg">
-              <ShieldCheck className="w-7 h-7" />
+          <div className="flex items-center gap-6 relative z-10 transition-all">
+            <div className="p-5 bg-gradient-to-br from-emerald-400 to-cyan-500 text-white rounded-3xl shadow-[0_10px_30px_rgba(16,185,129,0.3)] border border-white/20">
+              <ShieldCheck className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-[-0.03em]" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 System Access & Users
               </h1>
               <div className="flex items-center gap-4 mt-2">
-                <p className="text-sm md:text-base text-slate-500 font-medium tracking-wide">
+                <p className="text-sm md:text-base text-slate-500 font-bold tracking-tight">
                   Total Registered:{" "}
-                  <span className="font-extrabold text-slate-700">
+                  <span className="font-black text-slate-900">
                     {users.length}
                   </span>
                 </p>
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
-                <p className="text-sm md:text-base text-slate-500 font-medium tracking-wide">
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+                <p className="text-sm md:text-base text-slate-500 font-bold tracking-tight">
                   Administrators:{" "}
-                  <span className="font-extrabold text-emerald-600">
+                  <span className="font-black text-emerald-500">
                     {totalAdmins}
+                  </span>
+                </p>
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+                <p className="text-sm md:text-base text-slate-500 font-bold tracking-tight">
+                  Active Security:{" "}
+                  <span className="font-black text-cyan-500">
+                    {users.filter(u => u.isActive !== false).length}
                   </span>
                 </p>
               </div>
@@ -342,14 +377,42 @@ export default function UserDetails() {
                             <Pencil size={15} />
                           </button>
                           <button
+                            onClick={() => resetPassword(u._id)}
+                            className="p-2 text-slate-400 hover:text-amber-600 bg-white/50 border border-white/60 hover:bg-amber-50 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all flex items-center justify-center gap-1.5"
+                            title="Reset Password to VisiTrack@123"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                          </button>
+                          <button
+                            onClick={() => toggleStatus(u._id)}
+                            className={`p-2.5 border rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-all flex items-center justify-center gap-1.5 group/btn ${
+                              u.isActive !== false
+                                ? "text-emerald-500 border-emerald-200 bg-emerald-50/50 hover:bg-emerald-500 hover:text-white"
+                                : "text-rose-500 border-rose-200 bg-rose-50/50 hover:bg-rose-500 hover:text-white"
+                            }`}
+                            title={u.isActive !== false ? "Deactivate User" : "Activate User"}
+                          >
+                            {u.isActive !== false ? (
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black uppercase tracking-widest hidden lg:inline">Active</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black uppercase tracking-widest hidden lg:inline">Locked</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                              </div>
+                            )}
+                          </button>
+                          <button
                             onClick={() => {
                               setSelection(u);
                               setShowDel(true);
                             }}
-                            className="p-2 text-slate-400 hover:text-red-600 bg-white/50 border border-white/60 hover:bg-red-50 hover:border-red-100 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all flex items-center justify-center"
+                            className="p-2.5 text-slate-400 hover:text-white bg-white/50 border border-slate-200 hover:bg-red-500 hover:border-red-500 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-all flex items-center justify-center"
                             title="Revoke Access"
                           >
-                            <Trash2 size={15} />
+                            <Trash2 size={16} strokeWidth={2.5} />
                           </button>
                         </div>
                       </td>

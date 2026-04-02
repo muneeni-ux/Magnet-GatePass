@@ -46,7 +46,7 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', '*'],
   credentials: true, // Allow cookies or credentials if necessary
 }));
@@ -60,10 +60,10 @@ app.use(helmet());
 app.use(compression());
 app.use(morgan("dev"));
 
-// Rate Limiting to Prevent Abuse
+// Rate Limiting to Prevent Abuse (Relaxed for development stability)
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: 500, // Increased from 100 to 500 to accommodate polling/dev traffic
   message: "Too many requests from this IP, please try again later.",
 }));
 

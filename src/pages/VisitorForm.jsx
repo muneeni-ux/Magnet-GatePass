@@ -284,7 +284,7 @@ export default function VisitorForm() {
           }
 
           if (formData.nature !== 'staff') {
-            let smsMessage = `VISITRACK\nVisitor: ${formData.name}\nID: ${formData.isUnderage ? "Minor" : formData.idNumber}\nDest: ${finalDepartmentForDB || "General"}\nGate: ${gateNameForSMS}`;
+            let smsMessage = `VISITRACK\nVisitor: ${formData.name}\nID: ${formData.isUnderage ? "Minor" : maskIdNumber(formData.idNumber)}\nDest: ${finalDepartmentForDB || "General"}\nGate: ${gateNameForSMS}`;
             if (formData.isDisabled) smsMessage += `\nALERT: Needs assistance/vehicle!`;
             if (formData.isGroup) smsMessage += `\nGroup of ${formData.groupSize}`;
             

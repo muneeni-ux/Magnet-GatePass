@@ -195,9 +195,9 @@ const Signup = () => {
       </div>
       
       {/* Footer Text */}
-      <div className="absolute bottom-6 text-[10px] text-slate-500 dark:text-slate-600 font-extrabold uppercase tracking-widest font-mono">
-          &copy; {new Date().getFullYear()} Magnet Nambale // Security Protocol
-      </div>
+        <p className="mt-8 text-xs text-center text-slate-500 font-bold uppercase tracking-widest bg-white/40 dark:bg-slate-900/40 p-2 rounded-xl backdrop-blur-md shadow-sm border border-white/40 dark:border-slate-800/60 inline-flex items-center gap-2">
+          &copy; {new Date().getFullYear()} VisiTrack // Security Protocol
+        </p>
     </div>
   );
 };

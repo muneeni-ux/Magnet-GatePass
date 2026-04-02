@@ -96,10 +96,11 @@ const AdminStaffRoster = () => {
       headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold' }, // Blue-500
       alternateRowStyles: { fillColor: [248, 250, 252] }, // Slate-50
       didDrawPage: (data) => {
-        try { doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 20, 20); } catch(e){}
+        // Updated PDF branding
+        try { doc.addImage("/VisiTrack-L3.png", "PNG", 14, 10, 20, 20); } catch(e){}
         doc.setFontSize(16);
         doc.setTextColor(30, 41, 59);
-        doc.text("MAGNET SECURITY SYSTEM", 38, 18);
+        doc.text("VISITRACK SECURITY SYSTEM", 38, 18);
         doc.setFontSize(12);
         doc.setTextColor(100, 116, 139);
         doc.text("Official Staff Roster Report", 38, 24);

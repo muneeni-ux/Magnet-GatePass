@@ -107,20 +107,20 @@ const AdminOccurrence = () => {
       headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [249, 250, 251] },
       didDrawPage: (data) => {
-        try { doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 25, 25); } catch (e) {}
+        try { doc.addImage("/VisiTrack-L3.png", "PNG", 14, 10, 25, 25); } catch (e) {}
         doc.setFontSize(18);
         doc.setTextColor(30, 41, 59);
-        doc.text("MAGNET SECURITY SYSTEM", 45, 20);
+        doc.text("VISITRACK SECURITY SYSTEM", 45, 20);
         doc.setFontSize(11);
         doc.setTextColor(100, 116, 139);
-        doc.text("Official Security Occurrences & Logs Report", 45, 26);
+        doc.text("Security Occurrence & Incident Log", 45, 26);
         doc.setFontSize(9);
         doc.text(`Generated on: ${dateStr}`, 45, 32);
         doc.setDrawColor(226, 232, 240);
         doc.line(14, 40, pageWidth - 14, 40);
         doc.setFontSize(9);
         doc.setTextColor(148, 163, 184);
-        doc.text("© 2026 Magnet Security System. All rights reserved.", 14, pageHeight - 10);
+        doc.text("© 2026 VisiTrack Security System. All rights reserved.", 14, pageHeight - 10);
         const pageNum = doc.internal.getNumberOfPages();
         doc.text(`Page ${pageNum}`, pageWidth - 25, pageHeight - 10);
       },

@@ -47,6 +47,8 @@ const AdminEmergency = () => {
     `,
   });
 
+  const currentHeadcount = activeVisitors.reduce((sum, v) => sum + (v.isGroup && v.groupSize > 1 ? v.groupSize : 1), 0);
+
   return (
     <div className="min-h-screen text-slate-800 font-sans pb-10 relative">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -73,7 +75,7 @@ const AdminEmergency = () => {
                 Current Headcount
               </p>
               <p className="text-3xl font-black text-white">
-                {activeVisitors.length}
+                {currentHeadcount}
               </p>
             </div>
             <button
@@ -122,7 +124,7 @@ const AdminEmergency = () => {
                 <p className="text-sm font-bold mt-2">
                   Total Expected:{" "}
                   <span className="text-red-600 text-xl">
-                    {activeVisitors.length}
+                    {currentHeadcount}
                   </span>
                 </p>
               </div>
@@ -184,6 +186,11 @@ const AdminEmergency = () => {
                           {v.nature === 'staff' && (
                             <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-orange-100 text-orange-700 uppercase tracking-widest border border-orange-200 print:border-black print:text-black">
                               Staff
+                            </span>
+                          )}
+                          {v.isGroup && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-purple-100 text-purple-700 uppercase tracking-widest border border-purple-200 print:border-black print:text-black whitespace-nowrap">
+                              Group ({v.groupSize})
                             </span>
                           )}
                         </div>

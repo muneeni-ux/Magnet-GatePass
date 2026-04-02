@@ -81,11 +81,11 @@ export default function AdminReports() {
     const dateStr = format(new Date(), "dd/MM/yyyy HH:mm:ss");
 
     const addHeaderAndFooter = (doc) => {
-        try { doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 25, 25); } catch (e) {}
+        try { doc.addImage("/VisiTrack-L3.png", "PNG", 14, 10, 25, 25); } catch (e) {}
         
         doc.setFontSize(18);
         doc.setTextColor(30, 41, 59);
-        doc.text("MAGNET SECURITY SYSTEM", 45, 20);
+        doc.text("VISITRACK SECURITY SYSTEM", 45, 20);
         
         doc.setFontSize(11);
         doc.setTextColor(100, 116, 139);
@@ -99,7 +99,7 @@ export default function AdminReports() {
 
         doc.setFontSize(9);
         doc.setTextColor(148, 163, 184);
-        doc.text("© 2026 Magnet Security System. All rights reserved.", 14, pageHeight - 10);
+        doc.text("© 2026 VisiTrack Security System. All rights reserved.", 14, pageHeight - 10);
         doc.text(`Page ${doc.internal.getNumberOfPages()}`, pageWidth - 25, pageHeight - 10);
     };
 

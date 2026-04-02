@@ -54,9 +54,26 @@ const Navbar = ({ setIsLoggedIn }) => {
 
   useEffect(() => {
     fetchNotifications();
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
+    
+    // Easier method logic: Only poll when the tab is visible and increase interval to reduce DB requests
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        fetchNotifications();
+      }
+    }, 60000); 
+
+    // Fetch immediately when user returns to the tab
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchNotifications();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   const fetchNotifications = async () => {
@@ -128,7 +145,7 @@ const Navbar = ({ setIsLoggedIn }) => {
   };
 
   const base64Logo =
-    "./magnetlogo.jpg";
+    "./VisiTrack-L5.png";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -385,7 +402,7 @@ const Navbar = ({ setIsLoggedIn }) => {
       >
         <div className="flex items-center gap-4 p-8 border-b border-white/40 dark:border-slate-800">
           <img
-            src="./magnetlogo.jpg"
+            src="./VisiTrack-L5.png"
             alt="Institution Logo"
             className="w-12 h-12 rounded-2xl border border-white/80 dark:border-slate-700 shadow-md"
           />

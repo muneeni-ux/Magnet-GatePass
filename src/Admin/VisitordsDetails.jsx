@@ -93,10 +93,10 @@ const VisitorsDetails = () => {
       headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [248, 250, 252] },
       didDrawPage: (data) => {
-        try { doc.addImage("/magnetlogo.jpg", "JPEG", 14, 10, 20, 20); } catch(e){}
+        try { doc.addImage("/VisiTrack-L3.png", "PNG", 14, 10, 20, 20); } catch(e){}
         doc.setFontSize(16);
         doc.setTextColor(30, 41, 59);
-        doc.text("MAGNET SECURITY SYSTEM", 38, 18);
+        doc.text("VISITRACK SECURITY SYSTEM", 38, 18);
         doc.setFontSize(12);
         doc.setTextColor(100, 116, 139);
         doc.text("Visitor Records & Detail Report", 38, 24);
