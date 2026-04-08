@@ -42,7 +42,7 @@ const initCronJobs = () => {
   console.log('[CRON] Background jobs initialized (5 PM Overstay Alert enabled).');
 
   // Daily DB Backup directly to Admin logic (Disaster Recovery at 3:00 AM)
-  cron.schedule('* 3 * * *', async () => {
+  cron.schedule('0 3 * * *', async () => {
     console.log('[CRON] Starting Disaster Recovery Database Backup (3:00 AM)...');
     try {
       const allVisitors = await Visitor.find({}).lean();

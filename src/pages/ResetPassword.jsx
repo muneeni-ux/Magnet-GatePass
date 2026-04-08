@@ -86,7 +86,7 @@ const ResetPassword = () => {
           y: [0, -30, 0]
         }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[10%] left-[10%] w-[600px] h-[600px] bg-cyan-600/20 rounded-full blur-[140px] mix-blend-screen"
+        className="absolute top-[10%] left-[10%] w-[600px] h-[600px] bg-blue-600/20 dark:bg-cyan-600/20 rounded-full blur-[140px] mix-blend-screen"
       />
       <motion.div 
         animate={{ 
@@ -96,7 +96,7 @@ const ResetPassword = () => {
           y: [0, 60, 0]
         }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[5%] right-[15%] w-[500px] h-[500px] bg-emerald-600/20 rounded-full blur-[140px] mix-blend-screen"
+        className="absolute bottom-[5%] right-[15%] w-[500px] h-[500px] bg-indigo-600/20 dark:bg-emerald-600/20 rounded-full blur-[140px] mix-blend-screen"
       />
 
       <motion.div
@@ -117,8 +117,8 @@ const ResetPassword = () => {
               transition={{ delay: 0.3, type: "spring" }}
               className="mb-8 relative"
             >
-              <div className="relative z-10 p-5 bg-gradient-to-tr from-cyan-500/10 to-emerald-500/10 rounded-[2rem] border border-white/10 shadow-2xl group flex items-center justify-center">
-                <Lock className="h-10 w-10 text-cyan-400 group-hover:rotate-12 transition-transform duration-500" />
+              <div className="relative z-10 p-5 bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 dark:from-cyan-500/10 dark:to-emerald-500/10 rounded-[2rem] border border-white/10 shadow-2xl group flex items-center justify-center">
+                <Lock className="h-10 w-10 text-blue-500 dark:text-cyan-400 group-hover:rotate-12 transition-transform duration-500" />
                 <AnimatePresence>
                   {isLoading && (
                     <motion.div 
@@ -128,12 +128,12 @@ const ResetPassword = () => {
                       exit={{ scale: 0.5, opacity: 0 }}
                       className="absolute -top-1 -right-1"
                     >
-                      <ClipLoader size={20} color="#22d3ee" speedMultiplier={0.6} />
+                      <ClipLoader size={20} color="#3b82f6" cssOverride={{ display: 'block' }} speedMultiplier={0.6} />
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
-              <div className="absolute inset-0 bg-cyan-400/20 blur-3xl rounded-full -z-10 animate-pulse"></div>
+              <div className="absolute inset-0 bg-blue-500/20 dark:bg-cyan-400/20 blur-3xl rounded-full -z-10 animate-pulse"></div>
             </motion.div>
 
             <motion.h1 
@@ -152,7 +152,7 @@ const ResetPassword = () => {
               transition={{ delay: 0.6 }}
               className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full"
             >
-              <Sparkles size={12} className="text-cyan-400" />
+              <Sparkles size={12} className="text-blue-500 dark:text-cyan-400" />
               <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-[0.2em] pt-0.5">
                 Authorized Override Mode
               </p>
@@ -183,13 +183,13 @@ const ResetPassword = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoFocus
-                  className="w-full pl-6 pr-14 py-5 bg-black/40 border border-white/5 rounded-2xl outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all text-lg font-medium text-white shadow-inner place-content-center placeholder:text-slate-700"
+                  className="w-full pl-6 pr-14 py-5 bg-black/40 border border-white/5 rounded-[1.5rem] outline-none focus:border-blue-500/50 dark:focus:border-cyan-500/50 focus:ring-1 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all font-mono text-sm text-white shadow-inner place-content-center placeholder:text-slate-600"
                   placeholder="Create high-entropy password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-600 hover:text-cyan-400 transition-colors"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-blue-500 dark:hover:text-cyan-400 transition-colors"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -236,7 +236,7 @@ const ResetPassword = () => {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-6 py-5 bg-black/40 border border-white/5 rounded-2xl outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 transition-all text-lg font-medium text-white shadow-inner placeholder:text-slate-700"
+                  className="w-full px-6 py-5 bg-black/40 border border-white/5 rounded-[1.5rem] outline-none focus:border-indigo-500/50 dark:focus:border-emerald-500/50 focus:ring-1 focus:ring-indigo-500/30 dark:focus:ring-emerald-500/30 transition-all font-mono text-sm text-white shadow-inner placeholder:text-slate-600"
                   placeholder="Repeat for validation"
                 />
                 {confirmPassword && confirmPassword === password && (
@@ -245,7 +245,7 @@ const ResetPassword = () => {
                     animate={{ scale: 1 }}
                     className="absolute right-6 top-1/2 -translate-y-1/2"
                   >
-                    <CheckCircle2 size={20} className="text-emerald-500" />
+                    <CheckCircle2 size={20} className="text-indigo-500 dark:text-emerald-500" />
                   </motion.div>
                 )}
               </div>
@@ -261,10 +261,10 @@ const ResetPassword = () => {
               <button
                 type="submit"
                 disabled={isLoading || !password || password !== confirmPassword}
-                className={`w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.4)] ${
+                className={`w-full py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.3em] transition-all relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.4)] ${
                   isLoading || password !== confirmPassword 
                     ? "bg-slate-800 text-slate-500 cursor-not-allowed opacity-50" 
-                    : "bg-white text-black hover:scale-[1.02] active:scale-[0.98] hover:shadow-cyan-500/20"
+                    : "bg-white text-black hover:scale-[1.02] active:scale-[0.98] hover:shadow-blue-500/20 dark:hover:shadow-cyan-500/20"
                 }`}
               >
                 <span className="relative z-10 flex items-center justify-center gap-3">
@@ -278,7 +278,7 @@ const ResetPassword = () => {
                     initial={{ x: '-100%' }}
                     whileHover={{ x: '100%' }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent pointer-events-none"
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/20 dark:via-cyan-400/20 to-transparent pointer-events-none"
                   />
                 )}
               </button>

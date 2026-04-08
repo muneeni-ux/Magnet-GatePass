@@ -192,6 +192,7 @@ const AdminStaffRoster = () => {
             <input 
               type="date" 
               value={startDate} 
+              max={new Date().toISOString().split("T")[0]}
               onChange={(e) => setStartDate(e.target.value)}
               className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
             />
@@ -201,6 +202,7 @@ const AdminStaffRoster = () => {
             <input 
               type="date" 
               value={endDate} 
+              max={new Date().toISOString().split("T")[0]}
               onChange={(e) => setEndDate(e.target.value)}
               className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
             />

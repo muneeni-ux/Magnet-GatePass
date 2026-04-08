@@ -25,6 +25,7 @@ import Form from './pages/VisitorForm';
 import History from './pages/VisitorHistory';
 import FAQs from './pages/FAQs';
 import Profile from './pages/Profile';
+import HelpDesk from './pages/HelpDesk';
 import AdminInquiry from './Admin/AdminInquiry';
 import AdminNotifications from './Admin/AdminNotifications';
 import AdminLocations from './Admin/AdminLocations';
@@ -86,6 +87,7 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/occurrence" element={<Occurrence />} />
             <Route path="/faq" element={<FAQs />} />
+            <Route path="/helpdesk" element={<HelpDesk />} />
             <Route path="/profile" element={<Profile />} />
           </>
         )}

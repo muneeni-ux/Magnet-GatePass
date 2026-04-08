@@ -16,6 +16,7 @@ import {
   PhoneCall,
   Sun,
   Moon,
+  LifeBuoy,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -123,6 +124,7 @@ const Navbar = ({ setIsLoggedIn }) => {
     { path: "/form", label: "Entry Log", icon: <BookOpen size={18} /> },
     { path: "/history", label: "Archives", icon: <Clock size={18} /> },
     { path: "/about", label: "System Info", icon: <Info size={18} /> },
+    { path: "/helpdesk", label: "Help Desk", icon: <LifeBuoy size={18} /> },
   ];
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -145,7 +147,7 @@ const Navbar = ({ setIsLoggedIn }) => {
   };
 
   const base64Logo =
-    "./VisiTrack-L5.png";
+    "./VisiTrack-L51.png";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -174,7 +176,7 @@ const Navbar = ({ setIsLoggedIn }) => {
             <img
               src={base64Logo}
               alt="Institution Logo"
-              className="relative w-10 h-10 object-cover rounded-xl border border-white/80 dark:border-slate-700 shadow-md group-hover:scale-105 transition-transform duration-300"
+              className="relative w-10 h-10 object-cover rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300"
             />
           </div>
           <div className="flex flex-col">
@@ -402,9 +404,9 @@ const Navbar = ({ setIsLoggedIn }) => {
       >
         <div className="flex items-center gap-4 p-8 border-b border-white/40 dark:border-slate-800">
           <img
-            src="./VisiTrack-L5.png"
+            src="./VisiTrack-L51.png"
             alt="Institution Logo"
-            className="w-12 h-12 rounded-2xl border border-white/80 dark:border-slate-700 shadow-md"
+            className="w-12 h-12 rounded-2xl shadow-md"
           />
           <div>
             <h1 className="text-xl font-extrabold" style={{ fontFamily: 'Outfit, sans-serif' }}>VISITRACK<span className="text-blue-600 dark:text-emerald-400">.OS</span></h1>

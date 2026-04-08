@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HelpCircle, LifeBuoy, Mail, PhoneCall, Bug, ShieldCheck, Activity } from 'lucide-react';
+import { HelpCircle, LifeBuoy, PhoneCall, ShieldCheck, Activity, Send } from 'lucide-react';
 
 function Footer() {
   return (
@@ -63,7 +63,7 @@ function Footer() {
               <h3 className="text-[11px] font-extrabold mb-5 text-slate-800 dark:text-slate-200 uppercase tracking-widest border-b border-slate-200 dark:border-slate-800 pb-2 inline-block md:block">IT Helpdesk</h3>
               <ul className="space-y-3 text-sm font-bold text-slate-600 dark:text-slate-400">
                 <li>
-                  <a href="mailto:mainafrank400@gmail.com" className="flex items-center justify-center md:justify-start gap-2.5 hover:text-blue-600 dark:hover:text-emerald-400 transition-colors group">
+                  <a href="/helpdesk" className="flex items-center justify-center md:justify-start gap-2.5 hover:text-blue-600 dark:hover:text-emerald-400 transition-colors group">
                     <LifeBuoy className="w-4 h-4 text-slate-400 group-hover:text-blue-500 dark:group-hover:text-emerald-500" /> IT Support Post
                   </a>
                 </li>
@@ -74,7 +74,7 @@ function Footer() {
                 </li>
                 <li>
                   <a href="/occurrence" className="flex items-center justify-center md:justify-start gap-2.5 hover:text-blue-600 dark:hover:text-emerald-400 transition-colors group">
-                    <Bug className="w-4 h-4 text-slate-400 group-hover:text-blue-500 dark:group-hover:text-emerald-500" /> Report Issue
+                    <Send className="w-4 h-4 text-slate-400 group-hover:text-blue-500 dark:group-hover:text-emerald-500" /> Report Incident
                   </a>
                 </li>
               </ul>

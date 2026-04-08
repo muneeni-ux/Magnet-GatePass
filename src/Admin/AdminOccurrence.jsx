@@ -186,6 +186,7 @@ const AdminOccurrence = () => {
               type="date"
               className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm shadow-inner cursor-pointer"
               value={filterDate}
+              max={new Date().toISOString().split("T")[0]}
               onChange={(e) => setFilterDate(e.target.value)}
             />
           </div>

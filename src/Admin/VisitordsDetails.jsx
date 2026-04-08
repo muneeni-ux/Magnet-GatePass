@@ -422,6 +422,7 @@ const VisitorsDetails = () => {
               type="date"
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
               value={dateRange.from}
+              max={new Date().toISOString().split("T")[0]}
               onChange={(e) =>
                 setDateRange((prev) => ({ ...prev, from: e.target.value }))
               }
@@ -435,6 +436,7 @@ const VisitorsDetails = () => {
               type="date"
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
               value={dateRange.to}
+              max={new Date().toISOString().split("T")[0]}
               onChange={(e) =>
                 setDateRange((prev) => ({ ...prev, to: e.target.value }))
               }

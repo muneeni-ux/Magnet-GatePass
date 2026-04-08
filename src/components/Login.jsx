@@ -50,7 +50,11 @@ const Login = ({ onLogin }) => {
         setRecoveryError("Server error. Try again.");
       }
     } catch (err) {
-      setRecoveryError("Connection failed.");
+      if (err.message === "Failed to fetch") {
+        setRecoveryError("Network Error: Verification system unreachable.");
+      } else {
+        setRecoveryError("Connection failed.");
+      }
     } finally {
       setForgotLoading(false);
     }
@@ -83,7 +87,11 @@ const Login = ({ onLogin }) => {
         data.user?.isAdmin ? "/visitrack/admin/dashboard/users" : "/home",
       );
     } catch (error) {
-      setErrorMsg(error.message || "Invalid Security Credentials");
+      if (error.message === "Failed to fetch") {
+        setErrorMsg("Network Error: Terminal uplink to central server failed.");
+      } else {
+        setErrorMsg(error.message || "Invalid Security Credentials");
+      }
     } finally {
       setLoading(false);
     }
@@ -104,7 +112,7 @@ const Login = ({ onLogin }) => {
 
             <div className="flex justify-center mb-5 relative">
               <div className="p-2 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-emerald-500/10 dark:to-cyan-500/10 rounded-2xl border border-blue-500/20 dark:border-emerald-500/20 shadow-inner group">
-                <img src="./VisiTrack-L5.png" className="h-10 w-10 object-contain group-hover:scale-110 transition-transform rounded-lg" alt="VisiTrack Logo" />
+                <img src="./VisiTrack-L51.png" className="h-10 w-10 object-contain group-hover:scale-110 transition-transform rounded-lg" alt="VisiTrack Logo" />
               </div>
             </div>
             <h1
@@ -228,40 +236,46 @@ const Login = ({ onLogin }) => {
       {/* Forgot Password Modal */}
       {showForgotModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-[#0f172a]/80 backdrop-blur-md" onClick={() => setShowForgotModal(false)}></div>
-          <div className="bg-[#0f172a] border border-slate-700/50 shadow-2xl rounded-3xl p-8 w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-center mb-5">
-              <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
-                <LockKeyhole className="h-8 w-8 text-emerald-400" />
+          <div className="absolute inset-0 bg-slate-900/40 dark:bg-[#070b14]/80 backdrop-blur-xl" onClick={() => setShowForgotModal(false)}></div>
+          <div className="bg-white/40 dark:bg-[#0a0f1c]/70 backdrop-blur-3xl border border-white/60 dark:border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.1)] dark:shadow-[0_40px_100px_rgba(0,0,0,0.4)] rounded-[2.5rem] p-8 sm:p-10 w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
+            {/* Ambient Modal Blobs */}
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-blue-500/20 dark:bg-emerald-500/20 rounded-full blur-[80px] pointer-events-none"></div>
+            <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-500/20 dark:bg-cyan-500/20 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <div className="flex justify-center mb-6 relative">
+              <div className="p-4 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-emerald-500/10 dark:to-cyan-500/10 rounded-[1.5rem] border border-blue-500/20 dark:border-emerald-500/20 shadow-inner group">
+                <LockKeyhole className="h-8 w-8 text-blue-600 dark:text-emerald-400 group-hover:rotate-12 transition-transform duration-500" />
               </div>
             </div>
-            <h3 className="text-2xl font-black text-white text-center mb-2 tracking-tight">
-              Security ID Overhaul
+            
+            <h3 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-2 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Security Override
             </h3>
-            <p className="text-slate-400 text-[11px] text-center mb-8 font-bold uppercase tracking-[0.15em]">
+            <p className="text-slate-500 dark:text-slate-400 text-[10px] text-center mb-8 font-extrabold uppercase tracking-[0.2em]">
               {recoveryAttempts >= 3 
-                ? "Terminal Access Blocked" 
-                : "Identity verification required to dispatch access keys."}
+                ? "Terminal Access Terminated" 
+                : "Verify Identity to Recover Access Key"}
             </p>
 
             {recoveryAttempts >= 3 ? (
-              <div className="bg-rose-500/10 border border-rose-500/30 p-8 rounded-[2rem] text-center space-y-5 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="flex justify-center">
-                  <div className="p-4 bg-rose-500/20 rounded-[1.5rem] shadow-[0_0_30px_rgba(244,63,94,0.3)]">
-                    <ShieldCheck className="h-10 w-10 text-rose-500" />
+              <div className="bg-red-500/5 dark:bg-red-500/10 border border-red-500/20 p-8 rounded-[2rem] text-center space-y-6 relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <div className="absolute inset-0 bg-gradient-to-t from-red-500/5 to-transparent pointer-events-none"></div>
+                <div className="flex justify-center relative z-10">
+                  <div className="p-4 bg-red-500/10 dark:bg-red-500/20 rounded-full shadow-[0_0_30px_rgba(239,68,68,0.3)]">
+                    <ShieldCheck className="h-10 w-10 text-red-600 dark:text-red-500 animate-pulse" />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="text-white font-black text-xl uppercase tracking-tighter">Identity Restricted</h4>
-                  <p className="text-rose-200/60 text-xs leading-relaxed font-semibold">
-                    The security system has flagged multiple identification mismatches. For the protection of the institution, your terminal profile has been <span className="text-rose-500 font-black underline decoration-rose-500/50 underline-offset-4">suspended</span>.
+                <div className="space-y-2 relative z-10">
+                  <h4 className="text-red-600 dark:text-red-500 font-black text-lg uppercase tracking-widest">Identity Restricted</h4>
+                  <p className="text-red-600/70 dark:text-red-400/80 text-[11px] leading-relaxed font-bold uppercase tracking-wider">
+                    Multiple mismatch detected. Terminal profile has been <span className="text-red-600 dark:text-red-500 font-black underline decoration-red-500/50 underline-offset-4">suspended</span>.
                   </p>
                 </div>
                 
-                <div className="bg-black/40 p-4 rounded-2xl border border-white/5">
-                  <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest leading-loose">
+                <div className="bg-black/5 dark:bg-black/40 p-4 rounded-2xl border border-red-500/10 dark:border-white/5 relative z-10">
+                  <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest leading-loose">
                     Required Action: <br />
-                    <span className="text-white font-extrabold text-[12px]">Report to Chief Security Box</span><br />
+                    <span className="text-slate-900 dark:text-white font-extrabold text-[12px]">Report to Chief Security Box</span><br />
                     or Visiting Duty Administrator
                   </p>
                 </div>
@@ -272,62 +286,62 @@ const Login = ({ onLogin }) => {
                     setShowForgotModal(false);
                     setRecoveryError("");
                   }}
-                  className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl transition-all border border-white/5 active:scale-95"
+                  className="w-full py-4 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl transition-all border border-slate-700/50 shadow-lg active:scale-95 relative z-10"
                 >
                   Exit Terminal
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleForgotSubmit} className="space-y-6">
+              <form onSubmit={handleForgotSubmit} className="space-y-6 relative z-10">
                 <div className="space-y-4">
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Terminal Username</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Terminal Username</label>
                     <input
                       type="text"
                       required
                       value={forgotUsername}
                       onChange={(e) => setForgotUsername(e.target.value)}
-                      className="w-full px-6 py-4 mt-2 bg-black/40 border border-white/5 rounded-2xl outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all text-white placeholder:text-slate-700 font-medium"
+                      className="w-full px-5 py-4 mt-2 bg-white/50 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-2xl outline-none focus:border-blue-500/50 dark:focus:border-cyan-500/50 focus:ring-1 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-mono text-sm shadow-inner"
                       placeholder="e.g. guard_alpha"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Secure Registered Email</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Secure Registered Email</label>
                     <input
                       type="email"
                       required
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      className="w-full px-6 py-4 mt-2 bg-black/40 border border-white/5 rounded-2xl outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all text-white placeholder:text-slate-700 font-medium"
+                      className="w-full px-5 py-4 mt-2 bg-white/50 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-2xl outline-none focus:border-blue-500/50 dark:focus:border-cyan-500/50 focus:ring-1 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-mono text-sm shadow-inner"
                       placeholder="official@visitrack.com"
                     />
                   </div>
                 </div>
 
                 {recoveryError && (
-                  <div className="bg-rose-500/10 border border-rose-500/20 py-3 px-5 rounded-2xl text-[10px] text-rose-400 font-bold uppercase tracking-[0.1em] leading-relaxed">
-                    <AlertCircle className="inline h-4 w-4 mr-2 -mt-0.5" />
-                    {recoveryError}
+                  <div className="bg-red-500/10 border border-red-500/20 py-3 px-5 rounded-2xl text-[10px] text-red-600 dark:text-red-400 font-bold uppercase tracking-[0.1em] leading-relaxed flex items-center gap-2 animate-in slide-in-from-top-2">
+                    <AlertCircle className="shrink-0 h-4 w-4" />
+                    <span>{recoveryError}</span>
                   </div>
                 )}
 
-                <div className="flex gap-4 pt-2">
+                <div className="flex gap-3 pt-4">
                   <button
                     type="button"
                     onClick={() => {
                       setShowForgotModal(false);
                       setRecoveryError("");
                     }}
-                    className="flex-1 py-4 text-slate-400 font-black uppercase tracking-widest text-[10px] hover:bg-white/5 rounded-2xl transition-all"
+                    className="flex-[1] py-4 text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest text-[10px] hover:bg-slate-100 dark:hover:bg-white/5 rounded-2xl transition-all border border-transparent"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={forgotLoading}
-                    className="flex-[2] py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-50 hover:to-cyan-400 text-white font-black rounded-2xl transition-all shadow-[0_10px_30px_rgba(37,99,235,0.3)] hover:shadow-[0_15px_40px_rgba(37,99,235,0.4)] disabled:opacity-30 disabled:cursor-not-allowed flex justify-center items-center uppercase tracking-[0.2em] text-[10px] active:scale-95"
+                    className="flex-[2] py-4 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-emerald-500 dark:hover:to-cyan-600 text-white font-black rounded-2xl transition-all shadow-[0_10px_30px_rgba(37,99,235,0.2)] dark:shadow-[0_10px_30px_rgba(16,185,129,0.2)] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center uppercase tracking-[0.2em] text-[10px] active:scale-95 border border-transparent"
                   >
-                    {forgotLoading ? <Cpu className="h-5 w-5 animate-spin" /> : "Verify & Dispatch"}
+                    {forgotLoading ? <Cpu className="h-4 w-4 animate-spin" /> : "Verify & Dispatch"}
                   </button>
                 </div>
               </form>

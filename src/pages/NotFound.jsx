@@ -29,7 +29,7 @@ function NotFound() {
                 The requested quadrant does not exist within the current sector or has been restricted. Return to secure operations.
             </p>
 
-            <Link to="/">
+            <Link to="/home">
                 <button className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-emerald-500 dark:hover:to-cyan-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all shadow-lg hover:-translate-y-1 flex items-center justify-center gap-3 mx-auto border border-transparent hover:border-white/20">
                     <Home size={18} /> 
                     Return to Dashboard

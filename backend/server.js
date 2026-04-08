@@ -11,6 +11,7 @@ const connectdb = require("./config/db");
 const AdminAuth = require("./routes/AdminAuth.js");
 const Uploads = require("./routes/UploadRoute.js");
 const mail = require("./routes/SendMail.js");
+const emailRoutes = require("./routes/Email.js");
 const sms = require("./routes/SmsRoute.js");
 const visitor = require("./routes/VisitorRoutes.js");
 const occurrence = require("./routes/OccurenceRoute.js");
@@ -74,6 +75,7 @@ app.use((err, req, res, next) => {
 
 // Routes
 app.use('/api/sendmail', mail); // Send mail routes
+app.use('/api/email', emailRoutes); // Generic contact/support emails
 app.use("/api/sms", sms); // File upload routes
 app.use("/api/admin", AdminAuth); // Admin Auth routes
 app.use("/api/visitors", visitor); // Only authenticated users can track 
