@@ -50,7 +50,12 @@ export default function VisitorHistory() {
     }
   };
 
-  const handleTimeOut = async (id) => {
+  const handleTimeOut = async (id, isAcknowledged) => {
+    if (isAcknowledged === false) {
+      if (!window.confirm("Security Alert: Visitor has not been acknowledged by the host. Verify visit before checkout. Proceed?")) {
+        return;
+      }
+    }
     setLoadingTimeout(id);
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -282,12 +287,27 @@ export default function VisitorHistory() {
                       <td className="p-6">
                         {!v.timeOut ? (
                           <div className="flex items-center gap-4">
-                            <span className="inline-flex items-center justify-center min-w-[70px] gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[9px] uppercase font-extrabold tracking-widest shadow-inner">
-                              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-                              Active
-                            </span>
+                            <div className="flex flex-col gap-2">
+                              <span className="inline-flex items-center justify-center min-w-[70px] gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[9px] uppercase font-extrabold tracking-widest shadow-inner">
+                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                                Active
+                              </span>
+                              {v.nature !== 'staff' && (
+                                v.isAcknowledged ? (
+                                  <span className="inline-flex items-center justify-center min-w-[70px] gap-1.5 px-2 py-1 rounded-md bg-emerald-500/20 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-[8px] uppercase font-bold tracking-wider">
+                                    <span className="w-1 h-1 bg-emerald-500 rounded-full"></span>
+                                    Seen
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center justify-center min-w-[70px] gap-1.5 px-2 py-1 rounded-md bg-amber-500/20 border border-amber-500/40 text-amber-700 dark:text-amber-300 text-[8px] uppercase font-bold tracking-wider">
+                                    <span className="w-1 h-1 bg-amber-500 rounded-full animate-pulse"></span>
+                                    Unseen
+                                  </span>
+                                )
+                              )}
+                            </div>
                             <button
-                              onClick={() => handleTimeOut(v._id)}
+                              onClick={() => handleTimeOut(v._id, v.isAcknowledged)}
                               disabled={loadingTimeout === v._id}
                               className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-slate-900 dark:text-white rounded-xl text-[10px] uppercase tracking-widest font-extrabold transition-all border border-slate-300/60 dark:border-slate-600 shadow-sm disabled:opacity-50 group/btn"
                             >

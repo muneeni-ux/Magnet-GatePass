@@ -464,6 +464,51 @@ export default function AdminReports() {
           </div>
         </div>
       </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-white/60 flex flex-col relative overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10">
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <span className="p-2 bg-blue-100/50 text-blue-600 rounded-lg backdrop-blur-sm"><UserCheck className="w-5 h-5" /></span>
+              Host Acknowledgment Rate
+            </h2>
+            <span className="text-xs font-bold px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg shadow-sm backdrop-blur-md">
+              Security
+            </span>
+          </div>
+
+          <div className="flex-1 w-full min-h-[250px] mb-4 relative z-10">
+            {complianceData && complianceData.acknowledgmentRate?.length > 0 ? (
+               <ResponsiveContainer width="100%" height="100%">
+               <PieChart>
+                 <Pie
+                   data={complianceData.acknowledgmentRate.map(d => ({ name: d._id ? 'Acknowledged' : 'Unacknowledged', count: d.count }))}
+                   cx="50%"
+                   cy="45%"
+                   innerRadius={60}
+                   outerRadius={90}
+                   paddingAngle={5}
+                   dataKey="count"
+                   nameKey="name"
+                 >
+                   {complianceData.acknowledgmentRate.map((entry, index) => (
+                     <Cell key={`cell-${index}`} fill={entry._id ? "#10b981" : "#f59e0b"} />
+                   ))}
+                 </Pie>
+                  <Tooltip contentStyle={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }} />
+                 <Legend verticalAlign="bottom" height={36} iconType="circle" />
+               </PieChart>
+             </ResponsiveContainer>
+            ) : (
+                <div className="h-full flex items-center justify-center text-slate-400 text-sm min-h-[150px]">
+                 <div className="flex flex-col items-center">
+                   <ShieldAlert className="h-8 w-8 text-slate-300 mb-2" />
+                   <p>No acknowledgment data available.</p>
+                 </div>
+               </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

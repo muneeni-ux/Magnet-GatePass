@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollTop';
 import ResetPassword from './pages/ResetPassword';
+import HostAck from './pages/HostAck';
 import { Toaster } from 'react-hot-toast';
 // Admin components
 import Signup from './components/SignUp';
@@ -42,7 +43,9 @@ const App = () => {
   // Paths where Navbar/Footer should be hidden
   const hideNavAndFooterPaths = ['/', '/visitrack/admin'];
 
-  const shouldHideNavAndFooter = hideNavAndFooterPaths.includes(location.pathname);
+  const shouldHideNavAndFooter = hideNavAndFooterPaths.includes(location.pathname) || 
+                                 location.pathname.startsWith('/reset-password/') || 
+                                 location.pathname.startsWith('/v/');
 
   return (
     <div>
@@ -78,6 +81,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login onLogin={() => { }} />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/v/:token" element={<HostAck />} />
 
         {isLoggedIn && !isAdmin && (
           <>

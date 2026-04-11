@@ -14,6 +14,8 @@ const Visitor = require("../models/Visitor");
 // });
 router.post("/", async (req, res) => {
   try {
+    const crypto = require('crypto');
+    req.body.acknowledgmentToken = crypto.randomBytes(4).toString('hex');
     const visitor = new Visitor(req.body); // formData includes gate, nature, recordedBy
     const savedVisitor = await visitor.save();
     res.status(201).json(savedVisitor);
@@ -162,6 +164,21 @@ router.delete("/:id", async (req, res) => {
     if (!deletedVisitor)
       return res.status(404).json({ error: "Visitor not found" });
     res.json({ message: "Visitor deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ACKNOWLEDGE - PUT /api/visitors/acknowledge/:token
+router.put("/acknowledge/:token", async (req, res) => {
+  try {
+    const visitor = await Visitor.findOneAndUpdate(
+      { acknowledgmentToken: req.params.token },
+      { isAcknowledged: true, acknowledgedAt: new Date() },
+      { new: true }
+    );
+    if (!visitor) return res.status(404).json({ error: "Invalid or expired token" });
+    res.json({ success: true, visitor });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -13,7 +13,7 @@ router.get('/analytics', async (req, res) => {
         // 1. Visits by Department (Last 30 days)
         const departmentTraffic = await Visitor.aggregate([
             { $match: { createdAt: { $gte: startOfMonth } } },
-            { $group: { _id: "$department", count: { $sum: 1 } } },
+            { $group: { _id: "$department", count: { $sum: { $ifNull: ["$groupSize", 1] } } } },
             { $sort: { count: -1 } }
         ]);
 
@@ -24,7 +24,7 @@ router.get('/analytics', async (req, res) => {
             { 
                 $group: { 
                     _id: { $hour: "$createdAt" }, 
-                    count: { $sum: 1 } 
+                    count: { $sum: { $ifNull: ["$groupSize", 1] } } 
                 } 
             },
             { $sort: { _id: 1 } } // Sort by hour 0 - 23
@@ -71,6 +71,9 @@ router.get('/compliance', async (req, res) => {
                     "overstays": [
                         { $match: { timeOut: null } },
                         { $group: { _id: "$department", count: { $sum: 1 } } }
+                    ],
+                    "acknowledgmentRate": [
+                        { $group: { _id: "$isAcknowledged", count: { $sum: 1 } } }
                     ]
                 }
             }

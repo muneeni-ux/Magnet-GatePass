@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { ShieldCheck, Lock, Eye, EyeOff, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, Sparkles, CheckCircle2, AlertCircle, Moon, Sun } from 'lucide-react';
 import { ClipLoader } from 'react-spinners';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -32,10 +32,23 @@ const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,11 +86,13 @@ const ResetPassword = () => {
   const strength = getPasswordStrength(password);
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-[#070b14] overflow-hidden relative selection:bg-cyan-500/30 selection:text-white">
-      {/* Dynamic Ambient Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_var(--tw-gradient-stops))] from-slate-900 via-[#070b14] to-black"></div>
-      
-      {/* Animated Light Blobs */}
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-[#0a0f1c] font-sans cyber-grid selection:bg-amber-500/30 selection:text-amber-900 dark:selection:text-white transition-colors duration-500">
+      <button
+        onClick={toggleTheme}
+        className="absolute top-6 right-6 p-3 rounded-full bg-white/40 dark:bg-white/5 border border-white/60 dark:border-white/10 backdrop-blur-md shadow-lg text-slate-800 dark:text-white hover:scale-110 active:scale-95 transition-all z-[100] flex items-center justify-center group"
+      >
+        {theme === 'dark' ? <Sun size={20} className="text-amber-400 group-hover:rotate-90 transition-transform duration-500" /> : <Moon size={20} className="text-indigo-600 group-hover:-rotate-12 transition-transform duration-500" />}
+      </button>
       <motion.div 
         animate={{ 
           scale: [1, 1.2, 1],
@@ -86,7 +101,7 @@ const ResetPassword = () => {
           y: [0, -30, 0]
         }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[10%] left-[10%] w-[600px] h-[600px] bg-blue-600/20 dark:bg-cyan-600/20 rounded-full blur-[140px] mix-blend-screen"
+        className="absolute top-[10%] left-[10%] w-[600px] h-[600px] bg-amber-500/20 rounded-full blur-[140px] mix-blend-screen"
       />
       <motion.div 
         animate={{ 
@@ -96,19 +111,20 @@ const ResetPassword = () => {
           y: [0, 60, 0]
         }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[5%] right-[15%] w-[500px] h-[500px] bg-indigo-600/20 dark:bg-emerald-600/20 rounded-full blur-[140px] mix-blend-screen"
+        className="absolute bottom-[5%] right-[15%] w-[500px] h-[500px] bg-yellow-600/20 rounded-full blur-[140px] mix-blend-screen"
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "circOut" }}
-        className="w-[90%] max-w-xl z-20 relative p-[1px] rounded-[2.5rem] bg-gradient-to-br from-white/10 via-transparent to-white/5 border border-white/5 shadow-[0_40px_100px_rgba(0,0,0,0.8)] overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-[#0a0f1c]/95 backdrop-blur-[80px] rounded-[2.5rem]"></div>
-        
-        {/* Content Container */}
-        <div className="relative p-10 sm:p-16">
+      <div className="relative z-10 w-full max-w-[420px] p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "circOut" }}
+          className="glass-panel dark:glass-panel-dark rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:shadow-[0_40px_100px_rgba(0,0,0,0.8)] border border-white/60 dark:border-white/5 relative"
+        >
+          <div className="absolute inset-0 bg-white/20 dark:bg-[#0a0f1c]/95 backdrop-blur-[80px]"></div>
+          
+          {/* Content Container */}
+          <div className="relative p-8 sm:p-10">
           {/* Header Section */}
           <div className="flex flex-col items-center mb-10">
             <motion.div
@@ -117,8 +133,8 @@ const ResetPassword = () => {
               transition={{ delay: 0.3, type: "spring" }}
               className="mb-8 relative"
             >
-              <div className="relative z-10 p-5 bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 dark:from-cyan-500/10 dark:to-emerald-500/10 rounded-[2rem] border border-white/10 shadow-2xl group flex items-center justify-center">
-                <Lock className="h-10 w-10 text-blue-500 dark:text-cyan-400 group-hover:rotate-12 transition-transform duration-500" />
+              <div className="relative z-10 p-5 bg-gradient-to-tr from-amber-500/10 to-yellow-500/10 rounded-[2rem] border border-amber-500/20 shadow-[0_0_30px_rgba(245,158,11,0.15)] group flex items-center justify-center">
+                <Lock className="h-10 w-10 text-amber-400 group-hover:rotate-12 transition-transform duration-500" />
                 <AnimatePresence>
                   {isLoading && (
                     <motion.div 
@@ -128,19 +144,19 @@ const ResetPassword = () => {
                       exit={{ scale: 0.5, opacity: 0 }}
                       className="absolute -top-1 -right-1"
                     >
-                      <ClipLoader size={20} color="#3b82f6" cssOverride={{ display: 'block' }} speedMultiplier={0.6} />
+                      <ClipLoader size={20} color="#fbbf24" cssOverride={{ display: 'block' }} speedMultiplier={0.6} />
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
-              <div className="absolute inset-0 bg-blue-500/20 dark:bg-cyan-400/20 blur-3xl rounded-full -z-10 animate-pulse"></div>
+              <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full -z-10 animate-pulse"></div>
             </motion.div>
 
             <motion.h1 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-4xl font-black text-center text-white tracking-[-0.03em] mb-3"
+              className="text-2xl sm:text-3xl font-black text-center text-slate-900 dark:text-white tracking-tight mb-3 transition-colors duration-500"
               style={{ fontFamily: 'Outfit, sans-serif' }}
             >
               Reset Security Access
@@ -150,16 +166,16 @@ const ResetPassword = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 }}
-              className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full"
+              className="flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full"
             >
-              <Sparkles size={12} className="text-blue-500 dark:text-cyan-400" />
-              <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-[0.2em] pt-0.5">
+              <Sparkles size={12} className="text-amber-400" />
+              <p className="text-[10px] text-amber-400/70 font-extrabold uppercase tracking-[0.2em] pt-0.5">
                 Authorized Override Mode
               </p>
             </motion.div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Input Row 1 */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
@@ -183,13 +199,13 @@ const ResetPassword = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoFocus
-                  className="w-full pl-6 pr-14 py-5 bg-black/40 border border-white/5 rounded-[1.5rem] outline-none focus:border-blue-500/50 dark:focus:border-cyan-500/50 focus:ring-1 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all font-mono text-sm text-white shadow-inner place-content-center placeholder:text-slate-600"
-                  placeholder="Create high-entropy password"
+                  className="w-full bg-white/50 dark:bg-black/40 border border-white/60 dark:border-white/5 text-slate-900 dark:text-white pl-6 pr-14 py-4 rounded-xl focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30 transition-all font-mono text-sm shadow-inner placeholder-slate-400 dark:placeholder-slate-600"
+                  placeholder="high-entropy password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-blue-500 dark:hover:text-cyan-400 transition-colors"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-amber-400 transition-colors"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -236,7 +252,7 @@ const ResetPassword = () => {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-6 py-5 bg-black/40 border border-white/5 rounded-[1.5rem] outline-none focus:border-indigo-500/50 dark:focus:border-emerald-500/50 focus:ring-1 focus:ring-indigo-500/30 dark:focus:ring-emerald-500/30 transition-all font-mono text-sm text-white shadow-inner placeholder:text-slate-600"
+                  className="w-full bg-white/50 dark:bg-black/40 border border-white/60 dark:border-white/5 text-slate-900 dark:text-white px-6 py-4 rounded-xl outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30 transition-all font-mono text-sm shadow-inner placeholder-slate-400 dark:placeholder-slate-600"
                   placeholder="Repeat for validation"
                 />
                 {confirmPassword && confirmPassword === password && (
@@ -245,7 +261,7 @@ const ResetPassword = () => {
                     animate={{ scale: 1 }}
                     className="absolute right-6 top-1/2 -translate-y-1/2"
                   >
-                    <CheckCircle2 size={20} className="text-indigo-500 dark:text-emerald-500" />
+                    <CheckCircle2 size={20} className="text-amber-500" />
                   </motion.div>
                 )}
               </div>
@@ -261,10 +277,10 @@ const ResetPassword = () => {
               <button
                 type="submit"
                 disabled={isLoading || !password || password !== confirmPassword}
-                className={`w-full py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.3em] transition-all relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.4)] ${
+                className={`w-full py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] transition-all relative overflow-hidden group shadow-lg ${
                   isLoading || password !== confirmPassword 
-                    ? "bg-slate-800 text-slate-500 cursor-not-allowed opacity-50" 
-                    : "bg-white text-black hover:scale-[1.02] active:scale-[0.98] hover:shadow-blue-500/20 dark:hover:shadow-cyan-500/20"
+                    ? "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border border-transparent" 
+                    : "bg-gradient-to-r from-amber-500 to-yellow-500 text-black hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] border border-transparent hover:border-amber-400/50 active:scale-95"
                 }`}
               >
                 <span className="relative z-10 flex items-center justify-center gap-3">
@@ -278,7 +294,7 @@ const ResetPassword = () => {
                     initial={{ x: '-100%' }}
                     whileHover={{ x: '100%' }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/20 dark:via-cyan-400/20 to-transparent pointer-events-none"
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"
                   />
                 )}
               </button>
@@ -290,7 +306,7 @@ const ResetPassword = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.1 }}
-            className="mt-14 pt-10 border-t border-white/5 flex flex-col items-center gap-4"
+            className="mt-8 pt-6 border-t border-white/30 dark:border-white/5 flex flex-col items-center gap-4"
           >
             <div className="flex items-center gap-6 opacity-40 grayscale hover:grayscale-0 transition-opacity duration-500 hover:opacity-100">
               <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 border border-white/20 px-3 py-1 rounded bg-white/5">AES-256</div>
@@ -302,7 +318,8 @@ const ResetPassword = () => {
             </p>
           </motion.div>
         </div>
-      </motion.div>
+        </motion.div>
+      </div>
 
       {/* Decorative Branding */}
       <motion.div 

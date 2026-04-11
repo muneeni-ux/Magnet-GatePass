@@ -17,6 +17,9 @@ const visitorSchema = new mongoose.Schema(
     duration: { type: String }, // e.g., "1h 25m"
     recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     timedOutBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    isAcknowledged: { type: Boolean, default: false },
+    acknowledgmentToken: { type: String },
+    acknowledgedAt: { type: Date },
   },
   { timestamps: true }
 );

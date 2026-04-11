@@ -283,11 +283,17 @@ export default function VisitorForm() {
             );
           }
 
+          const savedVisitor = await response.json();
+
           if (formData.nature !== 'staff') {
             let smsMessage = `VISITRACK\nVisitor: ${formData.name}\nID: ${formData.isUnderage ? "Minor" : maskIdNumber(formData.idNumber)}\nDest: ${finalDepartmentForDB || "General"}\nGate: ${gateNameForSMS}`;
             if (formData.isDisabled) smsMessage += `\nALERT: Needs assistance/vehicle!`;
             if (formData.isGroup) smsMessage += `\nGroup of ${formData.groupSize}`;
             
+            if (savedVisitor.acknowledgmentToken) {
+              smsMessage += `\nPlease acknowledge their arrival here: ${window.location.origin}/v/${savedVisitor.acknowledgmentToken}`;
+            }
+
             try {
               await fetch(`${SERVER_URL}/api/sms/send-sms`, {
                 method: "POST",

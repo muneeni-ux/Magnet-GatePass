@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { LockKeyhole, Eye, EyeOff, ShieldCheck, Cpu, AlertCircle  } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { LockKeyhole, Eye, EyeOff, ShieldCheck, Cpu, AlertCircle, Sun, Moon  } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -18,6 +18,19 @@ const Login = ({ onLogin }) => {
   const [recoveryAttempts, setRecoveryAttempts] = useState(0);
   const [recoveryError, setRecoveryError] = useState("");
   const navigate = useNavigate();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
@@ -98,7 +111,13 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-[#0a0f1c] text-slate-800 dark:text-gray-100 font-sans cyber-grid selection:bg-blue-500/30 dark:selection:bg-emerald-500/30">
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-[#0a0f1c] text-slate-800 dark:text-gray-100 font-sans cyber-grid selection:bg-blue-500/30 dark:selection:bg-emerald-500/30 transition-colors duration-500">
+      <button
+        onClick={toggleTheme}
+        className="absolute top-6 right-6 p-3 rounded-full bg-white/40 dark:bg-white/5 border border-white/60 dark:border-white/10 backdrop-blur-md shadow-lg text-slate-800 dark:text-white hover:scale-110 active:scale-95 transition-all z-[100] flex items-center justify-center group"
+      >
+        {theme === 'dark' ? <Sun size={20} className="text-emerald-400 group-hover:rotate-90 transition-transform duration-500" /> : <Moon size={20} className="text-blue-600 group-hover:-rotate-12 transition-transform duration-500" />}
+      </button>
       {/* Decorative Ambient Orbs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 dark:bg-emerald-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 dark:bg-cyan-500/10 rounded-full blur-[100px] animate-pulse delay-1000 pointer-events-none"></div>
