@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { User, Mail, Lock, Shield, Save, Key, CreditCard, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Lock, Shield, Save, Key, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;

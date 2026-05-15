@@ -8,7 +8,6 @@ import {
   BookOpen,
   CheckCircle,
   ChevronRight,
-  FileText,
   Shield,
   Scan,
   Info,
@@ -50,6 +49,7 @@ export default function VisitorForm() {
 
   const [gates, setGates] = useState([]);
   const [activeStaffDeps, setActiveStaffDeps] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [autofilling, setAutofilling] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [filteredDepartments, setFilteredDepartments] = useState([]);
@@ -171,6 +171,12 @@ export default function VisitorForm() {
       setFormData((prev) => ({ ...prev, [name]: numericValue }));
       const error = validatePhone(numericValue);
       setErrors((prev) => ({ ...prev, phone: error }));
+    } else if (name === "idNumber") {
+      const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, "");
+      setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
+    } else if (name === "name" || name === "vehicleReg" || name === "specificDepartment") {
+      const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, "");
+      setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -183,8 +189,12 @@ export default function VisitorForm() {
     const phoneError = validatePhone(formData.phone);
     if (phoneError) newErrors.phone = phoneError;
 
-    if (!formData.isUnderage && !formData.idNumber.trim()) {
-      newErrors.idNumber = "ID Number is required";
+    if (!formData.isUnderage) {
+      if (!formData.idNumber.trim()) {
+        newErrors.idNumber = "ID Number is required";
+      } else if (formData.idNumber.length < 8 || formData.idNumber.length > 9) {
+        newErrors.idNumber = "ID/Passport must be 8 or 9 characters";
+      }
     }
 
     if (!formData.gate) newErrors.gate = "Entry Gate is required";
@@ -236,7 +246,7 @@ export default function VisitorForm() {
           targetPhone = selectedDept.phone;
           recipientName = selectedDept.name;
         } else {
-          targetPhone = selectedGate?.phone || "0711111111"; 
+          targetPhone = selectedGate?.phone || "0111949314"; 
           recipientName = selectedGate?.name || "Gate Admin";
         }
       }
@@ -502,11 +512,13 @@ export default function VisitorForm() {
                             value={formData.idNumber}
                             onChange={handleChange}
                             required={!formData.isUnderage}
+                            maxLength={9}
                             placeholder="Enter Identity Document #"
                             className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600"
                           />
                           <IdCard className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 h-4 w-4" />
                         </div>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1.5 uppercase font-bold tracking-widest">Must be 8 or 9 characters</p>
                       </div>
                     )}
                   </div>
@@ -514,10 +526,16 @@ export default function VisitorForm() {
                   <div className="flex justify-end mt-8 pt-6 border-t border-white/60 dark:border-slate-700/50">
                     <button
                       type="button"
-                      onClick={() => setStep(2)}
+                      onClick={() => {
+                        if (!formData.isUnderage && (formData.idNumber.length < 8 || formData.idNumber.length > 9)) {
+                           toast.error("ID/Passport must be 8 or 9 characters");
+                           return;
+                        }
+                        setStep(2);
+                      }}
                       disabled={
                         !formData.name ||
-                        (!formData.isUnderage && !formData.idNumber)
+                        (!formData.isUnderage && (!formData.idNumber || formData.idNumber.length < 8 || formData.idNumber.length > 9))
                       }
                       className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-emerald-500 dark:hover:to-cyan-500 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-800 dark:disabled:to-slate-800 disabled:text-slate-500 text-white px-8 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-blue-500/20 dark:shadow-emerald-500/20 hover:shadow-blue-500/40 dark:hover:shadow-emerald-500/40 hover:-translate-y-0.5 border border-transparent hover:border-white/20 disabled:border-transparent disabled:shadow-none disabled:transform-none"
                     >
@@ -551,7 +569,7 @@ export default function VisitorForm() {
                         value={formData.phone}
                         onChange={handleChange}
                         required
-                        maxLength={13}
+                        maxLength={10}
                         placeholder="07XXXXXXXX"
                         className={`w-full bg-white/50 dark:bg-[#0a0f1c]/60 border ${errors.phone ? "border-red-500/50 dark:border-red-500/50" : "border-white/60 dark:border-slate-700/60"} text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600`}
                       />
@@ -664,7 +682,7 @@ export default function VisitorForm() {
 
                   {filteredDepartments.length > 0 && (
                     <div className="space-y-2">
-                      <InputLabel>Target Node System</InputLabel>
+                      <InputLabel>Target Location</InputLabel>
                       <div className="relative">
                         <select
                           name="department"
@@ -696,7 +714,7 @@ export default function VisitorForm() {
 
                   {formData.department === "Other" && (
                     <div className="space-y-2 animate-in slide-in-from-top-2">
-                      <InputLabel>Specify Node Coordinates</InputLabel>
+                      <InputLabel>Specify Location</InputLabel>
                       <input
                         name="specificDepartment"
                         value={formData.specificDepartment}

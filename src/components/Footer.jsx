@@ -90,7 +90,7 @@ function Footer() {
               <p className="text-slate-600 dark:text-slate-400 text-xs font-medium mb-4 leading-relaxed">
                 Need immediate visual or physical assistance from security ops?
               </p>
-              <a href="tel:254111949314" className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-[0_4px_15px_rgba(220,38,38,0.3)] border border-red-500/50 group">
+              <a href="tel:+254738380692" className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-[0_4px_15px_rgba(220,38,38,0.3)] border border-red-500/50 group">
                 <PhoneCall className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 <span className="uppercase tracking-widest text-[11px]">Declare SOS</span>
               </a>

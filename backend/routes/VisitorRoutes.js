@@ -169,6 +169,17 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// GET visitor details by ACK token
+router.get("/acknowledge/:token", async (req, res) => {
+  try {
+    const visitor = await Visitor.findOne({ acknowledgmentToken: req.params.token });
+    if (!visitor) return res.status(404).json({ error: "Invalid token or visitor not found" });
+    res.json(visitor);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ACKNOWLEDGE - PUT /api/visitors/acknowledge/:token
 router.put("/acknowledge/:token", async (req, res) => {
   try {

@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   Activity,
   Server,
-  Database,
   Terminal
 } from "lucide-react";
 

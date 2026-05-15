@@ -73,6 +73,11 @@ function AdminInquiry() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (formData.phone.length !== 10) {
+      toast.error("Phone number must be exactly 10 digits.");
+      return;
+    }
+
     if (!formData.image) {
       toast.error("Please upload a staff image.");
       return;
@@ -128,6 +133,19 @@ function AdminInquiry() {
     fetchStaff();
   }, []);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "phone") {
+      const numericValue = value.replace(/\D/g, "");
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    } else if (name === "email") {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    } else {
+      const sanitizedValue = value.replace(/[^a-zA-Z0-9\s]/g, "");
+      setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
+    }
+  };
+
   return (
     <div className="min-h-screen text-slate-800 font-sans pb-10">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -163,11 +181,10 @@ function AdminInquiry() {
                 </label>
                 <input
                   type="text"
+                  name="name"
                   placeholder="e.g. Jane Doe"
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-sm shadow-inner"
                   required
                 />
@@ -179,11 +196,10 @@ function AdminInquiry() {
                 </label>
                 <input
                   type="text"
+                  name="role"
                   placeholder="e.g. Head of Admissions"
                   value={formData.role}
-                  onChange={(e) =>
-                    setFormData({ ...formData, role: e.target.value })
-                  }
+                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-sm shadow-inner"
                   required
                 />
@@ -195,11 +211,10 @@ function AdminInquiry() {
                 </label>
                 <input
                   type="email"
+                  name="email"
                   placeholder="jane.doe@example.com"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-sm shadow-inner"
                   required
                 />
@@ -211,11 +226,11 @@ function AdminInquiry() {
                 </label>
                 <input
                   type="tel"
+                  name="phone"
                   placeholder="07XXXXXXXX"
                   value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
+                  onChange={handleChange}
+                  maxLength={10}
                   className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-sm shadow-inner"
                   required
                 />

@@ -194,6 +194,7 @@ const Occurrence = () => {
                   value={form.endTime}
                   onChange={handleChange}
                   required
+                  max={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
                   className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-orange-500 focus:ring-1 focus:ring-amber-500 dark:focus:ring-orange-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600"
                 />
               </div>

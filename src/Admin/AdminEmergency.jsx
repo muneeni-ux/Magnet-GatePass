@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useReactToPrint } from "react-to-print";
-import { AlertTriangle, Printer, Users, UserCheck } from "lucide-react";
+import { AlertTriangle, Printer, UserCheck } from "lucide-react";
 import { format } from "date-fns";
 import { ClipLoader } from "react-spinners";
 

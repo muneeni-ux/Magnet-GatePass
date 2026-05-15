@@ -229,7 +229,8 @@ router.post('/forgot-password', async (req, res) => {
       tls: { rejectUnauthorized: false },
     });
 
-    const resetUrl = `http://localhost:3000/reset-password/${token}`;
+    const frontendUrl = req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:3000';
+    const resetUrl = `${frontendUrl}/reset-password/${token}`;
     
     await transporter.sendMail({
       from: process.env.EMAIL_USER,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FiPlus, FiTrash2, FiMapPin, FiEdit2, FiPhone } from "react-icons/fi";
-import toast, { Toaster } from "react-hot-toast";
+import { FiPlus, FiTrash2, FiMapPin, FiPhone } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -109,7 +109,7 @@ const AdminLocations = () => {
     try {
       const token = localStorage.getItem("token");
       const payload = { name: deptName, gateId: deptGateId, phone: deptPhone };
-      const res = await axios.post(
+      await axios.post(
         `${SERVER_URL}/api/locations/departments`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } },

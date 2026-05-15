@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  Edit,
   Trash,
   FileClock,
   Search,
@@ -10,6 +9,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  X,
+  Eye,
+  ShieldAlert,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ClipLoader } from "react-spinners";
@@ -28,6 +30,7 @@ const AdminOccurrence = () => {
   const [filterDate, setFilterDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOccurrence, setSelectedOccurrence] = useState(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -241,7 +244,13 @@ const AdminOccurrence = () => {
                       </td>
                       <td className="px-6 py-4">
                         {o.unusualOccurrence?.toLowerCase() === "yes" ? (
-                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">YES</span>
+                          <button
+                            onClick={() => setSelectedOccurrence(o)}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 transition-colors shadow-sm"
+                          >
+                            <Eye size={12} />
+                            View Incident
+                          </button>
                         ) : (
                           <span className="text-slate-500">{o.unusualOccurrence || "—"}</span>
                         )}
@@ -316,6 +325,60 @@ const AdminOccurrence = () => {
           )}
         </div>
       </div>
+
+      {/* Incident Details Modal */}
+      {selectedOccurrence && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden border border-slate-100">
+            <div className="flex justify-between items-center p-4 md:p-6 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <ShieldAlert className="w-5 h-5 text-red-500" />
+                Incident Details
+              </h3>
+              <button
+                onClick={() => setSelectedOccurrence(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4 md:p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-slate-500 font-semibold mb-1 text-xs uppercase tracking-wider">Gate</p>
+                  <p className="font-bold text-slate-800">{selectedOccurrence.gate || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-slate-500 font-semibold mb-1 text-xs uppercase tracking-wider">Time Recorded</p>
+                  <p className="font-bold text-slate-800">
+                    {selectedOccurrence.submittedAt ? format(new Date(selectedOccurrence.submittedAt), "dd/MM/yyyy HH:mm") : "—"}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <p className="text-slate-500 font-semibold mb-1 text-xs uppercase tracking-wider">Description</p>
+                <div className="p-4 bg-red-50 rounded-xl border border-red-100 text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">
+                  {selectedOccurrence.unusualDescription || "No detailed description provided."}
+                </div>
+              </div>
+              <div>
+                <p className="text-slate-500 font-semibold mb-1 text-xs uppercase tracking-wider">General Remarks</p>
+                <div className="p-3 bg-slate-50 rounded-xl text-slate-600 text-sm leading-relaxed">
+                  {selectedOccurrence.remarks || "—"}
+                </div>
+              </div>
+            </div>
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+              <button
+                onClick={() => setSelectedOccurrence(null)}
+                className="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-lg transition-colors shadow-sm"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

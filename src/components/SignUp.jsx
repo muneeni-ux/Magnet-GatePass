@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UserPlus, Shield, Terminal, ShieldCheck, Database } from "lucide-react";
+import { ShieldCheck, Database } from "lucide-react";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 

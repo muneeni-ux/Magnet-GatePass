@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiPlus, FiTrash2, FiBell, FiEye, FiEyeOff } from "react-icons/fi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -10,6 +10,7 @@ const AdminNotifications = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     fetchNotifications();
@@ -80,6 +81,31 @@ const AdminNotifications = () => {
     } catch (error) {
       console.error("Error toggling notification:", error);
       toast.error("Failed to toggle notification status");
+    }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    if (!window.confirm(`Delete ${selectedIds.length} selected notification(s)?`))
+      return;
+    try {
+      const token = localStorage.getItem("token");
+      await Promise.all(
+        selectedIds.map((id) => axios.delete(`${SERVER_URL}/api/notifications/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }))
+      );
+      toast.success("Notifications deleted");
+      setNotifications(notifications.filter((n) => !selectedIds.includes(n._id)));
+      setSelectedIds([]);
+    } catch {
+      toast.error("Bulk delete failed");
     }
   };
 
@@ -160,19 +186,46 @@ const AdminNotifications = () => {
             </div>
           ) : (
             <div className="space-y-5">
+              {selectedIds.length > 0 && (
+                <div className="mb-4 bg-red-50 p-3 flex items-center justify-between rounded-lg border border-red-100">
+                  <span className="text-sm text-red-800 font-medium">
+                    {selectedIds.length} item(s) selected
+                  </span>
+                  <button
+                    onClick={handleBulkDelete}
+                    className="flex items-center gap-2 bg-white border border-red-200 text-red-600 px-3 py-1.5 rounded-md hover:bg-red-50 text-sm font-medium transition-colors"
+                  >
+                    <FiTrash2 size={14} /> Delete Selected
+                  </button>
+                </div>
+              )}
               {notifications.map((notification) => (
                 <div
                   key={notification._id}
-                  className="relative group p-5 border border-white/60 hover:border-emerald-300/50 rounded-2xl bg-white/40 hover:bg-white/70 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300 flex flex-col gap-3 backdrop-blur-sm"
+                  className={`relative group p-5 border transition-all duration-300 flex flex-col gap-3 backdrop-blur-sm rounded-2xl ${
+                    selectedIds.includes(notification._id)
+                      ? "bg-emerald-50/60 border-emerald-300/80 ring-2 ring-emerald-300 shadow-[0_8px_30px_rgba(16,185,129,0.1)]"
+                      : "bg-white/40 border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:bg-white/70 hover:border-emerald-300/50 hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)]"
+                  }`}
                 >
                     <div className="flex justify-between items-start gap-5">
-                    <div className="flex-1">
-                      <h3 className={`font-extrabold text-base md:text-lg leading-tight ${!notification.isActive ? 'text-slate-400 line-through' : 'text-slate-800'}`} style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                        {notification.title}
-                      </h3>
+                    <div className="flex items-start gap-4 flex-1">
+                      <label className="mt-1 cursor-pointer flex-shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(notification._id)}
+                          onChange={() => toggleSelect(notification._id)}
+                          className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                        />
+                      </label>
+                      <div className="flex-1">
+                        <h3 className={`font-extrabold text-base md:text-lg leading-tight ${!notification.isActive ? 'text-slate-400 line-through' : 'text-slate-800'}`} style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                          {notification.title}
+                        </h3>
                       <p className={`text-sm md:text-base mt-2 font-medium leading-relaxed ${!notification.isActive ? 'text-slate-400' : 'text-slate-600'}`}>
                         {notification.message}
                       </p>
+                    </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <button

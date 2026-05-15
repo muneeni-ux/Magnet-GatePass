@@ -3,9 +3,7 @@ import DataTable from "react-data-table-component";
 import { CSVLink } from "react-csv";
 import {
   Download,
-  Printer,
   Search,
-  Edit,
   Trash,
   Baby,
   Users,
@@ -13,7 +11,6 @@ import {
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { saveAs } from "file-saver";
 import format from "date-fns/format";
 import isWithinInterval from "date-fns/isWithinInterval";
 

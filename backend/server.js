@@ -36,6 +36,7 @@ const allowedOrigins = [
   "http://localhost:3000", // For development
   "http://localhost:3001", // For development
   "https://magnet-gatepass.onrender.com",
+  "https://visitrack.magtrack.co.ke",
 ];
 
 app.use(cors({

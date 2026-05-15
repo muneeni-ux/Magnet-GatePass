@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FaSearch, FaSort } from "react-icons/fa";
-import { ImSpinner2 } from "react-icons/im";
 import {
   FileText,
-  Clock,
   Filter,
-  AlertCircle,
   ChevronLeft,
   ChevronRight,
   Database
@@ -254,7 +251,9 @@ export default function VisitorHistory() {
                           {v.isDisabled && <span className="text-[9px] uppercase tracking-widest px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-md">Asst</span>}
                         </div>
                         <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2 font-mono">
-                          {v.phone} 
+                          <a href={`tel:${v.phone}`} className="hover:text-blue-500 dark:hover:text-emerald-400 hover:underline transition-colors" onClick={(e) => e.stopPropagation()}>
+                            {v.phone}
+                          </a>
                           {v.nature === 'staff' && <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 rounded-md text-[9px] uppercase tracking-widest">Staff</span>}
                         </div>
                       </td>

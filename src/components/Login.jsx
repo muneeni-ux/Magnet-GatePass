@@ -101,7 +101,7 @@ const Login = ({ onLogin }) => {
       );
     } catch (error) {
       if (error.message === "Failed to fetch") {
-        setErrorMsg("Network Error: Terminal uplink to central server failed.");
+        setErrorMsg("Network Error: Please check your internet connection.");
       } else {
         setErrorMsg(error.message || "Invalid Security Credentials");
       }

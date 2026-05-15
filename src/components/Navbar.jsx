@@ -12,7 +12,6 @@ import {
   Book,
   Shield,
   Bell,
-  CheckCircle,
   PhoneCall,
   Sun,
   Moon,
@@ -75,6 +74,7 @@ const Navbar = ({ setIsLoggedIn }) => {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchNotifications = async () => {
@@ -226,7 +226,7 @@ const Navbar = ({ setIsLoggedIn }) => {
           {/* Emergency Call Button */}
           <div className="hidden sm:flex items-center">
             <a 
-              href="tel:254111949314" 
+              href="tel:+254738380692" 
               className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-slate-900 dark:hover:text-white px-3 py-1.5 rounded-full transition-all border border-red-500/30 group"
               title="Emergency Call"
             >

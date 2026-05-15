@@ -44,24 +44,25 @@ export default function AdminReports() {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const [analyticsRes, complianceRes, occurrenceRes, staffRes] = await Promise.all([
+        const results = await Promise.allSettled([
           axios.get(`${SERVER_URL}/api/reports/analytics`),
           axios.get(`${SERVER_URL}/api/reports/compliance`),
           axios.get(`${SERVER_URL}/api/reports/occurrences`),
           axios.get(`${SERVER_URL}/api/reports/staff-activity`)
         ]);
 
-        if (analyticsRes.data.success) {
-          setData(analyticsRes.data.data);
+        if (results[0].status === 'fulfilled' && results[0].value.data.success) {
+          setData(results[0].value.data.data);
         }
-        if (complianceRes.data.success) {
-          setComplianceData(complianceRes.data.data);
+        if (results[1].status === 'fulfilled' && results[1].value.data.success) {
+          setComplianceData(results[1].value.data.data);
         }
-        if (occurrenceRes.data.success) {
-          setOccurrenceData(occurrenceRes.data.data);
+        if (results[2].status === 'fulfilled' && results[2].value.data.success) {
+          console.log("Setting occurrence data:", results[2].value.data.data);
+          setOccurrenceData(results[2].value.data.data);
         }
-        if (staffRes.data.success) {
-          setStaffData(staffRes.data.data);
+        if (results[3].status === 'fulfilled' && results[3].value.data.success) {
+          setStaffData(results[3].value.data.data);
         }
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
@@ -151,6 +152,11 @@ export default function AdminReports() {
       </div>
     );
   }
+
+  const ackData = complianceData?.acknowledgmentRate?.length > 0 ? [
+    { name: 'Acknowledged', count: complianceData.acknowledgmentRate.filter(d => d._id).reduce((sum, d) => sum + d.count, 0), fill: "#10b981" },
+    { name: 'Unacknowledged', count: complianceData.acknowledgmentRate.filter(d => !d._id).reduce((sum, d) => sum + d.count, 0), fill: "#f59e0b" }
+  ].filter(d => d.count > 0) : [];
 
   return (
     <div className="min-h-screen pb-10 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 font-sans text-slate-800">
@@ -329,7 +335,7 @@ export default function AdminReports() {
         
         <div className="flex-1 w-full min-h-[300px] relative z-10">
           {occurrenceData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 data={occurrenceData}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
@@ -342,8 +348,8 @@ export default function AdminReports() {
                   contentStyle={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
                 />
                 <Legend verticalAlign="top" height={36} />
-                <Bar dataKey="totalLogs" name="Standard Logs" stackId="a" fill="#3b82f6" radius={[0, 0, 6, 6]} barSize={40} />
-                <Bar dataKey="unusualEvents" name="Unusual Events" stackId="a" fill="#ef4444" radius={[6, 6, 0, 0]} barSize={40} />
+                <Bar dataKey="totalLogs" name="Standard Logs" stackId="a" fill="#3b82f6" barSize={40} />
+                <Bar dataKey="unusualEvents" name="Unusual Events" stackId="a" fill="#ef4444" barSize={40} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -477,11 +483,11 @@ export default function AdminReports() {
           </div>
 
           <div className="flex-1 w-full min-h-[250px] mb-4 relative z-10">
-            {complianceData && complianceData.acknowledgmentRate?.length > 0 ? (
+            {ackData.length > 0 ? (
                <ResponsiveContainer width="100%" height="100%">
                <PieChart>
                  <Pie
-                   data={complianceData.acknowledgmentRate.map(d => ({ name: d._id ? 'Acknowledged' : 'Unacknowledged', count: d.count }))}
+                   data={ackData}
                    cx="50%"
                    cy="45%"
                    innerRadius={60}
@@ -490,8 +496,8 @@ export default function AdminReports() {
                    dataKey="count"
                    nameKey="name"
                  >
-                   {complianceData.acknowledgmentRate.map((entry, index) => (
-                     <Cell key={`cell-${index}`} fill={entry._id ? "#10b981" : "#f59e0b"} />
+                   {ackData.map((entry, index) => (
+                     <Cell key={`cell-${index}`} fill={entry.fill} />
                    ))}
                  </Pie>
                   <Tooltip contentStyle={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }} />
