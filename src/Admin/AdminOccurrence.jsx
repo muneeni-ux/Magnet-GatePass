@@ -67,13 +67,13 @@ const AdminOccurrence = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">All Occurrences</h1>
+    <div className="p-6 max-w-7xl mx-auto text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      <h1 className="text-3xl font-bold mb-6 text-slate-800 dark:text-slate-100">All Occurrences</h1>
 
       {/* Filters + Search */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <select
-          className="border rounded px-3 py-2"
+          className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
           value={filterGate}
           onChange={(e) => setFilterGate(e.target.value)}
         >
@@ -85,7 +85,7 @@ const AdminOccurrence = () => {
 
         <input
           type="date"
-          className="border rounded px-3 py-2"
+          className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors [color-scheme:light] dark:[color-scheme:dark]"
           value={filterDate}
           onChange={(e) => setFilterDate(e.target.value)}
         />
@@ -93,7 +93,7 @@ const AdminOccurrence = () => {
         <input
           type="text"
           placeholder="Search by gate, remarks, or user"
-          className="border rounded px-3 py-2 flex-1"
+          className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded px-3 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -105,11 +105,11 @@ const AdminOccurrence = () => {
           <ClipLoader color="#8b5cf6" size={50} />
         </div>
       ) : currentItems.length === 0 ? (
-        <p className="text-center text-gray-500">No occurrences found.</p>
+        <p className="text-center text-slate-500 dark:text-slate-400">No occurrences found.</p>
       ) : (
-        <div className="overflow-x-auto bg-white shadow-md rounded">
+        <div className="overflow-x-auto bg-white dark:bg-slate-900 shadow-md rounded border border-transparent dark:border-slate-700 transition-colors">
           <table className="min-w-full text-sm text-left">
-            <thead className="bg-gray-100 text-xs uppercase text-gray-700">
+            <thead className="bg-slate-100 dark:bg-slate-800 text-xs uppercase text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="px-4 py-2">Gate</th>
                 <th className="px-4 py-2">End Time</th>
@@ -130,7 +130,7 @@ const AdminOccurrence = () => {
             </thead>
             <tbody>
               {currentItems.map((o) => (
-                <tr key={o._id} className="border-t hover:bg-gray-50">
+                <tr key={o._id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                   <td className="px-4 py-2">{o.gate || "—"}</td>
                   <td className="px-4 py-2">
                     {o.endTime ? format(new Date(o.endTime), "dd/MM/yyyy HH:mm") : "—"}
@@ -181,10 +181,10 @@ const AdminOccurrence = () => {
             <button
               key={idx}
               onClick={() => setCurrentPage(idx + 1)}
-              className={`px-3 py-1 rounded ${
+              className={`px-3 py-1 rounded transition-colors ${
                 currentPage === idx + 1
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                  ? "bg-purple-600 dark:bg-purple-500 text-white"
+                  : "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600"
               }`}
             >
               {idx + 1}

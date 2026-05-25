@@ -1,21 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const Visitor = require("../models/Visitor");
+const { authenticate } = require("../middleware/AuthMiddleware");
 
 // CREATE - POST /api/visitors
-// router.post("/", async (req, res) => {
-//   try {
-//     const visitor = new Visitor(req.body);
-//     const savedVisitor = await visitor.save();
-//     res.status(201).json(savedVisitor);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
-// CREATE - POST /api/visitors
-router.post("/", async (req, res) => {
+router.post("/", authenticate, async (req, res) => {
   try {
-    const visitor = new Visitor(req.body); // formData already includes gate & nature
+    const visitor = new Visitor({
+      ...req.body,
+      checkedInBy: req.user.username // Record guard who checked in the visitor
+    });
     const savedVisitor = await visitor.save();
     res.status(201).json(savedVisitor);
   } catch (err) {
@@ -96,7 +90,7 @@ router.get("/:id", async (req, res) => {
 // });
 
 
-router.put("/visitors/:id/timeout", async (req, res) => {
+router.put("/visitors/:id/timeout", authenticate, async (req, res) => {
   try {
     const visitor = await Visitor.findById(req.params.id);
     if (!visitor) return res.status(404).json({ message: "Visitor not found" });
@@ -110,6 +104,7 @@ router.put("/visitors/:id/timeout", async (req, res) => {
 
     visitor.timeOut = timeOut;
     visitor.duration = duration;
+    visitor.checkedOutBy = req.user.username; // Record guard who checked out the visitor
     await visitor.save();
 
     res.json(visitor);

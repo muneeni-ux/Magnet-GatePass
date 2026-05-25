@@ -1,94 +1,4 @@
-// import React from "react";
-// import { useNavigate } from "react-router-dom";
-// import { BadgeCheck } from "lucide-react";
-
-// const Home = () => {
-//   const navigate = useNavigate();
-
-//   const handleGetStarted = () => {
-//     navigate("/form");
-//   };
-
-//   const steps = [
-//     {
-//       title: "Secure Login",
-//       desc: "Login securely using your gatekeeper credentials.",
-//       color: "from-blue-500 to-indigo-500",
-//     },
-//     {
-//       title: "Record Visitors",
-//       desc: "Record visitor information instantly upon entry.",
-//       color: "from-green-500 to-emerald-500",
-//     },
-//     {
-//       title: "Track Exits",
-//       desc: "Use the Time Out button when visitors leave.",
-//       color: "from-yellow-400 to-orange-500",
-//     },
-//     {
-//       title: "Admin Dashboard",
-//       desc: "Admins can view, manage, and print visit logs easily.",
-//       color: "from-pink-500 to-purple-600",
-//     },
-//   ];
-
-//   return (
-//     <div className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center text-gray-800 px-6 py-10">
-//       {/* Animated Background */}
-//       <div className="absolute inset-0 -z-10">
-//         <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full filter blur-3xl opacity-30 animate-float-slow"></div>
-//         <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full filter blur-3xl opacity-30 animate-float"></div>
-//         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-to-r from-yellow-300 to-orange-400 rounded-full filter blur-3xl opacity-20 animate-float-delayed"></div>
-//       </div>
-
-//       {/* Hero Section */}
-//       <div className="max-w-5xl w-full text-center mt-16 animate-fade-in">
-//         <h1 className="text-5xl md:text-6xl font-extrabold mb-6 text-blue-900 drop-shadow-xl leading-tight">
-//           Welcome to{" "}
-//           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-//             Nambale Magnet School
-//           </span>{" "}
-//           Visitors Pass System
-//         </h1>
-//         <p className="text-lg md:text-xl mb-10 text-blue-800 font-medium max-w-2xl mx-auto">
-//           A fast, secure, and user-friendly system to manage visitor movement
-//           with ease and professionalism.
-//         </p>
-
-//         {/* Steps as Colorful Cards */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-//           {steps.map((step, i) => (
-//             <div
-//               key={i}
-//               className={`relative p-6 rounded-2xl shadow-lg bg-gradient-to-r ${step.color} text-white transform transition duration-300 hover:scale-105 hover:shadow-2xl`}
-//             >
-//               <div className="flex items-center gap-3 mb-3">
-//                 <BadgeCheck className="w-7 h-7 text-white" />
-//                 <h3 className="text-xl font-bold">{step.title}</h3>
-//               </div>
-//               <p className="text-md font-medium">{step.desc}</p>
-//               <span className="absolute top-4 right-4 text-sm font-semibold opacity-60">
-//                 Step {i + 1}
-//               </span>
-//             </div>
-//           ))}
-//         </div>
-
-//         {/* CTA Button */}
-//         <button
-//           onClick={handleGetStarted}
-//           className="mt-12 px-12 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition duration-300 rounded-full text-lg md:text-xl font-bold text-white shadow-lg hover:shadow-2xl transform hover:scale-105"
-//         >
-//           🚀 Get Started
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-// /neww
+// src/pages/Home.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -98,95 +8,105 @@ import {
   Clock,
   LayoutDashboard,
 } from "lucide-react";
-// framer-motion removed temporarily to avoid runtime hook issues
 
 const Home = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false); // loader state
+  const [loading, setLoading] = useState(false);
 
   const handleGetStarted = () => {
     setLoading(true);
-    setTimeout(() => navigate("/form"), 800);
+    setTimeout(() => navigate("/form"), 700);
   };
 
   const steps = [
     {
       title: "Secure Login",
-      desc: "Access the system with top-tier security and encrypted authentication.",
+      desc: "Access the system with encrypted verification and secure logs.",
       icon: ShieldCheck,
-      colors: "from-yellow-500 to-yellow-700",
+      lightBg: "bg-amber-50 text-amber-900 border-amber-100",
+      darkBg: "dark:from-amber-600/10 dark:to-orange-600/10 dark:border-amber-900/40",
+      iconColor: "text-amber-500",
     },
     {
       title: "Record Visitors",
-      desc: "Capture accurate visitor details quickly and professionally.",
+      desc: "Capture single or group visitors quickly, complete with frequent visitor autofills.",
       icon: Users,
-      colors: "from-indigo-600 to-indigo-900",
+      lightBg: "bg-blue-50 text-blue-900 border-blue-100",
+      darkBg: "dark:from-blue-600/10 dark:to-blue-900/10 dark:border-blue-900/40",
+      iconColor: "text-blue-500",
     },
     {
       title: "Track Exits",
-      desc: "Log time-out entries effortlessly and maintain clean records.",
+      desc: "Log check-outs effortlessly, trace duration times, and log offline checkout queues.",
       icon: Clock,
-      colors: "from-blue-500 to-blue-800",
+      lightBg: "bg-indigo-50 text-indigo-900 border-indigo-100",
+      darkBg: "dark:from-indigo-600/10 dark:to-indigo-900/10 dark:border-indigo-900/40",
+      iconColor: "text-indigo-500",
     },
     {
       title: "Admin Dashboard",
-      desc: "Monitor activity, print logs, and manage records with ease.",
+      desc: "Review occurrences, trace distinct guard audit trails, and check SVG chart metrics.",
       icon: LayoutDashboard,
-      colors: "from-amber-500 to-orange-600",
+      lightBg: "bg-emerald-50 text-emerald-900 border-emerald-100",
+      darkBg: "dark:from-emerald-600/10 dark:to-emerald-900/10 dark:border-emerald-900/40",
+      iconColor: "text-emerald-500",
     },
   ];
 
   return (
-    <div className="relative min-h-screen px-6 py-16 flex items-center justify-center text-white bg-gradient-to-br from-indigo-900 via-indigo-800 to-black overflow-hidden">
-      {/* Floating particles */}
-      <div className="absolute inset-0 -z-10 opacity-50">
-        <div className="absolute w-2 h-2 bg-white rounded-full top-16 left-24" />
-        <div className="absolute w-2 h-2 bg-white rounded-full bottom-20 right-32" />
+    <div className="relative min-h-screen px-6 py-28 flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300 overflow-hidden">
+      
+      {/* Blurred background ambient circles (glowing and theme-aware) */}
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 dark:bg-blue-500/5 rounded-full filter blur-3xl animate-float-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-500/5 rounded-full filter blur-3xl animate-float" />
       </div>
 
       <div className="max-w-5xl text-center">
+        
         {/* TITLE */}
-        <h1 className="text-6xl font-extrabold drop-shadow-2xl">
-          MagTrack
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">
-            Smart, Secure & Modern
+        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
+          Welcome to
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-blue-600 mt-2">
+            MagTrack Gatepass
           </span>
         </h1>
 
         {/* SUBTITLE */}
-        <p className="mt-4 text-lg opacity-90">
-          Designed to enhance professionalism, safety, and seamless digital
-          record-keeping at every step.
+        <p className="mt-4 text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+          A secure, PWA offline-first, and highly professional visitor logs control system built for 
+          <strong> The Nambale Magnet School</strong>.
         </p>
 
         {/* CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-14 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 px-2">
           {steps.map((step, i) => {
             const Icon = step.icon;
             return (
               <div
                 key={i}
-                className={`relative p-8 rounded-3xl bg-gradient-to-br ${step.colors}
-                shadow-2xl backdrop-blur-xl border border-white/10 cursor-pointer`}
+                className={`relative p-6 rounded-2xl border bg-white ${step.lightBg} ${step.darkBg} dark:bg-slate-900/40 shadow-sm hover:scale-[1.01] hover:shadow-md transition-all duration-300`}
               >
                 {/* ICON */}
                 <div
-                  className="w-16 h-16 mx-auto flex items-center justify-center
-                  rounded-2xl bg-black/20 shadow-inner mb-4"
+                  className="w-12 h-12 flex items-center justify-center
+                  rounded-xl bg-slate-100 dark:bg-slate-800/80 mb-4"
                 >
-                  <Icon className="w-9 h-9 text-white drop-shadow animate-pulse" />
+                  <Icon className={`w-6 h-6 ${step.iconColor} drop-shadow animate-pulse`} />
                 </div>
 
                 {/* TITLE */}
-                <h3 className="text-2xl font-bold tracking-wide drop-shadow-md text-white">
+                <h3 className="text-xl font-bold tracking-wide text-slate-800 dark:text-slate-100 text-left">
                   {step.title}
                 </h3>
 
                 {/* DESC */}
-                <p className="opacity-95 mt-2 font-medium">{step.desc}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-semibold mt-2 text-left leading-relaxed">
+                  {step.desc}
+                </p>
 
                 {/* STEP NUMBER */}
-                <span className="absolute top-4 right-6 text-sm opacity-70 font-bold">
+                <span className="absolute top-4 right-5 text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
                   Step {i + 1}
                 </span>
               </div>
@@ -199,29 +119,28 @@ const Home = () => {
           onClick={handleGetStarted}
           disabled={loading}
           className={`
-            mt-16 px-16 py-4 text-xl font-extrabold rounded-full
-            shadow-2xl flex items-center gap-3 mx-auto transition-all duration-300
+            mt-12 px-12 py-3.5 text-lg font-extrabold rounded-xl
+            shadow-lg flex items-center gap-2 mx-auto transition-all duration-300
             ${
               loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-yellow-400 to-yellow-500 hover:scale-110"
+                ? "bg-slate-200 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white hover:scale-105 shadow-blue-500/10"
             }
           `}
         >
-          {/* loader spinner */}
           {loading && (
-            <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           )}
 
-          {loading ? "Loading..." : "Get Started"}
+          <span>{loading ? "Loading Dashboard..." : "Get Started"}</span>
 
           {!loading && (
-            <ArrowRight className="w-7 h-7 group-hover:translate-x-2 transition-transform duration-300" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           )}
         </button>
 
-        <p className="mt-4 text-sm opacity-90 font-medium drop-shadow">
-          Faster. Smarter. Safer digital visitor management.
+        <p className="mt-4 text-xs text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider">
+          Secure. Professional. Offline-Aware.
         </p>
       </div>
     </div>

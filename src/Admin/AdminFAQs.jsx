@@ -120,13 +120,13 @@ const AdminFAQs = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6">💬 Admin FAQs</h1>
+    <div className="p-6 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg shadow-md transition-colors duration-300">
+      <h1 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">💬 Admin FAQs</h1>
 
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-50 p-4 rounded-md mb-8 space-y-4 border"
+        className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-md mb-8 space-y-4 border border-slate-200 dark:border-slate-700 transition-colors"
       >
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <PlusCircle size={18} />
@@ -139,7 +139,7 @@ const AdminFAQs = () => {
           value={form.question}
           onChange={(e) => setForm({ ...form, question: e.target.value })}
           placeholder="Question"
-          className="w-full border rounded px-3 py-2"
+          className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           required
         />
 
@@ -149,7 +149,7 @@ const AdminFAQs = () => {
           onChange={(e) => setForm({ ...form, answer: e.target.value })}
           placeholder="Answer"
           rows="4"
-          className="w-full border rounded px-3 py-2"
+          className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           required
         />
 
@@ -173,7 +173,7 @@ const AdminFAQs = () => {
             <button
               type="button"
               onClick={resetForm}
-              className="text-sm underline text-gray-500"
+              className="text-sm underline text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             >
               Cancel Edit
             </button>
@@ -188,13 +188,13 @@ const AdminFAQs = () => {
           placeholder="Search FAQs..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full md:w-1/2 border px-3 py-2 rounded"
+          className="w-full md:w-1/2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
         />
 
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="border px-3 py-2 rounded"
+          className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
         >
           <option value="all">All</option>
           <option value="verified">Verified</option>
@@ -224,10 +224,10 @@ const AdminFAQs = () => {
           {paginatedFaqs.map((faq) => (
             <div
               key={faq._id}
-              className={`border p-4 rounded-md bg-gray-50 shadow-sm ${
+              className={`border p-4 rounded-md shadow-sm transition-colors ${
                 selectedIds.includes(faq._id)
-                  ? "bg-yellow-50 border-yellow-400"
-                  : ""
+                  ? "bg-yellow-50 dark:bg-yellow-900/30 border-yellow-400 dark:border-yellow-600"
+                  : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700"
               }`}
             >
               <div className="flex justify-between items-start">
@@ -240,8 +240,8 @@ const AdminFAQs = () => {
                     />
                     <h3 className="font-semibold text-lg">{faq.question}</h3>
                   </label>
-                  <p className="text-gray-700 mt-1">{faq.answer}</p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-slate-700 dark:text-slate-300 mt-1">{faq.answer}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                     Status:{" "}
                     {faq.isVerified ? (
                       <span className="text-green-600 flex items-center gap-1">
@@ -283,7 +283,7 @@ const AdminFAQs = () => {
           <button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
-            className="px-3 py-1 rounded border disabled:opacity-50"
+            className="px-3 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 transition-colors"
           >
             <ChevronLeft size={16} />
           </button>
@@ -293,7 +293,7 @@ const AdminFAQs = () => {
           <button
             onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={page === totalPages}
-            className="px-3 py-1 rounded border disabled:opacity-50"
+            className="px-3 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 transition-colors"
           >
             <ChevronRight size={16} />
           </button>

@@ -14,13 +14,13 @@ const Modal = ({ open, title, children, onClose }) => {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white w-full max-w-lg rounded-lg shadow-xl p-6">
+      <div className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 w-full max-w-lg rounded-lg shadow-xl p-6 border border-transparent dark:border-slate-800 transition-colors">
         <h3 className="text-xl font-semibold mb-4">{title}</h3>
         {children}
         <div className="text-right mt-6">
           <button
             onClick={onClose}
-            className="inline-block px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-sm font-medium"
+            className="inline-block px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-md text-sm font-medium transition-colors"
           >
             Close
           </button>
@@ -155,12 +155,12 @@ export default function UserDetails() {
   if (error)   return <div className="p-6 text-red-600">{error}</div>;
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       {/* Header + controls */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Users</h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Users</h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             Total&nbsp;users:&nbsp;<strong>{users.length}</strong>   |   Admins:&nbsp;
             <strong>{totalAdmins}</strong>
           </p>
@@ -172,12 +172,12 @@ export default function UserDetails() {
             onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search username / email..."
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+            className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           />
           <select
             value={roleFilter}
             onChange={(e) => { setRoleFilter(e.target.value); setPage(1); }}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+            className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           >
             <option value="all">All roles</option>
             <option value="admin">Admins</option>
@@ -193,9 +193,9 @@ export default function UserDetails() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto shadow rounded-lg">
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-100 text-gray-700 text-left text-sm">
+      <div className="overflow-x-auto shadow rounded-lg border border-transparent dark:border-slate-700 transition-colors">
+        <table className="min-w-full bg-white dark:bg-slate-900">
+          <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-left text-sm border-b border-slate-200 dark:border-slate-700">
             <tr>
               <th className="px-4 py-2">Username</th>
               <th className="px-4 py-2">Email</th>
@@ -206,13 +206,13 @@ export default function UserDetails() {
           <tbody>
             {paginated.length === 0 ? (
               <tr>
-                <td colSpan="4" className="text-center py-6 text-gray-500">
+                <td colSpan="4" className="text-center py-6 text-slate-500 dark:text-slate-400">
                   No users match your criteria.
                 </td>
               </tr>
             ) : (
               paginated.map((u) => (
-                <tr key={u._id} className="border-b hover:bg-gray-50">
+                <tr key={u._id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                   <td className="px-4 py-2">{u.username}</td>
                   <td className="px-4 py-2">{u.email}</td>
                   <td className="px-4 py-2">
@@ -291,7 +291,7 @@ export default function UserDetails() {
               required
               value={formData.username}
               onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              className="w-full border px-3 py-2 rounded-md"
+              className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             />
           </div>
           <div>
@@ -301,7 +301,7 @@ export default function UserDetails() {
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full border px-3 py-2 rounded-md"
+              className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             />
           </div>
           <div>
@@ -311,7 +311,7 @@ export default function UserDetails() {
               required
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full border px-3 py-2 rounded-md"
+              className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -353,7 +353,7 @@ export default function UserDetails() {
               required
               value={formData.username}
               onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              className="w-full border px-3 py-2 rounded-md"
+              className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             />
           </div>
           <div>
@@ -363,7 +363,7 @@ export default function UserDetails() {
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full border px-3 py-2 rounded-md"
+              className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             />
           </div>
           <div>
@@ -372,7 +372,7 @@ export default function UserDetails() {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full border px-3 py-2 rounded-md"
+              className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               placeholder="Leave blank to keep current"
             />
           </div>

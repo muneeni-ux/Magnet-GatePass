@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './components/Login';
@@ -7,13 +6,14 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollTop';
 import { Toaster } from 'react-hot-toast';
 // Admin components
-import Signup from './components/SignUp';
 import UsersDetails from "./Admin/UserDetails";
 import AdminDashboard from "./Admin/AdminDashboard";
 import ProtectedRoute from "./Admin/ProtectedRoute";
 import VisitordsDetails from './Admin/VisitordsDetails';
 import AdminOccurrence from './Admin/AdminOccurrence';
 import AdminFAQs from './Admin/AdminFAQs';
+import AdminInquiry from './Admin/AdminInquiry';
+import AdminAnalytics from './Admin/AdminAnalytics';
 // User components
 import Home from './pages/Home';
 import About from './pages/About';
@@ -22,7 +22,7 @@ import NotFound from './pages/NotFound';
 import Form from './pages/VisitorForm';
 import History from './pages/VisitorHistory';
 import FAQs from './pages/FAQs';
-import AdminInquiry from './Admin/AdminInquiry';
+import Profile from './pages/Profile';
 
 const App = () => {
   const location = useLocation();
@@ -31,13 +31,25 @@ const App = () => {
   const isLoggedIn = !!token;
   const isAdmin = user?.isAdmin;
 
+  // Theme state logic
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
   // Paths where Navbar/Footer should be hidden
   const hideNavAndFooterPaths = ['/', '/magnet/admin'];
 
   const shouldHideNavAndFooter = hideNavAndFooterPaths.includes(location.pathname);
 
   return (
-    <div>
+    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-300">
       <ScrollToTop />
       <Toaster
         position="top-right"
@@ -59,7 +71,9 @@ const App = () => {
       />
 
       {/* Conditionally show Navbar */}
-      {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <Navbar setIsLoggedIn={() => {}} />}
+      {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && (
+        <Navbar setIsLoggedIn={() => {}} theme={theme} setTheme={setTheme} />
+      )}
 
       <Routes>
         <Route path="/" element={<Login onLogin={() => {}} />} />
@@ -72,6 +86,7 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/occurrence" element={<Occurrence />} />
             <Route path="/faq" element={<FAQs />} />
+            <Route path="/profile" element={<Profile />} />
           </>
         )}
 
@@ -81,17 +96,17 @@ const App = () => {
           path="/magnet/admin/dashboard/*"
           element={
             <ProtectedRoute>
-              <AdminDashboard />
+              <AdminDashboard theme={theme} setTheme={setTheme} />
             </ProtectedRoute>
           }
         >
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<UsersDetails />} />
-          <Route path="usersignup" element={<Signup />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="visitorsdetails" element={<VisitordsDetails />} />
-           <Route path="occurrence" element={<AdminOccurrence />} />
-           <Route path="faq" element={<AdminFAQs />} />
-           <Route path="inquiry" element={<AdminInquiry />} />
+          <Route path="occurrence" element={<AdminOccurrence />} />
+          <Route path="faq" element={<AdminFAQs />} />
+          <Route path="inquiry" element={<AdminInquiry />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

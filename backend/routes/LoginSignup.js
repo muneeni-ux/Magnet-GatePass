@@ -74,21 +74,53 @@ router.get('/users', async (req, res) => {
 // ✏️ Update User (PUT /users/:id)
 router.put('/users/:id', async (req, res) => {
   try {
-    const { username, email, isAdmin } = req.body;
+    const { username, email, password, isAdmin } = req.body;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      { username, email, isAdmin },
-      { new: true, runValidators: true }
-    ).select('-password');
-
-    if (!updatedUser) {
+    const user = await User.findById(req.params.id);
+    if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json({ message: 'User updated', user: updatedUser });
+    if (username) user.username = username;
+    if (email) user.email = email;
+    if (isAdmin !== undefined) user.isAdmin = isAdmin;
+    if (password) user.password = password; // triggers pre-save hook to hash password!
+
+    await user.save();
+
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    res.status(200).json({ message: 'User updated', user: userObj });
   } catch (error) {
+    console.error("Error updating user:", error);
     res.status(500).json({ message: 'Error updating user' });
+  }
+});
+
+// ✏️ Update Profile (PUT /profile)
+router.put('/profile', authenticate, async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (username) user.username = username;
+    if (email) user.email = email;
+    if (password) user.password = password; // triggers pre-save hook to hash password!
+
+    await user.save();
+
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    res.status(200).json({ message: 'Profile updated successfully', user: userObj });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: 'Error updating profile' });
   }
 });
 

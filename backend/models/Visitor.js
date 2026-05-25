@@ -11,6 +11,9 @@ const visitorSchema = new mongoose.Schema(
     nature: { type: String, enum: ["official", "personal"], required: true },
     timeOut: { type: Date },
     duration: { type: String }, // e.g., "1h 25m"
+    checkedInBy: { type: String, required: true },
+    checkedOutBy: { type: String },
+    groupSize: { type: Number, default: 1 },
   },
   { timestamps: true }
 );

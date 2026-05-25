@@ -118,15 +118,15 @@ function AdminInquiry() {
   }, []);
 
   return (
-    <div className="p-6 font-sans">
-      <h1 className="text-2xl font-bold mb-6 text-black">
+    <div className="p-6 font-sans text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      <h1 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">
         Manage Staff (Inquiries)
       </h1>
 
       {/* Add/Edit Staff Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-xl p-6 grid gap-4 mb-8"
+        className="bg-white dark:bg-slate-900 shadow-lg rounded-xl p-6 grid gap-4 mb-8 border border-transparent dark:border-slate-800 transition-colors"
       >
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <PlusCircle size={20} className="text-green-600" />{" "}
@@ -139,7 +139,7 @@ function AdminInquiry() {
             placeholder="Full Name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="border p-2 rounded-lg"
+            className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -147,7 +147,7 @@ function AdminInquiry() {
             placeholder="Role"
             value={formData.role}
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            className="border p-2 rounded-lg"
+            className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -157,7 +157,7 @@ function AdminInquiry() {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
-            className="border p-2 rounded-lg"
+            className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -167,14 +167,14 @@ function AdminInquiry() {
             onChange={(e) =>
               setFormData({ ...formData, phone: e.target.value })
             }
-            className="border p-2 rounded-lg"
+            className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="border p-2 rounded-lg md:col-span-2"
+            className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 rounded-lg md:col-span-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           {loading && (
@@ -227,32 +227,32 @@ function AdminInquiry() {
 
       {/* Staff Table */}
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse border border-gray-200 shadow-md rounded-lg">
-          <thead className="bg-blue-100">
+        <table className="w-full border-collapse border border-slate-200 dark:border-slate-700 shadow-md rounded-lg overflow-hidden bg-white dark:bg-slate-900 transition-colors">
+          <thead className="bg-blue-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
             <tr>
-              <th className="border p-3 text-left">Image</th>
-              <th className="border p-3 text-left">Name</th>
-              <th className="border p-3 text-left">Role</th>
-              <th className="border p-3 text-left">Email</th>
-              <th className="border p-3 text-left">Phone</th>
-              <th className="border p-3">Actions</th>
+              <th className="border border-slate-200 dark:border-slate-700 p-3 text-left">Image</th>
+              <th className="border border-slate-200 dark:border-slate-700 p-3 text-left">Name</th>
+              <th className="border border-slate-200 dark:border-slate-700 p-3 text-left">Role</th>
+              <th className="border border-slate-200 dark:border-slate-700 p-3 text-left">Email</th>
+              <th className="border border-slate-200 dark:border-slate-700 p-3 text-left">Phone</th>
+              <th className="border border-slate-200 dark:border-slate-700 p-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {staff.map((member) => (
-              <tr key={member._id} className="hover:bg-gray-50">
-                <td className="border p-2">
+              <tr key={member._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                <td className="border border-slate-200 dark:border-slate-700 p-2">
                   <img
                     src={member.image || "https://via.placeholder.com/50"}
                     alt={member.name}
-                    className="w-12 h-12 object-cover rounded-full border"
+                    className="w-12 h-12 object-cover rounded-full border border-slate-300 dark:border-slate-600"
                   />
                 </td>
-                <td className="border p-2 font-medium">{member.name}</td>
-                <td className="border p-2">{member.role}</td>
-                <td className="border p-2">{member.email}</td>
-                <td className="border p-2">{member.phone}</td>
-                <td className="border p-2 flex gap-2 justify-center">
+                <td className="border border-slate-200 dark:border-slate-700 p-2 font-medium">{member.name}</td>
+                <td className="border border-slate-200 dark:border-slate-700 p-2">{member.role}</td>
+                <td className="border border-slate-200 dark:border-slate-700 p-2">{member.email}</td>
+                <td className="border border-slate-200 dark:border-slate-700 p-2">{member.phone}</td>
+                <td className="border border-slate-200 dark:border-slate-700 p-2 flex gap-2 justify-center">
                   {/* ✏️ Edit */}
                   <button
                     onClick={() => handleEdit(member)}
@@ -273,7 +273,7 @@ function AdminInquiry() {
             ))}
             {staff.length === 0 && (
               <tr>
-                <td colSpan="6" className="text-center p-4 text-gray-500">
+                <td colSpan="6" className="text-center p-4 text-slate-500 dark:text-slate-400">
                   No staff added yet.
                 </td>
               </tr>

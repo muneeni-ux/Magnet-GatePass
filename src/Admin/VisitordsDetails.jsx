@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
+import DataTable, { createTheme } from "react-data-table-component";
+import { useOutletContext } from "react-router-dom";
 import { CSVLink } from "react-csv";
 import { Download, Printer, Search, Edit, Trash } from "lucide-react";
 import axios from "axios";
@@ -8,9 +9,96 @@ import { saveAs } from "file-saver";
 import format from "date-fns/format";
 import isWithinInterval from "date-fns/isWithinInterval";
 
+// Register custom dark theme for react-data-table-component
+createTheme("dark", {
+  text: {
+    primary: "#f8fafc", // slate-50
+    secondary: "#94a3b8", // slate-400
+  },
+  background: {
+    default: "#0f172a", // slate-900
+  },
+  context: {
+    background: "#2563eb", // blue-600
+    text: "#ffffff",
+  },
+  divider: {
+    default: "#1e293b", // slate-800
+  },
+  action: {
+    button: "rgba(255, 255, 255, 0.54)",
+    hover: "rgba(255, 255, 255, 0.08)",
+    disabled: "rgba(255, 255, 255, 0.26)",
+  },
+}, "dark");
+
+const customStyles = {
+  header: {
+    style: {
+      minHeight: "56px",
+    },
+  },
+  headRow: {
+    style: {
+      borderTopStyle: "solid",
+      borderTopWidth: "1px",
+      borderTopColor: "var(--border-main)",
+      backgroundColor: "var(--bg-card)",
+      transition: "background-color 0.3s ease",
+    },
+  },
+  headCells: {
+    style: {
+      fontSize: "13px",
+      fontWeight: "700",
+      textTransform: "uppercase",
+      color: "var(--text-muted)",
+    },
+  },
+  rows: {
+    style: {
+      minHeight: "52px",
+      backgroundColor: "var(--bg-card)",
+      transition: "background-color 0.3s ease",
+      "&:not(:last-of-type)": {
+        borderBottomStyle: "solid",
+        borderBottomWidth: "1px",
+        borderBottomColor: "var(--border-main)",
+      },
+    },
+  },
+  pagination: {
+    style: {
+      backgroundColor: "var(--bg-card)",
+      color: "var(--text-main)",
+      borderTopStyle: "solid",
+      borderTopWidth: "1px",
+      borderTopColor: "var(--border-main)",
+      transition: "background-color 0.3s ease, color 0.3s ease",
+    },
+    pageButtonsStyle: {
+      fill: "var(--text-main)",
+      "&:disabled": {
+        fill: "var(--text-muted)",
+      },
+    },
+  },
+};
+
+const maskIdNumber = (id) => {
+  if (!id) return "-";
+  const str = id.toString().trim();
+  if (str.length <= 4) {
+    if (str.length <= 2) return str;
+    return str[0] + "*".repeat(str.length - 2) + str[str.length - 1];
+  }
+  return str.substring(0, 3) + "***" + str.substring(str.length - 2);
+};
+
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const VisitorsDetails = () => {
+  const { theme } = useOutletContext();
   const [visitors, setVisitors] = useState([]);
   const [filterText, setFilterText] = useState("");
   const [todayOnly, setTodayOnly] = useState(false);
@@ -86,7 +174,16 @@ const VisitorsDetails = () => {
 
   const columns = [
     { name: "Name", selector: (row) => row.name, sortable: true },
-    { name: "ID Number", selector: (row) => row.idNumber, sortable: true },
+    {
+      name: "ID Number",
+      selector: (row) => row.idNumber,
+      cell: (row) => (
+        <span title={row.idNumber} className="cursor-help font-mono font-bold tracking-wider text-slate-700 dark:text-slate-350">
+          {maskIdNumber(row.idNumber)}
+        </span>
+      ),
+      sortable: true,
+    },
     { name: "Phone", selector: (row) => row.phone, sortable: true },
     { name: "Vehicle Reg", selector: (row) => row.vehicleReg || "-", sortable: true },
     { name: "Department", selector: (row) => row.department, sortable: true },
@@ -114,7 +211,7 @@ const VisitorsDetails = () => {
             <Edit size={18} />
           </button>
           <button
-            className="text-red-600 hover:text-red-800"
+            className="text-red-650 hover:text-red-800"
             onClick={() => handleDelete(row._id)}
           >
             <Trash size={18} />
@@ -135,7 +232,7 @@ const VisitorsDetails = () => {
       .map(
         (v) => `<tr>
           <td>${v.name}</td>
-          <td>${v.idNumber}</td>
+          <td>${maskIdNumber(v.idNumber)}</td>
           <td>${v.phone}</td>
           <td>${v.vehicleReg || "-"}</td>
           <td>${v.department}</td>
@@ -195,9 +292,9 @@ const VisitorsDetails = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
       <div className="flex flex-wrap justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-700">
+        <h2 className="text-xl font-bold text-slate-700 dark:text-slate-200">
           Visitor Records ({filteredVisitors.length} records)
         </h2>
 
@@ -205,16 +302,16 @@ const VisitorsDetails = () => {
           <div className="relative">
             <input
               type="text"
-              className="border border-gray-300 rounded px-4 py-2 pl-10"
+              className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               placeholder="Search name"
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
             />
-            <Search className="absolute left-2 top-2.5 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-2 top-2.5 text-slate-400 w-5 h-5" />
           </div>
 
           <select
-            className="border px-3 py-2 rounded"
+            className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
           >
@@ -227,11 +324,11 @@ const VisitorsDetails = () => {
             <option value="Directors Office">Directors Office</option>
           </select>
 
-          <label className="text-sm">
+          <label className="text-sm text-slate-700 dark:text-slate-300">
             From:{" "}
             <input
               type="date"
-              className="border rounded px-2 py-1"
+              className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors [color-scheme:light] dark:[color-scheme:dark]"
               value={dateRange.from}
               onChange={(e) =>
                 setDateRange((prev) => ({ ...prev, from: e.target.value }))
@@ -239,11 +336,11 @@ const VisitorsDetails = () => {
             />
           </label>
 
-          <label className="text-sm">
+          <label className="text-sm text-slate-700 dark:text-slate-300">
             To:{" "}
             <input
               type="date"
-              className="border rounded px-2 py-1"
+              className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors [color-scheme:light] dark:[color-scheme:dark]"
               value={dateRange.to}
               onChange={(e) =>
                 setDateRange((prev) => ({ ...prev, to: e.target.value }))
@@ -251,10 +348,10 @@ const VisitorsDetails = () => {
             />
           </label>
 
-          <label className="flex items-center text-sm">
+          <label className="flex items-center text-sm text-slate-700 dark:text-slate-300 cursor-pointer select-none">
             <input
               type="checkbox"
-              className="mr-1"
+              className="mr-2 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
               checked={todayOnly}
               onChange={() => setTodayOnly(!todayOnly)}
             />
@@ -264,7 +361,7 @@ const VisitorsDetails = () => {
           <CSVLink
             data={filteredExportData}
             filename={"visitors.csv"}
-            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded flex items-center gap-1"
+            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded flex items-center gap-1 shadow-md transition-colors"
           >
             <Download size={16} />
             CSV
@@ -272,14 +369,14 @@ const VisitorsDetails = () => {
 
           <button
             onClick={handleExcelExport}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded shadow-md transition-colors"
           >
             Export Excel
           </button>
 
           <button
             onClick={handlePrint}
-            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded flex items-center gap-1"
+            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded flex items-center gap-1 shadow-md transition-colors"
           >
             <Printer size={16} />
             Print
@@ -287,15 +384,19 @@ const VisitorsDetails = () => {
         </div>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={filteredVisitors}
-        pagination
-        highlightOnHover
-        striped
-        responsive
-        persistTableHead
-      />
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-lg transition-all duration-300 bg-white dark:bg-slate-900">
+        <DataTable
+          columns={columns}
+          data={filteredVisitors}
+          pagination
+          highlightOnHover
+          striped
+          responsive
+          persistTableHead
+          theme={theme}
+          customStyles={customStyles}
+        />
+      </div>
     </div>
   );
 };
