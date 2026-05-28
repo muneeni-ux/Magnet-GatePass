@@ -280,7 +280,7 @@ const Navbar = ({ setIsLoggedIn, theme, setTheme }) => {
                   `flex items-center gap-3 text-base font-semibold py-2.5 px-4 rounded-xl transition-all duration-300 ${
                     isActive
                       ? "bg-blue-600 text-white shadow-md dark:bg-blue-500"
-                      : "text-slate-700 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`
                 }
                 onClick={() => setMenuOpen(false)}
@@ -293,10 +293,32 @@ const Navbar = ({ setIsLoggedIn, theme, setTheme }) => {
           <li>
             <button
               onClick={() => handleDropdownItemClick("/profile")}
-              className="w-full flex items-center gap-3 text-base font-semibold py-2.5 px-4 rounded-xl text-slate-700 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+              className="w-full flex items-center gap-3 text-base font-semibold py-2.5 px-4 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
             >
               <Settings size={16} />
               <span>My Profile</span>
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => handleDropdownItemClick("/occurrence")}
+              className="w-full flex items-center gap-3 text-base font-semibold py-2.5 px-4 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+            >
+              <Book size={16} className="text-blue-500" />
+              <span>Occurrence Book</span>
+            </button>
+          </li>
+          <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
+          <li>
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                handleLogout();
+              }}
+              className="w-full flex items-center gap-3 text-base font-semibold py-2.5 px-4 rounded-xl text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all"
+            >
+              <LogOut size={16} className="text-red-500" />
+              <span>Log Out</span>
             </button>
           </li>
         </ul>
