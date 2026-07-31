@@ -1,165 +1,309 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { format } from "date-fns";
 import {
-  ArrowRight,
   ShieldCheck,
   Users,
   Clock,
-  LayoutDashboard,
+  AlertTriangle,
+  UserPlus,
   Activity,
+  ArrowRight,
   UserCheck,
-  Globe
+  HelpCircle,
+  Building2,
+  CheckCircle2,
+  PhoneCall
 } from "lucide-react";
+import { useSettings } from "../context/SettingsContext";
+
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Home = () => {
   const navigate = useNavigate();
-  const [systemStatus, setSystemStatus] = useState("Connecting...");
-  const [loading, setLoading] = useState(false);
+  const { settings } = useSettings();
+  const [stats, setStats] = useState({
+    activeInside: 0,
+    activeStaffCount: 0,
+    todayTotal: 0,
+  });
+  const [recentLogs, setRecentLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const currentUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    const timer = setTimeout(() => setSystemStatus("Online"), 1000);
-    return () => clearTimeout(timer);
+    fetchDashboardMetrics();
   }, []);
 
-  const handleGetStarted = () => {
+  const fetchDashboardMetrics = async () => {
     setLoading(true);
-    setTimeout(() => navigate("/form"), 600);
+    try {
+      const [visitorsRes, activeStaffRes] = await Promise.all([
+        axios.get(`${SERVER_URL}/api/visitors`),
+        axios.get(`${SERVER_URL}/api/visitors/active-staff-departments`).catch(() => ({ data: [] })),
+      ]);
+
+      const allVis = visitorsRes.data || [];
+      const activeInside = allVis.filter((v) => !v.timeOut && v.nature !== "staff").length;
+      
+      const todayStr = new Date().toDateString();
+      const todayTotal = allVis.filter((v) => new Date(v.createdAt).toDateString() === todayStr).length;
+
+      setStats({
+        activeInside,
+        activeStaffCount: (activeStaffRes.data || []).length,
+        todayTotal,
+      });
+
+      // Top 4 recent check-ins
+      setRecentLogs(allVis.slice(0, 4));
+    } catch (err) {
+      console.error("Dashboard metrics error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const steps = [
-    {
-      title: "User Login",
-      desc: "Quick & secure access to the visitor system.",
-      icon: ShieldCheck,
-      status: "ACTIVE",
-      color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/30"
-    },
-    {
-      title: "Visitor Check-In",
-      desc: "Register new visitor details effortlessly.",
-      icon: Users,
-      status: "READY",
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
-      border: "border-blue-500/30"
-    },
-    {
-      title: "Visitor History",
-      desc: "Track entry & exit times in real-time.",
-      icon: Clock,
-      status: "SYNCED",
-      color: "text-amber-500",
-      bg: "bg-amber-500/10",
-      border: "border-amber-500/30"
-    },
-    {
-      title: "Management",
-      desc: "View reports and manage gate locations.",
-      icon: LayoutDashboard,
-      status: "READY",
-      color: "text-indigo-500",
-      bg: "bg-indigo-500/10",
-      border: "border-indigo-500/30"
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] text-slate-800 dark:text-gray-100 font-sans relative overflow-hidden flex flex-col pt-[70px] cyber-grid">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] text-slate-800 dark:text-gray-100 font-sans relative overflow-hidden flex flex-col pt-20 md:pt-24 pb-28 md:pb-12 cyber-grid">
       
       {/* Decorative Orbs */}
-      <div className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-blue-500/10 dark:bg-blue-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-1/4 -right-32 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse delay-700"></div>
+      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-blue-500/10 dark:bg-blue-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-1/4 -right-32 w-[500px] h-[500px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse delay-700"></div>
 
-      {/* Header Status Bar */}
-      <div className="w-full glass-panel dark:glass-panel-dark border-x-0 border-t-0 border-b border-white/60 dark:border-slate-800/80 py-2.5 flex justify-between items-center px-8 z-10 text-xs font-bold font-mono shadow-sm">
-          <div className="flex items-center gap-4">
-              <span className="text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                <Globe size={14} />
-                System Status:
-              </span>
-              <span className={`px-2.5 py-0.5 rounded-md border text-[11px] uppercase tracking-wider ${systemStatus === "Online" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30" : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"} shadow-inner`}>
-                  {systemStatus}
-              </span>
-          </div>
-          <div className="hidden sm:flex items-center gap-4 text-slate-500 dark:text-slate-400">
-              <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${systemStatus === "Online" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" : "bg-amber-500"}`}></span>
-                  <span>Connected</span>
-              </div>
-          </div>
-      </div>
-
-      <div className="flex-grow flex flex-col items-center justify-center p-6 relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 relative z-10 space-y-8 animate-in fade-in zoom-in-95 duration-300">
         
-        {/* Main Content */}
-        <div className="max-w-6xl w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-            
-            {/* Hero Section */}
-            <div className="text-center mb-16 relative pt-8">
-                 
-                 <div className="inline-flex items-center gap-2 border border-blue-200/50 dark:border-blue-500/30 bg-blue-50/50 dark:bg-blue-500/10 rounded-full px-5 py-2 mb-6 shadow-inner">
-                     <Activity size={14} className="text-blue-600 dark:text-blue-400" />
-                     <span className="text-xs font-extrabold text-blue-700 dark:text-blue-300 tracking-wider uppercase font-mono">VisiTrack System</span>
-                 </div>
-
-                 <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 drop-shadow-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                    VISITRACK<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500 dark:from-emerald-400 dark:to-cyan-400">.OS</span>
-                 </h1>
-                 
-                 <p className="text-slate-600 dark:text-slate-300 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-medium">
-                    Fast, simple, and friendly visitor management system for your organization.<br/>
-                    <span className="text-slate-400 dark:text-slate-500 font-bold tracking-wider uppercase text-xs mt-2 block">Easy Check-in // Quick Search // Real-time Alerts</span>
-                 </p>
+        {/* HERO BANNER & WELCOME */}
+        <div className="glass-panel dark:glass-panel-dark p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3.5 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl shadow-lg shrink-0">
+              <ShieldCheck className="w-8 h-8" />
             </div>
-
-            {/* Dashboard Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                {steps.map((step, i) => (
-                    <div key={i} className="glass-panel dark:glass-panel-dark p-6 rounded-3xl relative group hover:bg-white/90 dark:hover:bg-[#0a0f1c]/80 transition-all duration-300 shadow-md hover:-translate-y-1 hover:shadow-xl border border-white/60 dark:border-slate-800">
-                        
-                        <div className="flex justify-between items-start mb-6 transition-transform group-hover:scale-105">
-                            <div className={`p-3.5 rounded-2xl ${step.bg} ${step.color} shadow-inner`}>
-                                <step.icon size={22} />
-                            </div>
-                            <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md ${step.bg} ${step.color} border ${step.border} font-mono`}>
-                                {step.status}
-                            </span>
-                        </div>
-                        
-                        <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1.5" style={{ fontFamily: 'Outfit, sans-serif' }}>{step.title}</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">{step.desc}</p>
-                    </div>
-                ))}
+            <div>
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 rounded-full text-[10px] font-extrabold uppercase tracking-wider mb-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Security Portal Operational
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Welcome, {currentUser?.name || "Officer"}
+              </h1>
+              <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-medium mt-0.5">
+                VisiTrack Security Gate Management Dashboard
+              </p>
             </div>
+          </div>
 
-            {/* Action Button */}
-            <div className="text-center pb-12">
-                <button
-                    onClick={handleGetStarted}
-                    disabled={loading}
-                    className={`group relative inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl font-bold text-sm tracking-wider uppercase transition-all duration-300 shadow-lg border border-transparent ${
-                      loading
-                        ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 dark:from-emerald-500 dark:to-teal-600 dark:hover:from-emerald-400 dark:hover:to-teal-500 text-white shadow-blue-500/20 dark:shadow-emerald-500/20 hover:shadow-xl hover:-translate-y-0.5"
-                    }`}
-                >
-                    {loading ? (
-                      <>
-                        <UserCheck className="h-5 w-5 animate-spin" />
-                        Loading...
-                      </>
-                    ) : (
-                      <>
-                        Start Visitor Check-In
-                        <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform" />
-                      </>
-                    )}
-                </button>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <button
+              onClick={() => navigate("/form")}
+              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl text-xs uppercase tracking-wider transition shadow-lg shadow-blue-500/25"
+            >
+              <UserPlus size={16} /> New Check-In
+            </button>
+          </div>
+        </div>
+
+        {/* METRICS SUMMARY CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          
+          <div className="glass-panel dark:glass-panel-dark p-5 rounded-3xl flex items-center justify-between">
+            <div>
+              <span className="text-[11px] font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-wider block font-mono">
+                Active Visitors Inside
+              </span>
+              <span className="text-3xl font-extrabold text-blue-600 dark:text-emerald-400 mt-1 block">
+                {stats.activeInside}
+              </span>
             </div>
+            <div className="p-3 bg-blue-50 dark:bg-emerald-500/10 text-blue-600 dark:text-emerald-400 rounded-2xl">
+              <Users size={24} />
+            </div>
+          </div>
+
+          <div className="glass-panel dark:glass-panel-dark p-5 rounded-3xl flex items-center justify-between">
+            <div>
+              <span className="text-[11px] font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-wider block font-mono">
+                Duty Staff Online
+              </span>
+              <span className="text-3xl font-extrabold text-indigo-600 dark:text-teal-400 mt-1 block">
+                {stats.activeStaffCount} Depts
+              </span>
+            </div>
+            <div className="p-3 bg-indigo-50 dark:bg-teal-500/10 text-indigo-600 dark:text-teal-400 rounded-2xl">
+              <UserCheck size={24} />
+            </div>
+          </div>
+
+          <div className="glass-panel dark:glass-panel-dark p-5 rounded-3xl flex items-center justify-between">
+            <div>
+              <span className="text-[11px] font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-wider block font-mono">
+                Today's Total Check-Ins
+              </span>
+              <span className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1 block">
+                {stats.todayTotal} Logs
+              </span>
+            </div>
+            <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl">
+              <Clock size={24} />
+            </div>
+          </div>
 
         </div>
+
+        {/* QUICK ACTIONS GRID */}
+        <div>
+          <h2 className="text-base font-extrabold text-slate-900 dark:text-white mb-4 uppercase tracking-wider text-xs font-mono">
+            Security Gate Quick Actions
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            
+            {/* Action 1: Check-In */}
+            <div
+              onClick={() => navigate("/form")}
+              className="glass-panel dark:glass-panel-dark p-6 rounded-3xl cursor-pointer hover:scale-[1.02] transition-all duration-200 border border-blue-500/20 group hover:border-blue-500 shadow-sm flex flex-col justify-between"
+            >
+              <div>
+                <div className="p-3.5 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-2xl w-fit mb-4 group-hover:scale-110 transition-transform">
+                  <UserPlus size={22} />
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">
+                  Visitor Check-In
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  Register new visitor entrance, host selection, and country code validation.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs font-extrabold text-blue-600 dark:text-blue-400 mt-6 group-hover:translate-x-1 transition-transform">
+                Open Check-In Form <ArrowRight size={14} />
+              </div>
+            </div>
+
+            {/* Action 2: History & Checkout */}
+            <div
+              onClick={() => navigate("/history")}
+              className="glass-panel dark:glass-panel-dark p-6 rounded-3xl cursor-pointer hover:scale-[1.02] transition-all duration-200 border border-emerald-500/20 group hover:border-emerald-500 shadow-sm flex flex-col justify-between"
+            >
+              <div>
+                <div className="p-3.5 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-2xl w-fit mb-4 group-hover:scale-110 transition-transform">
+                  <Clock size={22} />
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">
+                  Active Logs & Exit
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  View active visitors currently inside and record checkout exit timestamps.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 mt-6 group-hover:translate-x-1 transition-transform">
+                View Visitors & Checkout <ArrowRight size={14} />
+              </div>
+            </div>
+
+            {/* Action 3: Occurrence */}
+            <div
+              onClick={() => navigate("/occurrence")}
+              className="glass-panel dark:glass-panel-dark p-6 rounded-3xl cursor-pointer hover:scale-[1.02] transition-all duration-200 border border-amber-500/20 group hover:border-amber-500 shadow-sm flex flex-col justify-between"
+            >
+              <div>
+                <div className="p-3.5 bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-2xl w-fit mb-4 group-hover:scale-110 transition-transform">
+                  <AlertTriangle size={22} />
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">
+                  Report Incident
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  Submit shift occurrence report and dispatch optional emergency SMS alerts.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-600 dark:text-amber-400 mt-6 group-hover:translate-x-1 transition-transform">
+                Report Occurrence <ArrowRight size={14} />
+              </div>
+            </div>
+
+            {/* Action 4: Help & Support */}
+            <div
+              onClick={() => navigate("/helpdesk")}
+              className="glass-panel dark:glass-panel-dark p-6 rounded-3xl cursor-pointer hover:scale-[1.02] transition-all duration-200 border border-indigo-500/20 group hover:border-indigo-500 shadow-sm flex flex-col justify-between"
+            >
+              <div>
+                <div className="p-3.5 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-2xl w-fit mb-4 group-hover:scale-110 transition-transform">
+                  <HelpCircle size={22} />
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">
+                  HelpDesk & Support
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  System guidance, support contacts, and emergency assistance resources.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs font-extrabold text-indigo-600 dark:text-indigo-400 mt-6 group-hover:translate-x-1 transition-transform">
+                Open HelpDesk <ArrowRight size={14} />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* RECENT CHECK-INS FEED */}
+        <div className="glass-panel dark:glass-panel-dark p-6 sm:p-8 rounded-3xl">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+            <div>
+              <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+                Recent Gate Activity Feed
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                Real-time activity log of the latest check-in entries
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/history")}
+              className="text-xs font-bold text-blue-600 dark:text-emerald-400 hover:underline"
+            >
+              View Full History →
+            </button>
+          </div>
+
+          {recentLogs.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 text-xs font-bold">
+              No recent activity recorded yet today.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {recentLogs.map((log) => (
+                <div
+                  key={log._id}
+                  className="p-4 bg-white/60 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800 rounded-2xl space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm truncate">
+                      {log.name}
+                    </span>
+                    <span
+                      className={
+                        log.timeOut
+                          ? "px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500"
+                          : "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400"
+                      }
+                    >
+                      {log.timeOut ? "Out" : "Inside"}
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                    <div>Gate: {log.gate}</div>
+                    <div>Dest: {log.department}</div>
+                    <div className="text-[10px] text-slate-400 mt-1">
+                      {format(new Date(log.createdAt), "dd/MM HH:mm")}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );

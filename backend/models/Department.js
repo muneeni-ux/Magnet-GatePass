@@ -7,10 +7,16 @@ const departmentSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    gates: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Gate",
+      },
+    ],
     gateId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Gate",
-      required: true,
+      required: false,
     },
     phone: {
       type: String,

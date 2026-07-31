@@ -1,4 +1,6 @@
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 const cors = require("cors");
 const helmet = require("helmet");
 const compression = require("compression");
@@ -21,6 +23,7 @@ const faqRoutes = require("./routes/FAQRoute.js");
 const notificationRoutes = require("./routes/NotificationRoute.js");
 const locationRoutes = require("./routes/LocationRoute.js");
 const reportRoutes = require("./routes/ReportRoute.js");
+const settingsRoutes = require("./routes/SettingsRoute.js");
 const errorHandler = require("./middleware/Errorhandler.js");
 const initCronJobs = require("./services/CronJobs.js");
 
@@ -28,66 +31,89 @@ dotenv.config();
 connectdb();
 initCronJobs();
 
-const app = express();  // Initialize express
-app.set('trust proxy', 1);
+const app = express();
+app.set("trust proxy", 1);
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
+
+// Attach io to app so routes can access req.app.get("io")
+app.set("io", io);
+
+io.on("connection", (socket) => {
+  console.log("⚡ WebSockets client connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("🔌 WebSockets client disconnected:", socket.id);
+  });
+});
 
 // CORS Configuration
 const allowedOrigins = [
-  "http://localhost:3000", // For development
-  "http://localhost:3001", // For development
+  "http://localhost:3000",
+  "http://localhost:3001",
   "https://magnet-gatepass.onrender.com",
   "https://visitrack.magtrack.co.ke",
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    console.log("Origin:", origin); // Log the origin to check the requests
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', '*'],
-  credentials: true, // Allow cookies or credentials if necessary
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "*"],
+    credentials: true,
+  })
+);
 
 // Middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// app.use(mongoSanitize());
 app.use(helmet());
 app.use(compression());
 app.use(morgan("dev"));
 
-// Rate Limiting to Prevent Abuse (Relaxed for development stability)
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // Increased from 100 to 500 to accommodate polling/dev traffic
-  message: "Too many requests from this IP, please try again later.",
-}));
+// Rate Limiting
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 500,
+    message: "Too many requests from this IP, please try again later.",
+  })
+);
 
 app.use((err, req, res, next) => {
-  console.error(err.stack); // Log full error
+  console.error(err.stack);
   res.status(500).send({ success: false, message: err.message });
 });
 
 // Routes
-app.use('/api/sendmail', mail); // Send mail routes
-app.use('/api/email', emailRoutes); // Generic contact/support emails
-app.use("/api/sms", sms); // File upload routes
-app.use("/api/admin", AdminAuth); // Admin Auth routes
-app.use("/api/visitors", visitor); // Only authenticated users can track 
+app.use("/api/sendmail", mail);
+app.use("/api/email", emailRoutes);
+app.use("/api/sms", sms);
+app.use("/api/admin", AdminAuth);
+app.use("/api/visitors", visitor);
 app.use("/api/occurrences", occurrence);
-app.use("/api/auth", auth); // Authentication routes
+app.use("/api/auth", auth);
 app.use("/api/inquiry-staff", inquiryStaffRoutes);
-app.use("/api/upload", Uploads); // Image upload route
-app.use("/api/faq", faqRoutes); // FAQ routes
-app.use("/api/notifications", notificationRoutes); // Notifications routes
-app.use("/api/locations", locationRoutes); // Dynamic gates and departments routes
-app.use("/api/reports", reportRoutes); // Analytics and Reporting routes
+app.use("/api/staff", require("./routes/StaffRoute"));
+app.use("/api/upload", Uploads);
+app.use("/api/faq", faqRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/locations", locationRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // Graceful Shutdown
 process.on("SIGINT", () => {
@@ -100,8 +126,8 @@ process.on("SIGTERM", () => {
   process.exit(0);
 });
 
-// Listen on the Defined Port
+// Listen on HTTP Server with Socket.io attached
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server & WebSockets running on port ${PORT}`);
 });

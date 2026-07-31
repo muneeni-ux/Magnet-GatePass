@@ -32,6 +32,8 @@ import AdminNotifications from './Admin/AdminNotifications';
 import AdminLocations from './Admin/AdminLocations';
 import AdminEmergency from './Admin/AdminEmergency';
 import AdminReports from './Admin/AdminReports';
+import AdminSMSLogs from './Admin/AdminSMSLogs';
+import { SettingsProvider } from './context/SettingsContext';
 
 import BottomTabBar from './components/BottomTabBar';
 
@@ -50,87 +52,90 @@ const App = () => {
                                  location.pathname.startsWith('/v/');
 
   return (
-    <div className="pb-24 md:pb-0 overflow-x-hidden min-h-screen">
-      <ScrollToTop />
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        toastOptions={{
-          style: {
-            background: '#0f172a',
-            color: '#f8fafc',
-            border: '1px solid #334155',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: '600',
-            letterSpacing: '0.025em'
-          },
-          success: {
-            iconTheme: { primary: '#10b981', secondary: '#042f2e' },
-            style: { border: '1px solid #065f46' },
-          },
-          error: {
-            iconTheme: { primary: '#ef4444', secondary: '#450a0a' },
-            style: { border: '1px solid #991b1b' },
-          },
-        }}
-      />
+    <SettingsProvider>
+      <div className="pb-24 md:pb-0 overflow-x-hidden min-h-screen">
+        <ScrollToTop />
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            style: {
+              background: '#0f172a',
+              color: '#f8fafc',
+              border: '1px solid #334155',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              letterSpacing: '0.025em'
+            },
+            success: {
+              iconTheme: { primary: '#10b981', secondary: '#042f2e' },
+              style: { border: '1px solid #065f46' },
+            },
+            error: {
+              iconTheme: { primary: '#ef4444', secondary: '#450a0a' },
+              style: { border: '1px solid #991b1b' },
+            },
+          }}
+        />
 
-      {/* Conditionally show Navbar */}
-      {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <Navbar setIsLoggedIn={() => { }} />}
+        {/* Conditionally show Navbar */}
+        {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <Navbar setIsLoggedIn={() => { }} />}
 
-      <Routes>
-        <Route path="/" element={<Login onLogin={() => { }} />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/v/:token" element={<HostAck />} />
+        <Routes>
+          <Route path="/" element={<Login onLogin={() => { }} />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/v/:token" element={<HostAck />} />
 
-        {isLoggedIn && !isAdmin && (
-          <>
-            <Route path="/home" element={<Home />} />
-            <Route path="/form" element={<Form />} />
-            <Route path="/history" element={<History />} />
-            {/* <Route path="/about" element={<About />} /> */}
-            <Route path="/occurrence" element={<Occurrence />} />
-            <Route path="/faq" element={<FAQs />} />
-            <Route path="/helpdesk" element={<HelpDesk />} />
-            <Route path="/profile" element={<Profile />} />
-          </>
-        )}
+          {isLoggedIn && !isAdmin && (
+            <>
+              <Route path="/home" element={<Home />} />
+              <Route path="/form" element={<Form />} />
+              <Route path="/history" element={<History />} />
+              {/* <Route path="/about" element={<About />} /> */}
+              <Route path="/occurrence" element={<Occurrence />} />
+              <Route path="/faq" element={<FAQs />} />
+              <Route path="/helpdesk" element={<HelpDesk />} />
+              <Route path="/profile" element={<Profile />} />
+            </>
+          )}
 
-        {/* Admin Routes */}
-        <Route path="/visitrack/admin" element={<Login />} />
-        <Route
-          path="/visitrack/admin/dashboard/*"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Navigate to="users" replace />} />
-          <Route path="users" element={<UsersDetails />} />
-          <Route path="usersignup" element={<Signup />} />
-          <Route path="visitorsdetails" element={<VisitordsDetails />} />
-          <Route path="staff-roster" element={<AdminStaffRoster />} />
-          <Route path="occurrence" element={<AdminOccurrence />} />
-          <Route path="faq" element={<AdminFAQs />} />
-          <Route path="inquiry" element={<AdminInquiry />} />
-          <Route path="notifications" element={<AdminNotifications />} />
-          <Route path="locations" element={<AdminLocations />} />
-          <Route path="analytics" element={<AdminReports />} />
-          <Route path="emergency" element={<AdminEmergency />} />
-        </Route>
+          {/* Admin Routes */}
+          <Route path="/visitrack/admin" element={<Login />} />
+          <Route
+            path="/visitrack/admin/dashboard/*"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="users" replace />} />
+            <Route path="users" element={<UsersDetails />} />
+            <Route path="usersignup" element={<Signup />} />
+            <Route path="visitorsdetails" element={<VisitordsDetails />} />
+            <Route path="staff-roster" element={<AdminStaffRoster />} />
+            <Route path="occurrence" element={<AdminOccurrence />} />
+            <Route path="faq" element={<AdminFAQs />} />
+            <Route path="inquiry" element={<AdminInquiry />} />
+            <Route path="notifications" element={<AdminNotifications />} />
+            <Route path="locations" element={<AdminLocations />} />
+            <Route path="analytics" element={<AdminReports />} />
+            <Route path="emergency" element={<AdminEmergency />} />
+            <Route path="sms" element={<AdminSMSLogs />} />
+          </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
 
-      {/* Mobile Bottom Tab Bar */}
-      {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <BottomTabBar />}
+        {/* Mobile Bottom Tab Bar */}
+        {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <BottomTabBar />}
 
-      {/* Conditionally show Footer */}
-      {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <Footer />}
-    </div>
+        {/* Conditionally show Footer */}
+        {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <Footer />}
+      </div>
+    </SettingsProvider>
   );
 };
 

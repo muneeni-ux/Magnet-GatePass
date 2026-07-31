@@ -26,6 +26,15 @@ const maskIdNumber = (idStr) => {
   return `${first}${asterisks}${last}`;
 };
 
+const maskPhoneNumber = (phoneStr) => {
+  if (!phoneStr) return "-";
+  const str = phoneStr.toString().trim();
+  if (str.length <= 6) return str.replace(/./g, '*');
+  const prefix = str.slice(0, Math.min(4, Math.floor(str.length / 2)));
+  const suffix = str.slice(-3);
+  return `${prefix} *** ${suffix}`;
+};
+
 const VisitorsDetails = () => {
   const [visitors, setVisitors] = useState([]);
   const [gates, setGates] = useState([]);
@@ -193,7 +202,7 @@ const VisitorsDetails = () => {
   const filteredExportData = filteredVisitors.map((v) => ({
     "Name": v.name,
     "ID Number": maskIdNumber(v.idNumber),
-    "Phone": v.phone,
+    "Phone": maskPhoneNumber(v.phone),
     "Vehicle Reg": v.vehicleReg || "-",
     "Department": v.department,
     "Gate": v.gate,
@@ -239,7 +248,7 @@ const VisitorsDetails = () => {
       ),
     },
     { name: "ID Number", selector: (row) => maskIdNumber(row.idNumber), sortable: true },
-    { name: "Phone", selector: (row) => row.phone, sortable: true },
+    { name: "Phone", selector: (row) => maskPhoneNumber(row.phone), sortable: true },
     {
       name: "Vehicle Reg",
       selector: (row) => row.vehicleReg || "-",

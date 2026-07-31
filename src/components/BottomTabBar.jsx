@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, UserCheck, Clock, AlertTriangle } from 'lucide-react';
+import { Home, UserCheck, Clock, AlertTriangle, HelpCircle } from 'lucide-react';
 
 const BottomTabBar = () => {
   const tabs = [
@@ -8,12 +8,13 @@ const BottomTabBar = () => {
     { path: '/form', label: 'Check-In', icon: UserCheck },
     { path: '/history', label: 'History', icon: Clock },
     { path: '/occurrence', label: 'Report', icon: AlertTriangle },
+    { path: '/helpdesk', label: 'Help', icon: HelpCircle },
   ];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden pb-safe">
       <div className="mx-3 mb-2 rounded-2xl glass-panel dark:glass-panel-dark bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-white/80 dark:border-slate-800 shadow-[0_-5px_20px_rgba(0,0,0,0.15)] p-1">
-        <nav className="grid grid-cols-4 items-center">
+        <nav className="grid grid-cols-5 items-center">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (

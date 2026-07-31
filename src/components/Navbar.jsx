@@ -20,14 +20,50 @@ import {
 import toast from "react-hot-toast";
 import axios from "axios";
 
+import { useSettings } from "../context/SettingsContext";
+import { socket } from "../services/socket";
+
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const Navbar = ({ setIsLoggedIn }) => {
+  const { settings } = useSettings();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showSosModal, setShowSosModal] = useState(false);
+  const [dispatchingSos, setDispatchingSos] = useState(false);
+
+  const handleTriggerSosPanic = async () => {
+    setDispatchingSos(true);
+    try {
+      const sosNum = settings?.sosPhone || "0700000000";
+      const userName = currentUser?.name || "Security Personnel";
+      
+      // 1. Post emergency occurrence
+      await axios.post(`${SERVER_URL}/api/occurrences`, {
+        gate: "Main Gate",
+        endTime: new Date().toISOString(),
+        unusualOccurrence: "Yes",
+        unusualDescription: `🚨 INSTANT SOS PANIC ALERT triggered by ${userName}`,
+        sendEmergencySms: true,
+        isEmergency: true,
+        submittedBy: currentUser?.id || null,
+      }).catch(() => {});
+
+      toast.success("🚨 Emergency SOS Panic Alert dispatched!");
+      setShowSosModal(false);
+
+      // 2. Initiate Call
+      window.location.href = `tel:${sosNum}`;
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to dispatch SOS alert");
+    } finally {
+      setDispatchingSos(false);
+    }
+  };
   
   // Theme state
   const [isDark, setIsDark] = useState(() => {
@@ -54,27 +90,44 @@ const Navbar = ({ setIsLoggedIn }) => {
 
   useEffect(() => {
     fetchNotifications();
-    
-    // Easier method logic: Only poll when the tab is visible and increase interval to reduce DB requests
-    const interval = setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        fetchNotifications();
-      }
-    }, 60000); 
 
-    // Fetch immediately when user returns to the tab
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchNotifications();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    
+    // WebSockets Live Listeners
+    socket.on("notification:new", (newNotif) => {
+      toast.custom(
+        (t) => (
+          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-slate-900 text-white shadow-2xl rounded-2xl pointer-events-auto flex p-4 border border-blue-500/40`}>
+            <div className="flex-1">
+              <p className="text-xs uppercase font-mono font-bold text-blue-400">🔔 New Notification</p>
+              <p className="text-sm font-bold mt-0.5">{newNotif.title}</p>
+              <p className="text-xs text-slate-300 mt-1">{newNotif.message}</p>
+            </div>
+          </div>
+        ),
+        { duration: 5000 }
+      );
+      fetchNotifications();
+    });
+
+    socket.on("sos:alert", (sosData) => {
+      toast.custom(
+        (t) => (
+          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-red-950 text-white shadow-2xl rounded-2xl pointer-events-auto flex p-4 border border-red-500`}>
+            <div className="flex-1">
+              <p className="text-xs uppercase font-mono font-bold text-red-400">🚨 EMERGENCY SOS BROADCAST</p>
+              <p className="text-sm font-extrabold mt-0.5">{sosData.title || sosData.type}</p>
+              <p className="text-xs text-red-200 mt-1">{sosData.description} at Gate: {sosData.gateLocation || sosData.gate || 'Main Gate'}</p>
+            </div>
+          </div>
+        ),
+        { duration: 8000 }
+      );
+      fetchNotifications();
+    });
+
     return () => {
-      clearInterval(interval);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      socket.off("notification:new");
+      socket.off("sos:alert");
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchNotifications = async () => {
@@ -173,9 +226,13 @@ const Navbar = ({ setIsLoggedIn }) => {
           <div className="relative">
             <div className="absolute inset-0 bg-blue-500 rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
             <img
-              src={base64Logo}
+              src={settings?.logoUrl || base64Logo}
               alt="Institution Logo"
               className="relative w-9 h-9 sm:w-10 sm:h-10 object-cover rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = base64Logo;
+              }}
             />
           </div>
           <div className="flex flex-col">
@@ -224,16 +281,16 @@ const Navbar = ({ setIsLoggedIn }) => {
 
           {/* Emergency Call Button */}
           <div className="hidden sm:flex items-center">
-            <a 
-              href="tel:+254738380692" 
-              className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-slate-900 dark:hover:text-white px-3 py-1.5 rounded-full transition-all border border-red-500/30 group"
-              title="Emergency Call"
+            <button 
+              onClick={() => setShowSosModal(true)}
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-3.5 py-1.5 rounded-full transition-all border border-red-500/30 group shadow-md"
+              title={`Emergency Call & SOS Panic (${settings?.sosPhone || "SOS"})`}
             >
-              <div className="p-1 rounded-full bg-red-500 group-hover:bg-white transition-colors shadow-lg shadow-red-900/50">
-                <PhoneCall size={12} className="text-white group-hover:text-red-600 animate-pulse" />
+              <div className="p-1 rounded-full bg-white transition-colors shadow-lg">
+                <PhoneCall size={12} className="text-red-600 animate-pulse" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-wider">SOS</span>
-            </a>
+              <span className="text-xs font-bold uppercase tracking-wider">SOS PANIC</span>
+            </button>
           </div>
 
           {/* Notifications Dropdown */}
@@ -386,6 +443,45 @@ const Navbar = ({ setIsLoggedIn }) => {
           )}
         </div>
       </div>
+
+      {/* INSTANT SOS PANIC ALERT MODAL */}
+      {showSosModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden animate-in fade-in duration-150">
+          <div
+            className="absolute inset-0 bg-slate-950/50 backdrop-blur-md"
+            onClick={() => setShowSosModal(false)}
+          ></div>
+          <div className="bg-white dark:bg-slate-900 border border-red-500/40 shadow-2xl rounded-3xl p-6 sm:p-8 w-full max-w-md relative z-10 animate-in zoom-in-95 duration-150 text-center">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-300 dark:border-red-500/40 shadow-lg animate-pulse">
+              <PhoneCall size={32} />
+            </div>
+
+            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+              🚨 Emergency SOS Panic Alert
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 text-xs font-medium mb-6 leading-relaxed">
+              Are you sure you want to dispatch an instant security panic alert? This will immediately send an Emergency Broadcast SMS to <span className="font-mono font-bold text-red-600">{settings?.sosPhone || "0700000000"}</span> and initiate a call.
+            </p>
+
+            <div className="space-y-3">
+              <button
+                onClick={handleTriggerSosPanic}
+                disabled={dispatchingSos}
+                className="w-full py-3 px-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-red-500/30 flex items-center justify-center gap-2"
+              >
+                <PhoneCall size={16} /> {dispatchingSos ? "Dispatching SOS..." : "🚨 DISPATCH EMERGENCY SMS & CALL NOW"}
+              </button>
+
+              <button
+                onClick={() => setShowSosModal(false)}
+                className="w-full py-2.5 px-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-200 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

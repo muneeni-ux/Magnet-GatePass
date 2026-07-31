@@ -3,7 +3,7 @@ const router = express.Router();
 const Notification = require('../models/Notification');
 const authenticateToken = require('../authToken');
 
-// Create a new notification (Admin only ideally, but keeping it open for now based on context, or we can use authenticateToken if we want only admins)
+// Create a new notification & emit WebSockets real-time event
 router.post('/', async (req, res) => {
   try {
     const { title, message } = req.body;
@@ -18,6 +18,13 @@ router.post('/', async (req, res) => {
     });
 
     await newNotification.save();
+
+    // Real-Time Socket.io emission
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("notification:new", newNotification);
+    }
+
     res.status(201).json({ message: 'Notification created successfully', notification: newNotification });
   } catch (error) {
     console.error("Error creating notification:", error);
@@ -47,6 +54,12 @@ router.put('/:id/toggle', authenticateToken, async (req, res) => {
     }
     notification.isActive = !notification.isActive;
     await notification.save();
+
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("notification:updated", notification);
+    }
+
     res.status(200).json({ message: 'Notification toggled status', notification });
   } catch (error) {
     console.error("Error toggling notification:", error);
@@ -58,39 +71,48 @@ router.put('/:id/toggle', authenticateToken, async (req, res) => {
 router.put('/:id/read', authenticateToken, async (req, res) => {
   try {
     const notificationId = req.params.id;
-    const userId = req.user.id; // From authenticateToken middleware
+    const userId = req.user.id; // Extract user ID from token payload
 
     const notification = await Notification.findById(notificationId);
-    
     if (!notification) {
       return res.status(404).json({ message: 'Notification not found' });
     }
 
-    // Add user to readBy array if not already present
-    if (!notification.readBy.includes(userId)) {
-      notification.readBy.push(userId);
+    // Check if user has already read it
+    const hasRead = notification.readBy.some(
+      (entry) => entry.userId.toString() === userId
+    );
+
+    if (!hasRead) {
+      notification.readBy.push({ userId, readAt: new Date() });
       await notification.save();
     }
 
     res.status(200).json({ message: 'Notification marked as read', notification });
   } catch (error) {
-    console.error("Error updating notification:", error);
-    res.status(500).json({ message: 'Server error while updating notification' });
+    console.error("Error marking notification as read:", error);
+    res.status(500).json({ message: 'Server error while marking notification as read' });
   }
 });
 
 // Delete a notification
-router.delete('/:id', async (req, res) => {
-    try {
-        const deletedNotification = await Notification.findByIdAndDelete(req.params.id);
-        if (!deletedNotification) {
-            return res.status(404).json({ message: "Notification not found" });
-        }
-        res.status(200).json({ message: "Notification deleted successfully" });
-    } catch (error) {
-        console.error("Error deleting notification:", error);
-        res.status(500).json({ message: "Server error while deleting notification" });
+router.delete('/:id', authenticateToken, async (req, res) => {
+  try {
+    const notification = await Notification.findByIdAndDelete(req.params.id);
+    if (!notification) {
+      return res.status(404).json({ message: 'Notification not found' });
     }
+
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("notification:deleted", req.params.id);
+    }
+
+    res.status(200).json({ message: 'Notification deleted successfully' });
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    res.status(500).json({ message: 'Server error while deleting notification' });
+  }
 });
 
 module.exports = router;

@@ -15,15 +15,36 @@ const Visitor = require("../models/Visitor");
 router.post("/", async (req, res) => {
   try {
     const crypto = require('crypto');
+    const { phone, idNumber, name } = req.body;
+
+    // Prevent double check-in for visitors/staff who are currently checked in (no timeOut)
+    let duplicateQueries = [];
+    if (phone) duplicateQueries.push({ phone });
+    if (idNumber && idNumber.trim() !== "") duplicateQueries.push({ idNumber });
+
+    if (duplicateQueries.length > 0) {
+      const activeEntry = await Visitor.findOne({
+        $and: [
+          { $or: duplicateQueries },
+          { $or: [{ timeOut: { $exists: false } }, { timeOut: null }] }
+        ]
+      });
+
+      if (activeEntry) {
+        return res.status(400).json({
+          error: `${activeEntry.name} is currently checked in at ${activeEntry.gate || 'Gate'} and has not checked out yet!`
+        });
+      }
+    }
+
     req.body.acknowledgmentToken = crypto.randomBytes(4).toString('hex');
-    const visitor = new Visitor(req.body); // formData includes gate, nature, recordedBy
+    const visitor = new Visitor(req.body);
     const savedVisitor = await visitor.save();
     res.status(201).json(savedVisitor);
   } catch (err) {
     if (err.name === 'ValidationError' || err.name === 'CastError') {
       res.status(400).json({ error: err.message });
     } else {
-      // MongoServerSelectionError or other network timeouts
       res.status(503).json({ error: "Database connectivity error", details: err.message });
     }
   }
@@ -79,8 +100,11 @@ router.get("/", async (req, res) => {
 // GET ACTIVE STAFF DEPARTMENTS
 router.get("/active-staff-departments", async (req, res) => {
   try {
-    const activeStaff = await Visitor.find({ nature: "staff", timeOut: { $exists: false } });
-    const deps = activeStaff.map(s => s.department);
+    const activeStaff = await Visitor.find({
+      nature: "staff",
+      $or: [{ timeOut: { $exists: false } }, { timeOut: null }]
+    });
+    const deps = activeStaff.map(s => s.department).filter(Boolean);
     res.json([...new Set(deps)]);
   } catch(err) {
     res.status(500).json({ error: err.message });
@@ -90,15 +114,39 @@ router.get("/active-staff-departments", async (req, res) => {
 // SEARCH RECENT FOR AUTOFILL
 router.get("/search/recent", async (req, res) => {
   try {
-    const { phone, idNumber } = req.query;
-    if (!phone && !idNumber) return res.json(null);
+    const { phone, idNumber, vehicleReg, name } = req.query;
+    if (!phone && !idNumber && !vehicleReg && !name) return res.json(null);
     
     let queryArr = [];
     if (phone) queryArr.push({ phone });
     if (idNumber) queryArr.push({ idNumber });
+    if (vehicleReg) queryArr.push({ vehicleReg: new RegExp(`^${vehicleReg.trim()}$`, "i") });
+    if (name) queryArr.push({ name: new RegExp(name.trim(), "i") });
     
     const visitor = await Visitor.findOne({ $or: queryArr }).sort({ createdAt: -1 });
     res.json(visitor);
+  } catch(err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// SEARCH QUERY FOR TOP AUTOCOMPLETE SEARCH BAR
+router.get("/search/query", async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.trim().length < 2) return res.json([]);
+    
+    const regex = new RegExp(q.trim(), "i");
+    const matches = await Visitor.find({
+      $or: [
+        { name: regex },
+        { idNumber: regex },
+        { phone: regex },
+        { vehicleReg: regex }
+      ]
+    }).sort({ createdAt: -1 }).limit(10);
+    
+    res.json(matches);
   } catch(err) {
     res.status(500).json({ error: err.message });
   }

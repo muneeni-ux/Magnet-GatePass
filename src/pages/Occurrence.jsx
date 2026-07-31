@@ -19,6 +19,7 @@ const Occurrence = () => {
     endTime: "",
     unusualOccurrence: "No",
     unusualDescription: "",
+    sendEmergencySms: false,
     remarks: "",
     submittedBy: JSON.parse(localStorage.getItem("user"))?.id || null,
   });
@@ -215,17 +216,37 @@ const Occurrence = () => {
               </div>
 
               {form.unusualOccurrence === "Yes" && (
-                <div className="mt-4 animate-in slide-in-from-top-2">
-                  <InputLabel required>Incident Description</InputLabel>
-                  <textarea
-                    name="unusualDescription"
-                    value={form.unusualDescription}
-                    onChange={handleChange}
-                    required={form.unusualOccurrence === "Yes"}
-                    rows={4}
-                    className="w-full bg-red-500/5 dark:bg-slate-950 border border-red-500/30 text-slate-900 dark:text-white p-3 rounded-xl focus:outline-none focus:border-red-500 text-sm shadow-inner placeholder-slate-400 font-sans"
-                    placeholder="Describe what happened in detail..."
-                  />
+                <div className="mt-4 animate-in slide-in-from-top-2 space-y-3">
+                  <div>
+                    <InputLabel required>Incident Description</InputLabel>
+                    <textarea
+                      name="unusualDescription"
+                      value={form.unusualDescription}
+                      onChange={handleChange}
+                      required={form.unusualOccurrence === "Yes"}
+                      rows={4}
+                      className="w-full bg-red-500/5 dark:bg-slate-950 border border-red-500/30 text-slate-900 dark:text-white p-3 rounded-xl focus:outline-none focus:border-red-500 text-sm shadow-inner placeholder-slate-400 font-sans"
+                      placeholder="Describe what happened in detail..."
+                    />
+                  </div>
+
+                  <label className="flex items-center gap-3 cursor-pointer p-3.5 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-xl hover:bg-red-100/50 transition">
+                    <input
+                      type="checkbox"
+                      name="sendEmergencySms"
+                      checked={form.sendEmergencySms}
+                      onChange={(e) => setForm(prev => ({ ...prev, sendEmergencySms: e.target.checked }))}
+                      className="w-4 h-4 text-red-600 rounded focus:ring-red-500 cursor-pointer"
+                    />
+                    <div>
+                      <span className="text-xs font-bold text-red-700 dark:text-red-300 block">
+                        🚨 Send Automated Emergency SMS Alert to SOS Phone Number
+                      </span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">
+                        Dispatches instant SMS broadcast to configured emergency security contact.
+                      </span>
+                    </div>
+                  </label>
                 </div>
               )}
             </div>

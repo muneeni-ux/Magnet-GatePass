@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -13,11 +13,14 @@
 
   body {
     @apply m-0 antialiased text-slate-800 bg-slate-50 dark:text-slate-200 dark:bg-[#090d16] transition-colors duration-300;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.02em;
   }
 
   code {
@@ -49,34 +52,20 @@
   .glass-panel {
     @apply bg-white/80 backdrop-blur-xl border border-white/60 shadow-md shadow-slate-200/40 dark:bg-slate-900/80 dark:border-slate-800 dark:shadow-[0_10px_30px_rgb(0,0,0,0.5)];
   }
-  .glass-panel-dark {
-    @apply bg-slate-900/60 backdrop-blur-2xl border border-slate-800/80 shadow-2xl shadow-black/50;
-  }
-  
-  .glow-emerald {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
-  }
-  .glow-cyan {
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
-  }
 }
 
-@keyframes float {
-  0% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(-15px) translateX(8px); }
-  100% { transform: translateY(0px) translateX(0px); }
+/* Custom Scrollbar for sleek UI */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-
-@keyframes float-slow {
-  0% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(-25px) translateX(-12px); }
-  100% { transform: translateY(0px) translateX(0px); }
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
 }
-
-.animate-float-slow {
-  animation: float-slow 10s ease-in-out infinite;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
 }

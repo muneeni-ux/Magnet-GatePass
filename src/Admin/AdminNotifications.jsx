@@ -3,6 +3,8 @@ import axios from "axios";
 import { FiPlus, FiTrash2, FiBell, FiEye, FiEyeOff } from "react-icons/fi";
 import toast from "react-hot-toast";
 
+import { socket } from "../services/socket";
+
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
 const AdminNotifications = () => {
@@ -14,6 +16,24 @@ const AdminNotifications = () => {
 
   useEffect(() => {
     fetchNotifications();
+
+    socket.on("notification:new", (newNotif) => {
+      setNotifications((prev) => [newNotif, ...prev.filter(n => n._id !== newNotif._id)]);
+    });
+
+    socket.on("notification:updated", () => {
+      fetchNotifications();
+    });
+
+    socket.on("notification:deleted", (id) => {
+      setNotifications((prev) => prev.filter(n => n._id !== id));
+    });
+
+    return () => {
+      socket.off("notification:new");
+      socket.off("notification:updated");
+      socket.off("notification:deleted");
+    };
   }, []);
 
   const fetchNotifications = async () => {

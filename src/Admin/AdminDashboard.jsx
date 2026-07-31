@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   LineChart,
   UserCheck,
+  MessageSquare,
 } from "lucide-react";
 
 const links = [
@@ -59,11 +60,15 @@ const links = [
     label: "Locations",
     icon: <MapPin size={18} />,
   },
-  
   {
     to: "/visitrack/admin/dashboard/staff-roster",
     label: "Staff Roster",
     icon: <UserCheck size={18} />,
+  },
+  {
+    to: "/visitrack/admin/dashboard/sms",
+    label: "SMS & Settings",
+    icon: <MessageSquare size={18} />,
   },
 ];
 

@@ -11,6 +11,15 @@ import {
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
+const maskPhoneNumber = (phoneStr) => {
+  if (!phoneStr) return "-";
+  const str = phoneStr.toString().trim();
+  if (str.length <= 6) return str.replace(/./g, '*');
+  const prefix = str.slice(0, Math.min(4, Math.floor(str.length / 2)));
+  const suffix = str.slice(-3);
+  return `${prefix} *** ${suffix}`;
+};
+
 export default function VisitorHistory() {
   const [visitors, setVisitors] = useState([]);
   const [gatesMap, setGatesMap] = useState({});
@@ -252,14 +261,19 @@ export default function VisitorHistory() {
                         </div>
                         <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2 font-mono">
                           <a href={`tel:${v.phone}`} className="hover:text-blue-500 dark:hover:text-emerald-400 hover:underline transition-colors" onClick={(e) => e.stopPropagation()}>
-                            {v.phone}
+                            {maskPhoneNumber(v.phone)}
                           </a>
                           {v.nature === 'staff' && <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 rounded-md text-[9px] uppercase tracking-widest">Staff</span>}
                         </div>
                       </td>
                       <td className="p-6">
                         <div className="text-slate-800 dark:text-slate-300 font-bold text-sm tracking-tight">{v.department}</div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-widest font-bold font-mono mt-1.5">
+                        {v.hostStaff && (
+                          <div className="text-xs font-extrabold text-blue-600 dark:text-emerald-400 mt-1 font-mono">
+                            Host: {v.hostStaff}
+                          </div>
+                        )}
+                        <div className="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-widest font-bold font-mono mt-1">
                           {v.nature} Type
                         </div>
                       </td>

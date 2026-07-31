@@ -52,14 +52,18 @@ router.put("/gates/:id", async (req, res) => {
 // Delete a Gate
 router.delete("/gates/:id", async (req, res) => {
   try {
-    // Delete the gate
     const gate = await Gate.findByIdAndDelete(req.params.id);
     if (!gate) return res.status(404).json({ message: "Gate not found" });
     
     // Unlink or delete associated departments
-    await Department.deleteMany({ gateId: req.params.id });
+    await Department.deleteMany({
+      $or: [
+        { gateId: req.params.id },
+        { gates: req.params.id }
+      ]
+    });
 
-    res.status(200).json({ message: "Gate and associated departments deleted" });
+    res.status(200).json({ message: "Gate and associated departments unlinked" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting gate", error: error.message });
   }
@@ -67,20 +71,26 @@ router.delete("/gates/:id", async (req, res) => {
 
 // ======================= DEPARTMENTS =======================
 
-// Create a Department
+// Create a Department (Supports multi-gate assignment)
 router.post("/departments", async (req, res) => {
   try {
-    const { name, gateId, phone } = req.body;
-    if (!name || !gateId || !phone) {
-      return res.status(400).json({ message: "Name, gateId, and phone are required" });
+    const { name, gates, gateId, phone } = req.body;
+    if (!name || !phone) {
+      return res.status(400).json({ message: "Department name and phone are required" });
     }
 
-    const gateExists = await Gate.findById(gateId);
-    if (!gateExists) return res.status(404).json({ message: "Gate not found" });
+    let gatesArray = Array.isArray(gates) && gates.length > 0 ? gates : (gateId ? [gateId] : []);
 
-    const newDept = new Department({ name, gateId, phone });
+    const newDept = new Department({
+      name,
+      gates: gatesArray,
+      gateId: gatesArray[0] || null,
+      phone
+    });
+
     await newDept.save();
-    res.status(201).json({ message: "Department created", department: newDept });
+    const populated = await Department.findById(newDept._id).populate("gates gateId", "name");
+    res.status(201).json({ message: "Department created", department: populated });
   } catch (error) {
     res.status(500).json({ message: "Error creating department", error: error.message });
   }
@@ -90,10 +100,19 @@ router.post("/departments", async (req, res) => {
 router.get("/departments", async (req, res) => {
   try {
     const { gateId } = req.query;
-    const query = gateId ? { gateId } : {};
+    let query = {};
+    if (gateId) {
+      query = {
+        $or: [
+          { gateId: gateId },
+          { gates: gateId },
+          { gates: { $size: 0 } } // Available for all gates
+        ]
+      };
+    }
     
     const departments = await Department.find(query)
-      .populate("gateId", "name")
+      .populate("gates gateId", "name")
       .sort({ name: 1 });
       
     res.status(200).json(departments);
@@ -105,12 +124,19 @@ router.get("/departments", async (req, res) => {
 // Update a Department
 router.put("/departments/:id", async (req, res) => {
   try {
-    const { name, gateId, phone } = req.body;
+    const { name, gates, gateId, phone } = req.body;
+    let gatesArray = Array.isArray(gates) && gates.length > 0 ? gates : (gateId ? [gateId] : []);
+
     const dept = await Department.findByIdAndUpdate(
       req.params.id,
-      { name, gateId, phone },
+      {
+        name,
+        gates: gatesArray,
+        gateId: gatesArray[0] || null,
+        phone
+      },
       { new: true }
-    ).populate("gateId", "name");
+    ).populate("gates gateId", "name");
     
     if (!dept) return res.status(404).json({ message: "Department not found" });
     res.status(200).json({ message: "Department updated", department: dept });

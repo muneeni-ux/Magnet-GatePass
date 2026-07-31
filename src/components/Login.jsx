@@ -54,17 +54,17 @@ const Login = ({ onLogin }) => {
           setRecoveryAttempts(3 - data.attemptsRemaining);
         }
       } else if (res.ok) {
-        toast.success(data.message || "Reset link dispatched.", { duration: 4000 });
+        toast.success(data.message || "Password reset link sent to your email.", { duration: 4000 });
         setShowForgotModal(false);
         setForgotEmail("");
         setForgotUsername("");
         setRecoveryAttempts(0);
       } else {
-        setRecoveryError("Server error. Try again.");
+        setRecoveryError("Server error. Please try again.");
       }
     } catch (err) {
       if (err.message === "Failed to fetch") {
-        setRecoveryError("Network Error: Verification system unreachable.");
+        setRecoveryError("Network Error: System unreachable.");
       } else {
         setRecoveryError("Connection failed.");
       }
@@ -88,7 +88,7 @@ const Login = ({ onLogin }) => {
       const data = await res.json();
       if (!res.ok)
         throw new Error(
-          data.message || "Access Denied // Authorization Failed",
+          data.message || "Invalid username or password",
         );
 
       localStorage.setItem("token", data.token);
@@ -103,7 +103,7 @@ const Login = ({ onLogin }) => {
       if (error.message === "Failed to fetch") {
         setErrorMsg("Network Error: Please check your internet connection.");
       } else {
-        setErrorMsg(error.message || "Invalid Security Credentials");
+        setErrorMsg(error.message || "Invalid credentials. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -111,92 +111,88 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-[#0a0f1c] text-slate-800 dark:text-gray-100 font-sans cyber-grid selection:bg-blue-500/30 dark:selection:bg-emerald-500/30 transition-colors duration-500">
+    <div className="h-screen h-[100dvh] w-screen overflow-hidden flex flex-col items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-[#0a0f1c] text-slate-800 dark:text-gray-100 font-sans cyber-grid select-none relative">
+      
+      {/* Theme Toggle Button */}
       <button
         onClick={toggleTheme}
-        className="absolute top-6 right-6 p-3 rounded-full bg-white/40 dark:bg-white/5 border border-white/60 dark:border-white/10 backdrop-blur-md shadow-lg text-slate-800 dark:text-white hover:scale-110 active:scale-95 transition-all z-[100] flex items-center justify-center group"
+        className="absolute top-3 right-3 sm:top-5 sm:right-5 p-2.5 rounded-full bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 backdrop-blur-md shadow-md text-slate-800 dark:text-white hover:scale-105 active:scale-95 transition-all z-30 flex items-center justify-center group"
       >
-        {theme === 'dark' ? <Sun size={20} className="text-emerald-400 group-hover:rotate-90 transition-transform duration-500" /> : <Moon size={20} className="text-blue-600 group-hover:-rotate-12 transition-transform duration-500" />}
+        {theme === 'dark' ? <Sun size={18} className="text-emerald-400 group-hover:rotate-90 transition-transform duration-500" /> : <Moon size={18} className="text-blue-600 group-hover:-rotate-12 transition-transform duration-500" />}
       </button>
+
       {/* Decorative Ambient Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 dark:bg-emerald-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 dark:bg-cyan-500/10 rounded-full blur-[100px] animate-pulse delay-1000 pointer-events-none"></div>
+      <div className="hidden sm:block absolute top-1/4 left-1/4 w-80 h-80 bg-blue-500/10 dark:bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+      <div className="hidden sm:block absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-500/10 dark:bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse delay-700"></div>
 
-      {/* Login Card */}
-      <div className="relative z-10 w-full max-w-[420px] p-6 animate-in fade-in zoom-in-95 duration-500">
-        <div className="glass-panel dark:glass-panel-dark rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-white/60 dark:border-slate-700/50">
+      {/* Top Spacer for Vertical Center */}
+      <div className="flex-1 min-h-[8px]"></div>
+
+      {/* Non-Scrollable Login Card */}
+      <div className="w-full max-w-[380px] sm:max-w-[400px] relative z-10 my-auto animate-in fade-in zoom-in-95 duration-300">
+        <div className="glass-panel dark:glass-panel-dark bg-white/80 dark:bg-slate-900/80 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-white/80 dark:border-slate-800 backdrop-blur-md">
+          
           {/* Header Section */}
-          <div className="bg-white/40 dark:bg-slate-900/40 border-b border-white/30 dark:border-slate-700/30 p-8 text-center backdrop-blur-md relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent dark:from-emerald-500/5 dark:to-transparent pointer-events-none"></div>
-
-            <div className="flex justify-center mb-5 relative">
-              <div className="p-2 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-emerald-500/10 dark:to-cyan-500/10 rounded-2xl border border-blue-500/20 dark:border-emerald-500/20 shadow-inner group">
-                <img src="./VisiTrack-L51.png" className="h-10 w-10 object-contain group-hover:scale-110 transition-transform rounded-lg" alt="VisiTrack Logo" />
+          <div className="bg-white/40 dark:bg-slate-900/50 border-b border-slate-200/60 dark:border-slate-800 p-4 sm:p-5 text-center backdrop-blur-md relative overflow-hidden">
+            <div className="flex justify-center mb-2">
+              <div className="p-1.5 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-emerald-500/10 dark:to-cyan-500/10 rounded-xl border border-blue-500/20 dark:border-emerald-500/20 shadow-inner">
+                <img src="./VisiTrack-L51.png" className="h-8 w-8 object-contain rounded-md" alt="VisiTrack Logo" />
               </div>
             </div>
             <h1
-              className="text-3xl font-extrabold text-slate-900 dark:text-white mb-1.5 tracking-tight"
+              className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
               VISITRACK
               <span className="text-blue-600 dark:text-emerald-400">.OS</span>
             </h1>
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-widest font-mono">
-                Authorization Required
-              </p>
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
-            </div>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-0.5 font-mono">
+              Visitor Management Portal
+            </p>
           </div>
 
-          <div className="p-8 sm:p-10 bg-white/20 dark:bg-[#0a0f1c]/40 backdrop-blur-sm">
+          {/* Form Body */}
+          <div className="p-5 sm:p-6 bg-white/30 dark:bg-[#0a0f1c]/50 backdrop-blur-sm">
             {errorMsg && (
-              <div className="mb-6 bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 flex items-start gap-3 animate-in slide-in-from-top-2">
-                <div className="p-1 bg-red-500/20 rounded-full shrink-0">
-                  <span className="block w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
-                </div>
-                <span className="uppercase tracking-wide leading-relaxed">
-                  {errorMsg}
-                </span>
+              <div className="mb-3.5 bg-red-500/10 border border-red-500/20 p-2.5 rounded-xl text-[11px] font-bold text-red-600 dark:text-red-400 flex items-center gap-2 animate-in slide-in-from-top-2">
+                <AlertCircle className="shrink-0 h-4 w-4" />
+                <span className="leading-snug">{errorMsg}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
-                  Operator Name
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <div className="space-y-1">
+                <label className="block text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono">
+                  Username
                 </label>
-                <div className="relative group">
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                    className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white px-5 py-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600"
-                    placeholder="Enter Operator Name..."
-                    spellCheck="false"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white px-3.5 py-2.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 text-sm font-mono shadow-inner transition-all placeholder-slate-400 dark:placeholder-slate-600"
+                  placeholder="Enter Username"
+                  spellCheck="false"
+                />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
+              <div className="space-y-1">
+                <label className="block text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono">
                   Password
                 </label>
-                <div className="relative group">
+                <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white px-5 py-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600 pr-12"
+                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white pl-3.5 pr-10 py-2.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 text-sm font-mono shadow-inner transition-all placeholder-slate-400 dark:placeholder-slate-600"
                     placeholder="••••••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-4 flex items-center text-slate-400 hover:text-blue-600 dark:hover:text-emerald-400 focus:outline-none transition-colors"
+                    className="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-blue-600 dark:hover:text-emerald-400 transition-colors"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -210,157 +206,131 @@ const Login = ({ onLogin }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-4 mt-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-lg flex justify-center items-center gap-2 ${
+                className={`w-full py-3 mt-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md flex justify-center items-center gap-2 ${
                   loading
                     ? "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 dark:from-emerald-600 dark:to-cyan-600 dark:hover:from-emerald-500 dark:hover:to-cyan-600 text-white shadow-blue-500/20 dark:shadow-emerald-500/20 hover:shadow-blue-500/40 dark:hover:shadow-emerald-500/40 hover:-translate-y-0.5 border border-transparent hover:border-white/20"
+                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 dark:from-emerald-500 dark:to-teal-600 dark:hover:from-emerald-400 dark:hover:to-teal-500 text-white shadow-blue-500/20 dark:shadow-emerald-500/20 hover:shadow-lg hover:-translate-y-0.5"
                 }`}
               >
                 {loading ? (
                   <>
                     <Cpu className="h-4 w-4 animate-spin" />
-                    Authenticating...
+                    <span>Signing In...</span>
                   </>
                 ) : (
-                  "Sign In"
+                  <span>Sign In</span>
                 )}
               </button>
             </form>
 
-                 <div className="mt-8 text-center flex flex-col items-center gap-2 border-t border-white/30 dark:border-slate-800 pt-6">
-                     <ShieldCheck className="h-4 w-4 text-slate-400 dark:text-slate-500" />
-                     <p className="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-widest font-extrabold font-mono">
-                          Welcome Back! Please Sign In
-                     </p>
-                     
-                     <div className="mt-4 pt-4 border-t border-white/20 dark:border-slate-800/50 w-full flex justify-center">
-                       <button 
-                         type="button"
-                         onClick={() => setShowForgotModal(true)}
-                         className="text-[10px] text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-emerald-400 transition-colors uppercase tracking-widest font-bold"
-                       >
-                          Forgot Password? <strong className="text-blue-600 dark:text-emerald-400 underline decoration-blue-500/30 underline-offset-4 pl-1">Reset Password</strong>
-                       </button>
-                     </div>
-                 </div>
+            <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800 text-center">
+              <button 
+                type="button"
+                onClick={() => setShowForgotModal(true)}
+                className="text-[11px] text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-emerald-400 font-bold transition-colors"
+              >
+                Forgot Password? <span className="text-blue-600 dark:text-emerald-400 underline underline-offset-2">Reset Password</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Footer Text */}
-      <p className="mt-8 text-xs text-center text-slate-500 font-bold uppercase tracking-widest bg-white/40 dark:bg-slate-900/40 p-2 rounded-xl backdrop-blur-md shadow-sm border border-white/40 dark:border-slate-800/60 inline-flex items-center gap-2">
+      {/* Bottom Spacer for Vertical Center */}
+      <div className="flex-1 min-h-[8px]"></div>
+
+      {/* Footer Text (Fits on single screen) */}
+      <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider bg-white/60 dark:bg-slate-900/60 px-3 py-1 rounded-lg backdrop-blur-md shadow-sm border border-slate-200/80 dark:border-slate-800 shrink-0 z-10 mb-1">
         &copy; {new Date().getFullYear()} VisiTrack System
       </p>
 
       {/* Forgot Password Modal */}
       {showForgotModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/40 dark:bg-[#070b14]/80 backdrop-blur-xl" onClick={() => setShowForgotModal(false)}></div>
-          <div className="bg-white/40 dark:bg-[#0a0f1c]/70 backdrop-blur-3xl border border-white/60 dark:border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.1)] dark:shadow-[0_40px_100px_rgba(0,0,0,0.4)] rounded-[2.5rem] p-8 sm:p-10 w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
-            {/* Ambient Modal Blobs */}
-            <div className="absolute -top-32 -right-32 w-64 h-64 bg-blue-500/20 dark:bg-emerald-500/20 rounded-full blur-[80px] pointer-events-none"></div>
-            <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-500/20 dark:bg-cyan-500/20 rounded-full blur-[80px] pointer-events-none"></div>
-
-            <div className="flex justify-center mb-6 relative">
-              <div className="p-4 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-emerald-500/10 dark:to-cyan-500/10 rounded-[1.5rem] border border-blue-500/20 dark:border-emerald-500/20 shadow-inner group">
-                <LockKeyhole className="h-8 w-8 text-blue-600 dark:text-emerald-400 group-hover:rotate-12 transition-transform duration-500" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/60 dark:bg-[#070b14]/80 backdrop-blur-md" onClick={() => setShowForgotModal(false)}></div>
+          <div className="bg-white dark:bg-[#0a0f1c] border border-slate-200 dark:border-slate-800 shadow-2xl rounded-3xl p-6 sm:p-8 w-full max-w-sm relative z-10 animate-in fade-in zoom-in-95 duration-300">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-blue-500/10 dark:bg-emerald-500/10 rounded-2xl border border-blue-500/20 dark:border-emerald-500/20">
+                <LockKeyhole className="h-6 w-6 text-blue-600 dark:text-emerald-400" />
               </div>
             </div>
             
-            <h3 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-2 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white text-center mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
               Password Reset
             </h3>
-            <p className="text-slate-500 dark:text-slate-400 text-[10px] text-center mb-8 font-extrabold uppercase tracking-[0.2em]">
-              {recoveryAttempts >= 3 
-                ? "Access Restricted" 
-                : "Enter username and email to reset password"}
+            <p className="text-slate-500 dark:text-slate-400 text-xs text-center mb-5 font-medium">
+              Enter your username and email to receive a password reset link.
             </p>
 
             {recoveryAttempts >= 3 ? (
-              <div className="bg-red-500/5 dark:bg-red-500/10 border border-red-500/20 p-8 rounded-[2rem] text-center space-y-6 relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="absolute inset-0 bg-gradient-to-t from-red-500/5 to-transparent pointer-events-none"></div>
-                <div className="flex justify-center relative z-10">
-                  <div className="p-4 bg-red-500/10 dark:bg-red-500/20 rounded-full shadow-[0_0_30px_rgba(239,68,68,0.3)]">
-                    <ShieldCheck className="h-10 w-10 text-red-600 dark:text-red-500 animate-pulse" />
-                  </div>
-                </div>
-                <div className="space-y-2 relative z-10">
-                  <h4 className="text-red-600 dark:text-red-500 font-black text-lg uppercase tracking-widest">Account Suspended</h4>
-                  <p className="text-red-600/70 dark:text-red-400/80 text-[11px] leading-relaxed font-bold uppercase tracking-wider">
-                    Too many failed attempts. Account has been <span className="text-red-600 dark:text-red-500 font-black underline decoration-red-500/50 underline-offset-4">suspended</span>.
+              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl text-center space-y-4">
+                <ShieldCheck className="h-8 w-8 text-red-500 mx-auto animate-pulse" />
+                <div>
+                  <h4 className="text-red-600 dark:text-red-400 font-bold text-sm">Account Locked</h4>
+                  <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">
+                    Too many failed attempts. Please contact your system administrator to reactivate your account.
                   </p>
                 </div>
-                
-                <div className="bg-black/5 dark:bg-black/40 p-4 rounded-2xl border border-red-500/10 dark:border-white/5 relative z-10">
-                  <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest leading-loose">
-                    Required Action: <br />
-                    <span className="text-slate-900 dark:text-white font-extrabold text-[12px]">Report to Chief Security Box</span><br />
-                    or Visiting Duty Administrator
-                  </p>
-                </div>
-
                 <button
                   type="button"
                   onClick={() => {
                     setShowForgotModal(false);
                     setRecoveryError("");
                   }}
-                  className="w-full py-4 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl transition-all border border-slate-700/50 shadow-lg active:scale-95 relative z-10"
+                  className="w-full py-2.5 bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold rounded-xl"
                 >
                   Close
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleForgotSubmit} className="space-y-6 relative z-10">
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Username</label>
-                    <input
-                      type="text"
-                      required
-                      value={forgotUsername}
-                      onChange={(e) => setForgotUsername(e.target.value)}
-                      className="w-full px-5 py-4 mt-2 bg-white/50 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-2xl outline-none focus:border-blue-500/50 dark:focus:border-cyan-500/50 focus:ring-1 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-mono text-sm shadow-inner"
-                      placeholder="e.g. guard_alpha"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Registered Email</label>
-                    <input
-                      type="email"
-                      required
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
-                      className="w-full px-5 py-4 mt-2 bg-white/50 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-2xl outline-none focus:border-blue-500/50 dark:focus:border-cyan-500/50 focus:ring-1 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 font-mono text-sm shadow-inner"
-                      placeholder="official@visitrack.com"
-                    />
-                  </div>
+              <form onSubmit={handleForgotSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1 font-mono uppercase">Username</label>
+                  <input
+                    type="text"
+                    required
+                    value={forgotUsername}
+                    onChange={(e) => setForgotUsername(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white text-sm font-mono focus:outline-none focus:border-blue-500"
+                    placeholder="Enter username"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1 font-mono uppercase">Registered Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white text-sm font-mono focus:outline-none focus:border-blue-500"
+                    placeholder="name@email.com"
+                  />
                 </div>
 
                 {recoveryError && (
-                  <div className="bg-red-500/10 border border-red-500/20 py-3 px-5 rounded-2xl text-[10px] text-red-600 dark:text-red-400 font-bold uppercase tracking-[0.1em] leading-relaxed flex items-center gap-2 animate-in slide-in-from-top-2">
+                  <div className="bg-red-500/10 border border-red-500/20 p-2.5 rounded-xl text-xs text-red-600 dark:text-red-400 font-bold flex items-center gap-2">
                     <AlertCircle className="shrink-0 h-4 w-4" />
                     <span>{recoveryError}</span>
                   </div>
                 )}
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-2 pt-2">
                   <button
                     type="button"
                     onClick={() => {
                       setShowForgotModal(false);
                       setRecoveryError("");
                     }}
-                    className="flex-[1] py-4 text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest text-[10px] hover:bg-slate-100 dark:hover:bg-white/5 rounded-2xl transition-all border border-transparent"
+                    className="flex-1 py-2.5 text-slate-500 dark:text-slate-400 font-bold text-xs rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={forgotLoading}
-                    className="flex-[2] py-4 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-emerald-600 dark:to-cyan-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-emerald-500 dark:hover:to-cyan-600 text-white font-black rounded-2xl transition-all shadow-[0_10px_30px_rgba(37,99,235,0.2)] dark:shadow-[0_10px_30px_rgba(16,185,129,0.2)] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center uppercase tracking-[0.2em] text-[10px] active:scale-95 border border-transparent"
+                    className="flex-1 py-2.5 bg-blue-600 dark:bg-emerald-500 hover:bg-blue-500 dark:hover:bg-emerald-400 text-white font-bold rounded-xl text-xs shadow-md"
                   >
-                    {forgotLoading ? <Cpu className="h-4 w-4 animate-spin" /> : "Verify & Dispatch"}
+                    {forgotLoading ? "Sending..." : "Reset Password"}
                   </button>
                 </div>
               </form>

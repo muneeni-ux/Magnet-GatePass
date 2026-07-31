@@ -10,6 +10,8 @@ const visitorSchema = new mongoose.Schema(
     department: { type: String, required: true }, // allow any string
     gate: { type: String, required: true },
     nature: { type: String, enum: ["official", "personal", "staff"], required: true },
+    countryCode: { type: String, default: "+254" },
+    hostStaff: { type: String },
     isGroup: { type: Boolean, default: false },
     groupSize: { type: Number, default: 1 },
     isDisabled: { type: Boolean, default: false },
