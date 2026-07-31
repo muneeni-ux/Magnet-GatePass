@@ -121,10 +121,9 @@ const Navbar = ({ setIsLoggedIn }) => {
 
   const navItems = [
     { path: "/home", label: "Dashboard", icon: <Home size={18} /> },
-    { path: "/form", label: "Entry Log", icon: <BookOpen size={18} /> },
-    { path: "/history", label: "Archives", icon: <Clock size={18} /> },
-    { path: "/about", label: "System Info", icon: <Info size={18} /> },
-    { path: "/helpdesk", label: "Help Desk", icon: <LifeBuoy size={18} /> },
+    { path: "/form", label: "Visitor Check-In", icon: <BookOpen size={18} /> },
+    { path: "/history", label: "Visitor History", icon: <Clock size={18} /> },
+    { path: "/helpdesk", label: "Support & Help", icon: <LifeBuoy size={18} /> },
   ];
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -165,10 +164,10 @@ const Navbar = ({ setIsLoggedIn }) => {
   return (
     <div className="fixed top-0 w-full z-50 shadow-[0_10px_30px_rgb(0,0,0,0.05)] font-sans">
       {/* Main Navbar */}
-      <div className="glass-panel border-x-0 border-t-0 border-b border-white/60 dark:border-slate-800/80 px-6 py-3 flex items-center justify-between min-h-[70px] transition-all duration-300">
+      <div className="glass-panel border-x-0 border-t-0 border-b border-white/60 dark:border-slate-800/80 px-3 sm:px-6 py-2.5 flex items-center justify-between min-h-[64px] sm:min-h-[70px] transition-all duration-300">
         {/* Logo */}
         <div
-          className="flex items-center gap-4 cursor-pointer group"
+          className="flex items-center gap-2 sm:gap-4 cursor-pointer group"
           onClick={() => navigate("/home")}
         >
           <div className="relative">
@@ -176,15 +175,15 @@ const Navbar = ({ setIsLoggedIn }) => {
             <img
               src={base64Logo}
               alt="Institution Logo"
-              className="relative w-10 h-10 object-cover rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300"
+              className="relative w-9 h-9 sm:w-10 sm:h-10 object-cover rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300"
             />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-xl font-extrabold text-slate-800 dark:text-gray-100 tracking-tight leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <h1 className="text-lg sm:text-xl font-extrabold text-slate-800 dark:text-gray-100 tracking-tight leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>
               VISITRACK<span className="text-blue-600 dark:text-emerald-400">.OS</span>
             </h1>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-widest uppercase mt-0.5">
-              Secure Terminal
+            <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-widest uppercase mt-0.5">
+              Visitor Management
             </span>
           </div>
         </div>
@@ -211,7 +210,7 @@ const Navbar = ({ setIsLoggedIn }) => {
 
         {/* Profile + Mobile Menu */}
         <div
-          className="flex items-center gap-6 text-slate-900 dark:text-white relative"
+          className="flex items-center gap-2 sm:gap-4 text-slate-900 dark:text-white relative"
           ref={dropdownRef}
         >
           {/* Theme Toggle Button */}
@@ -267,7 +266,7 @@ const Navbar = ({ setIsLoggedIn }) => {
                 <div className="max-h-[350px] overflow-y-auto overscroll-contain custom-scrollbar">
                   {notifications.length === 0 ? (
                     <div className="p-8 text-center text-slate-500 dark:text-slate-400 text-sm font-bold bg-white/20 dark:bg-slate-900/20">
-                      SYSTEM CLEAR. NO ACTIVE ALERTS.
+                      No new notifications.
                     </div>
                   ) : (
                     <div className="flex flex-col p-2 space-y-2">
@@ -321,7 +320,7 @@ const Navbar = ({ setIsLoggedIn }) => {
           >
             <div className="hidden md:flex flex-col items-end">
               <span className="text-[11px] text-slate-800 dark:text-gray-200 font-extrabold uppercase tracking-widest">
-                {currentUser?.username || "Administrator"}
+                {currentUser?.username || "Visitor Officer"}
               </span>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
@@ -342,7 +341,7 @@ const Navbar = ({ setIsLoggedIn }) => {
             <div className="absolute top-16 right-0 bg-white dark:bg-slate-900 text-slate-700 dark:text-gray-200 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] w-64 p-2 z-50 animate-in fade-in zoom-in-95 duration-200 border border-slate-200 dark:border-slate-700">
               <div className="px-4 py-3 mb-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/50">
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-widest">
-                  System Account
+                  Account Details
                 </p>
                 <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate mt-0.5">
                   {currentUser?.email || "admin@visitrack.com"}
@@ -369,7 +368,7 @@ const Navbar = ({ setIsLoggedIn }) => {
                 <div className="p-1.5 bg-indigo-100/50 dark:bg-teal-500/10 rounded-lg text-indigo-600 dark:text-teal-400">
                   <Shield size={16} />
                 </div>
-                Security Profile
+                My Profile
               </button>
 
               <div className="border-t border-white/40 dark:border-slate-700/50 my-2"></div>
@@ -385,66 +384,8 @@ const Navbar = ({ setIsLoggedIn }) => {
               </button>
             </div>
           )}
-
-          {/* Mobile Toggle */}
-          <div
-            className="md:hidden cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            onClick={toggleMenu}
-          >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </div>
         </div>
       </div>
-
-      {/* Mobile Sidebar */}
-      <nav
-        className={`fixed top-0 left-0 w-80 h-full glass-panel dark:glass-panel-dark bg-white/95 dark:bg-slate-900/95 backdrop-blur-3xl text-slate-800 dark:text-gray-100 z-40 transform ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-500 md:hidden shadow-2xl border-r border-white/50 dark:border-slate-700/50 flex flex-col`}
-      >
-        <div className="flex items-center gap-4 p-8 border-b border-white/40 dark:border-slate-800">
-          <img
-            src="./VisiTrack-L51.png"
-            alt="Institution Logo"
-            className="w-12 h-12 rounded-2xl shadow-md"
-          />
-          <div>
-            <h1 className="text-xl font-extrabold" style={{ fontFamily: 'Outfit, sans-serif' }}>VISITRACK<span className="text-blue-600 dark:text-emerald-400">.OS</span></h1>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Mobile Terminal</p>
-          </div>
-        </div>
-
-        <ul className="flex-1 overflow-y-auto mt-6 space-y-2 px-5">
-          {navItems.map((item) => (
-            <li key={item.path}>
-              <NavLink
-                to={item.path}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all border ${
-                    isActive
-                      ? "bg-white/80 dark:bg-slate-800 border-white dark:border-slate-600 text-blue-600 dark:text-emerald-400 shadow-[0_4px_15px_rgba(0,0,0,0.05)]"
-                      : "bg-transparent border-transparent text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white"
-                  }`
-                }
-                onClick={() => setMenuOpen(false)}
-              >
-                {item.icon}
-                {item.label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-
-        <div className="p-6 border-t border-white/40 dark:border-slate-800 bg-white/20 dark:bg-slate-900/20">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold rounded-2xl transition-all border border-red-500/20 hover:border-red-500/40"
-          >
-            <LogOut size={18} />
-            <span className="uppercase tracking-widest text-[11px]">Sign Out</span>
-          </button>
-        </div>
-      </nav>
     </div>
   );
 };

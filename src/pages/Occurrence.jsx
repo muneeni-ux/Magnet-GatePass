@@ -4,11 +4,11 @@ import toast from "react-hot-toast";
 import {
   AlertTriangle,
   CheckCircle,
-  ChevronRight,
   Clipboard,
   FileText,
   ShieldAlert,
-  Server
+  Building2,
+  Send
 } from "lucide-react";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -24,7 +24,6 @@ const Occurrence = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
   const [gates, setGates] = useState([]);
 
   useEffect(() => {
@@ -39,22 +38,6 @@ const Occurrence = () => {
     fetchGates();
   }, []);
 
-  const handleNext = (nextStep) => {
-    if (step === 1 && nextStep > 1) {
-      if (!form.gate || !form.endTime) {
-        return toast.error(
-          "Please fill in Checkpoint and End Time before proceeding.",
-        );
-      }
-    }
-    if (step === 2 && nextStep > 2) {
-      if (form.unusualOccurrence === "Yes" && !form.unusualDescription.trim()) {
-        return toast.error("Please provide a description of the incident.");
-      }
-    }
-    setStep(nextStep);
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -62,7 +45,12 @@ const Occurrence = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.submittedBy) return toast.error("Access Denied: Unregistered Entity.");
+    if (!form.submittedBy) return toast.error("Please log in to submit a report.");
+    if (!form.gate) return toast.error("Please select a Gate Location.");
+    if (!form.endTime) return toast.error("Please select a Shift End Time.");
+    if (form.unusualOccurrence === "Yes" && !form.unusualDescription.trim()) {
+      return toast.error("Please provide a description of the incident.");
+    }
 
     try {
       setLoading(true);
@@ -73,9 +61,9 @@ const Occurrence = () => {
       });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.message || "Failed to commit log");
+      if (!res.ok) throw new Error(data.message || "Failed to submit report");
 
-      toast.success("Incident Protocol Logged Successfully");
+      toast.success("Incident Report submitted successfully!");
       setForm({
         gate: "",
         endTime: "",
@@ -84,326 +72,254 @@ const Occurrence = () => {
         remarks: "",
         submittedBy: form.submittedBy,
       });
-      setStep(1);
     } catch (err) {
-      toast.error(err.message || "Commit Failure");
+      toast.error(err.message || "Submission failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const InputLabel = ({ children }) => (
-    <label className="block text-[10px] uppercase font-extrabold tracking-widest text-slate-500 dark:text-slate-400 mb-2 font-mono">
-      {children}
+  const InputLabel = ({ children, required }) => (
+    <label className="block text-xs uppercase font-extrabold tracking-wider text-slate-600 dark:text-slate-300 mb-1.5 font-mono">
+      {children} {required && <span className="text-red-500">*</span>}
     </label>
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] font-sans text-slate-800 dark:text-slate-100 p-4 md:p-8 pt-2 md:pt-[100px] flex items-center justify-center relative overflow-hidden cyber-grid selection:bg-blue-500/30 dark:selection:bg-emerald-500/30 md:mt-10">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] font-sans text-slate-800 dark:text-slate-100 px-3 sm:px-6 md:px-8 pt-20 md:pt-24 pb-28 md:pb-12 flex justify-center items-start relative cyber-grid overflow-hidden w-full max-w-full">
       
-      {/* Decorative Orbs */}
-      <div className="absolute top-1/4 -right-32 w-[600px] h-[600px] bg-amber-500/10 dark:bg-orange-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-1/4 -left-32 w-[600px] h-[600px] bg-red-500/10 dark:bg-rose-600/10 rounded-full blur-[120px] pointer-events-none animate-pulse delay-700"></div>
+      {/* Background Ambient Orbs (Contained) */}
+      <div className="hidden sm:block absolute top-1/4 right-0 w-[400px] h-[400px] bg-amber-500/10 dark:bg-orange-600/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+      <div className="hidden sm:block absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-red-500/10 dark:bg-rose-600/10 rounded-full blur-[100px] pointer-events-none animate-pulse delay-700"></div>
 
-      <div className="w-full max-w-2xl relative z-10 animate-in fade-in zoom-in-95 duration-500 mt-0 md:-mt-10">
+      <div className="w-full max-w-5xl relative z-10 animate-in fade-in zoom-in-95 duration-300 overflow-hidden">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 pb-6 border-b border-white/60 dark:border-slate-800/80 gap-4">
-          <div className="flex items-center gap-5">
-            <div className="p-3.5 bg-gradient-to-br from-amber-500/10 to-orange-500/10 dark:from-orange-500/10 dark:to-red-500/10 rounded-2xl border border-amber-500/20 dark:border-orange-500/20 shadow-inner group">
-              <Clipboard className="h-7 w-7 text-amber-600 dark:text-orange-400 group-hover:scale-110 transition-transform" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800 gap-3">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="p-2.5 sm:p-3 bg-gradient-to-br from-amber-500/10 to-orange-500/10 dark:from-orange-500/10 dark:to-red-500/10 rounded-2xl border border-amber-500/20 dark:border-orange-500/20 shadow-sm shrink-0">
+              <Clipboard className="h-6 w-6 sm:h-7 sm:w-7 text-amber-600 dark:text-orange-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                 OCCURRENCE <span className="text-amber-600 dark:text-orange-400">REPORT</span>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                 INCIDENT & <span className="text-amber-600 dark:text-orange-400">SHIFT REPORT</span>
               </h1>
-              <p className="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono mt-1">
-                Shift Activity & Incident Logging
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                Report shift activities, events, and security notes
               </p>
             </div>
           </div>
-          <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 shadow-inner self-start md:self-auto">
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 shadow-sm self-start sm:self-auto">
             <span className="w-2 h-2 bg-amber-500 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse"></span>
-            <span className="text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-widest font-mono">
-              Live Link
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 font-mono">
+              Live System
             </span>
           </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="glass-panel dark:glass-panel-dark border border-white/60 dark:border-slate-700/50 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)] p-8 md:p-12 relative overflow-hidden backdrop-blur-md bg-white/40 dark:bg-[#0a0f1c]/60"
-        >
-          {/* Progress Indicators */}
-          <div className="flex justify-between items-center mb-10 relative px-2">
-            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white/60 dark:bg-slate-800/80 -z-10 shadow-inner"></div>
-            {[1, 2, 3, 4].map((s) => (
-              <div
-                key={s}
-                onClick={() => (s < step ? setStep(s) : null)}
-                className={`w-10 h-10 rounded-xl flex items-center justify-center text-[11px] font-extrabold transition-all cursor-pointer font-mono ${
-                  step >= s
-                    ? "bg-gradient-to-br from-amber-500 to-orange-500 dark:from-orange-500 dark:to-red-500 text-white shadow-[0_4px_15px_rgba(245,158,11,0.3)] border border-transparent"
-                    : "bg-white/50 dark:bg-slate-900/80 border border-white/60 dark:border-slate-700/60 text-slate-500 shadow-sm"
-                }`}
-              >
-                {step > s ? <CheckCircle size={16} /> : s}
-              </div>
-            ))}
-          </div>
-
-          {/* Step 1: Gate and End Time */}
-          {step === 1 && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="mb-8 pb-4 border-b border-white/60 dark:border-slate-700/50">
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                  <Server className="h-5 w-5 text-amber-600 dark:text-orange-400" /> Shift Parameters
-                </h3>
+        {/* Unified 1-Page Form Layout */}
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6 w-full">
+          
+          {/* Main Input Sections */}
+          <div className="lg:col-span-2 space-y-5 md:space-y-6 w-full">
+            
+            {/* Card 1: Shift & Gate Details */}
+            <div className="glass-panel dark:glass-panel-dark bg-white/80 dark:bg-slate-900/80 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-white/80 dark:border-slate-800 shadow-lg backdrop-blur-md w-full">
+              <div className="flex items-center gap-3 pb-3 sm:pb-4 mb-4 sm:mb-6 border-b border-slate-200/80 dark:border-slate-800">
+                <Building2 className="h-5 w-5 text-amber-600 dark:text-orange-400 shrink-0" />
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Shift & Gate Details
+                </h2>
               </div>
 
-              <div className="space-y-2">
-                <InputLabel>Reporting Checkpoint</InputLabel>
-                <div className="relative">
-                    <select
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <InputLabel required>Gate Location</InputLabel>
+                  <select
                     name="gate"
                     value={form.gate}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-orange-500 focus:ring-1 focus:ring-amber-500 dark:focus:ring-orange-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] appearance-none cursor-pointer"
-                    >
-                    <option className="bg-white dark:bg-slate-900" value="" disabled>
-                        Select Sector
-                    </option>
+                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white p-3 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-orange-500 text-sm shadow-inner transition-all cursor-pointer font-mono"
+                  >
+                    <option value="" disabled>Select Gate Location</option>
                     {gates.map((g) => (
-                        <option className="bg-white dark:bg-slate-900" key={g._id} value={g.name}>
+                      <option key={g._id} value={g.name}>
                         {g.name}
-                        </option>
+                      </option>
                     ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
+                  </select>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <InputLabel>Shift Termination Time</InputLabel>
-                <input
-                  type="datetime-local"
-                  name="endTime"
-                  value={form.endTime}
-                  onChange={handleChange}
-                  required
-                  max={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
-                  className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-3.5 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-orange-500 focus:ring-1 focus:ring-amber-500 dark:focus:ring-orange-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600"
-                />
-              </div>
-
-              <div className="flex justify-end mt-10 pt-6 border-t border-white/60 dark:border-slate-700/50">
-                <button
-                  type="button"
-                  onClick={() => handleNext(2)}
-                  className="group flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-orange-500 dark:to-red-500 hover:from-amber-400 hover:to-orange-400 dark:hover:from-orange-400 dark:hover:to-red-400 text-white px-8 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-amber-500/20 dark:shadow-orange-500/20 hover:-translate-y-0.5 border border-transparent hover:border-white/20"
-                >
-                  Proceed{" "}
-                  <ChevronRight
-                    size={16}
-                    className="group-hover:translate-x-1 transition-transform"
+                <div>
+                  <InputLabel required>Shift End Time</InputLabel>
+                  <input
+                    type="datetime-local"
+                    name="endTime"
+                    value={form.endTime}
+                    onChange={handleChange}
+                    required
+                    max={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
+                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white p-3 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-orange-500 text-sm font-mono shadow-inner transition-all"
                   />
-                </button>
+                </div>
               </div>
             </div>
-          )}
 
-          {/* Step 2: Unusual Occurrence */}
-          {step === 2 && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="mb-8 pb-4 border-b border-white/60 dark:border-slate-700/50">
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                  <ShieldAlert className="h-5 w-5 text-amber-600 dark:text-orange-400" /> Incident Assessment
-                </h3>
+            {/* Card 2: Incident Assessment */}
+            <div className="glass-panel dark:glass-panel-dark bg-white/80 dark:bg-slate-900/80 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-white/80 dark:border-slate-800 shadow-lg backdrop-blur-md w-full">
+              <div className="flex items-center gap-3 pb-3 sm:pb-4 mb-4 sm:mb-6 border-b border-slate-200/80 dark:border-slate-800">
+                <ShieldAlert className="h-5 w-5 text-amber-600 dark:text-orange-400 shrink-0" />
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Incident Assessment
+                </h2>
               </div>
 
-              <div>
-                <div className="grid grid-cols-2 gap-6">
-                  <label
-                    className={`cursor-pointer p-6 border rounded-2xl flex flex-col items-center justify-center gap-4 transition-all glass-panel dark:glass-panel-dark ${form.unusualOccurrence === "No" ? "bg-emerald-500/10 dark:bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400 shadow-inner" : "border-white/60 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 hover:border-emerald-500/30"}`}
-                  >
-                    <input
-                      type="radio"
-                      name="unusualOccurrence"
-                      value="No"
-                      checked={form.unusualOccurrence === "No"}
-                      onChange={handleChange}
-                      className="hidden"
-                    />
-                    <CheckCircle size={28} className={form.unusualOccurrence === "No" ? "text-emerald-500" : ""} />
-                    <span className="font-extrabold text-[11px] uppercase tracking-widest font-mono">No Incidents</span>
-                  </label>
-                  <label
-                    className={`cursor-pointer p-6 border rounded-2xl flex flex-col items-center justify-center gap-4 transition-all glass-panel dark:glass-panel-dark ${form.unusualOccurrence === "Yes" ? "bg-red-500/10 dark:bg-rose-500/10 border-red-500/50 text-red-600 dark:text-red-400 shadow-inner" : "border-white/60 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 hover:border-red-500/30"}`}
-                  >
-                    <input
-                      type="radio"
-                      name="unusualOccurrence"
-                      value="Yes"
-                      checked={form.unusualOccurrence === "Yes"}
-                      onChange={handleChange}
-                      className="hidden"
-                    />
-                    <ShieldAlert size={28} className={form.unusualOccurrence === "Yes" ? "text-red-500 animate-pulse" : ""} />
-                    <span className="font-extrabold text-[11px] uppercase tracking-widest font-mono">Incident</span>
-                  </label>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
+                <label
+                  className={`cursor-pointer p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border flex items-center gap-3 transition-all ${form.unusualOccurrence === "No" ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 shadow-sm font-bold" : "bg-slate-50/50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-emerald-500/30"}`}
+                >
+                  <input
+                    type="radio"
+                    name="unusualOccurrence"
+                    value="No"
+                    checked={form.unusualOccurrence === "No"}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-emerald-500 focus:ring-emerald-500"
+                  />
+                  <CheckCircle size={20} className={form.unusualOccurrence === "No" ? "text-emerald-500 shrink-0" : "text-slate-400 shrink-0"} />
+                  <div>
+                    <span className="text-xs font-bold block">No Incidents</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Normal shift operations</span>
+                  </div>
+                </label>
+
+                <label
+                  className={`cursor-pointer p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border flex items-center gap-3 transition-all ${form.unusualOccurrence === "Yes" ? "bg-red-500/10 border-red-500 text-red-600 dark:text-red-400 shadow-sm font-bold" : "bg-slate-50/50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-red-500/30"}`}
+                >
+                  <input
+                    type="radio"
+                    name="unusualOccurrence"
+                    value="Yes"
+                    checked={form.unusualOccurrence === "Yes"}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-red-500 focus:ring-red-500"
+                  />
+                  <ShieldAlert size={20} className={form.unusualOccurrence === "Yes" ? "text-red-500 animate-pulse shrink-0" : "text-slate-400 shrink-0"} />
+                  <div>
+                    <span className="text-xs font-bold block">Incident Occurred</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Report event details</span>
+                  </div>
+                </label>
               </div>
 
               {form.unusualOccurrence === "Yes" && (
-                <div className="animate-in slide-in-from-top-2 space-y-2">
-                  <InputLabel>Full Incident Description</InputLabel>
+                <div className="mt-4 animate-in slide-in-from-top-2">
+                  <InputLabel required>Incident Description</InputLabel>
                   <textarea
                     name="unusualDescription"
                     value={form.unusualDescription}
                     onChange={handleChange}
+                    required={form.unusualOccurrence === "Yes"}
                     rows={4}
-                    className="w-full bg-red-500/5 dark:bg-[#0a0f1c]/60 border border-red-500/30 dark:border-red-500/30 text-slate-900 dark:text-white p-4 rounded-xl focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-500"
-                    placeholder="Provide a detailed log of the event..."
+                    className="w-full bg-red-500/5 dark:bg-slate-950 border border-red-500/30 text-slate-900 dark:text-white p-3 rounded-xl focus:outline-none focus:border-red-500 text-sm shadow-inner placeholder-slate-400 font-sans"
+                    placeholder="Describe what happened in detail..."
                   />
                 </div>
               )}
-
-              <div className="flex justify-between items-center mt-10 pt-6 border-t border-white/60 dark:border-slate-700/50">
-                <button
-                  type="button"
-                  onClick={() => handleNext(1)}
-                  className="text-[11px] uppercase tracking-widest font-extrabold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors px-4 py-2"
-                >
-                  Reverse
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleNext(3)}
-                  className="group flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-orange-500 dark:to-red-500 hover:from-amber-400 hover:to-orange-400 dark:hover:from-orange-400 dark:hover:to-red-400 text-white px-8 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-amber-500/20 dark:shadow-orange-500/20 hover:-translate-y-0.5 border border-transparent hover:border-white/20"
-                >
-                  Proceed{" "}
-                  <ChevronRight
-                    size={16}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
-                </button>
-              </div>
             </div>
-          )}
 
-          {/* Step 3: Remarks */}
-          {step === 3 && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="mb-8 pb-4 border-b border-white/60 dark:border-slate-700/50">
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                  <FileText className="h-5 w-5 text-amber-600 dark:text-orange-400" /> Additional Notes
-                </h3>
+            {/* Card 3: Additional Notes */}
+            <div className="glass-panel dark:glass-panel-dark bg-white/80 dark:bg-slate-900/80 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-white/80 dark:border-slate-800 shadow-lg backdrop-blur-md w-full">
+              <div className="flex items-center gap-3 pb-3 sm:pb-4 mb-4 border-b border-slate-200/80 dark:border-slate-800">
+                <FileText className="h-5 w-5 text-amber-600 dark:text-orange-400 shrink-0" />
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Handover Notes & Remarks
+                </h2>
               </div>
 
-              <div className="space-y-2">
-                <InputLabel>General Handover Remarks</InputLabel>
+              <div>
+                <InputLabel>General Remarks / Comments (Optional)</InputLabel>
                 <textarea
                   name="remarks"
                   value={form.remarks}
                   onChange={handleChange}
-                  rows={6}
-                  className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white p-4 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-orange-500 focus:ring-1 focus:ring-amber-500 dark:focus:ring-orange-500 transition-all font-mono text-sm shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600"
-                  placeholder="Enter standard logs or comments..."
+                  rows={3}
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white p-3 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-orange-500 text-sm shadow-inner placeholder-slate-400 font-sans"
+                  placeholder="Enter general shift notes, handover comments, or additional details..."
                 />
               </div>
-
-              <div className="flex justify-between items-center mt-10 pt-6 border-t border-white/60 dark:border-slate-700/50">
-                <button
-                  type="button"
-                  onClick={() => handleNext(2)}
-                  className="text-[11px] uppercase tracking-widest font-extrabold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors px-4 py-2"
-                >
-                  Reverse
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleNext(4)}
-                  className="group flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-orange-500 dark:to-red-500 hover:from-amber-400 hover:to-orange-400 dark:hover:from-orange-400 dark:hover:to-red-400 text-white px-8 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-amber-500/20 dark:shadow-orange-500/20 hover:-translate-y-0.5 border border-transparent hover:border-white/20"
-                >
-                  Submit Log{" "}
-                  <ChevronRight
-                    size={16}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
-                </button>
-              </div>
             </div>
-          )}
 
-          {/* Step 4: Submit */}
-          {step === 4 && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="mb-6 pb-2 border-b border-white/60 dark:border-slate-700/50">
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                  <AlertTriangle className="h-5 w-5 text-amber-500" /> Review Sequence
-                </h3>
+          </div>
+
+          {/* Right Column / Summary & Submit Card */}
+          <div className="space-y-6 w-full">
+            <div className="glass-panel dark:glass-panel-dark bg-white/90 dark:bg-slate-900/90 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-white/80 dark:border-slate-800 shadow-xl backdrop-blur-md lg:sticky lg:top-24 w-full">
+              
+              <div className="flex items-center gap-3 pb-3 sm:pb-4 mb-4 sm:mb-6 border-b border-slate-200/80 dark:border-slate-800">
+                <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Report Summary
+                </h2>
               </div>
 
-              <div className="glass-panel dark:glass-panel-dark bg-white/40 dark:bg-slate-900/40 p-6 sm:p-8 rounded-[1.5rem] border border-white/60 dark:border-slate-700/50 relative overflow-hidden shadow-inner">
-                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-orange-500 dark:to-red-500"></div>
+              <div className="space-y-3 sm:space-y-4 text-xs font-mono mb-6 sm:mb-8">
+                
+                <div className="p-3 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                  <span className="text-slate-400 block text-[10px] font-bold uppercase">Gate Location</span>
+                  <span className="text-slate-900 dark:text-white font-extrabold text-sm block truncate mt-0.5">
+                    {form.gate || <span className="text-slate-400 italic font-sans text-xs">Select gate location</span>}
+                  </span>
+                </div>
 
-                 <div className="grid grid-cols-1 gap-y-6 text-sm font-mono">
-                   
-                   <div className="flex justify-between items-center pb-4 border-b border-white/60 dark:border-slate-700/50">
-                       <span className="text-[10px] uppercase font-extrabold tracking-widest text-slate-500 dark:text-slate-400">Node Origin</span>
-                       <span className="font-bold text-slate-900 dark:text-white">{form.gate || "NOT SPECIFIED"}</span>
-                   </div>
+                <div className="p-3 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                  <span className="text-slate-400 block text-[10px] font-bold uppercase">Shift End Time</span>
+                  <span className="text-slate-900 dark:text-white font-bold block truncate mt-0.5">
+                    {form.endTime ? new Date(form.endTime).toLocaleString() : <span className="text-slate-400 italic font-sans text-xs">Select shift end time</span>}
+                  </span>
+                </div>
 
-                   <div className="flex justify-between items-center pb-4 border-b border-white/60 dark:border-slate-700/50">
-                       <span className="text-[10px] uppercase font-extrabold tracking-widest text-slate-500 dark:text-slate-400">Time Stamp</span>
-                       <span className="font-bold text-slate-900 dark:text-white">{form.endTime ? new Date(form.endTime).toLocaleString() : "TBD"}</span>
-                   </div>
+                <div className="p-3 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                  <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">Incident Status</span>
+                  <span className={`inline-block px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase ${form.unusualOccurrence === "Yes" ? "bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400" : "bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400"}`}>
+                    {form.unusualOccurrence === "Yes" ? "Incident Reported" : "No Incidents"}
+                  </span>
+                </div>
 
-                   <div className="flex justify-between items-center pb-4 border-b border-white/60 dark:border-slate-700/50">
-                       <span className="text-[10px] uppercase font-extrabold tracking-widest text-slate-500 dark:text-slate-400">Anomaly State</span>
-                       <span className={`px-3 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-widest border ${form.unusualOccurrence === "Yes" ? "bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400" : "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"}`}>
-                           {form.unusualOccurrence === "Yes" ? "FLAGGED" : "NOMINAL"}
-                       </span>
-                   </div>
-
-                    {form.unusualOccurrence === "Yes" && (
-                        <div className="pt-2">
-                           <span className="text-[10px] uppercase font-extrabold tracking-widest text-red-500 dark:text-red-400 block mb-2 font-mono">Incident Output:</span>
-                           <p className="p-4 bg-red-500/5 border border-red-500/20 text-slate-700 dark:text-slate-300 rounded-lg text-xs leading-relaxed">
-                               {form.unusualDescription}
-                           </p>
-                        </div>
-                    )}
-                 </div>
               </div>
 
-              <div className="flex gap-4 mt-10 pt-6 border-t border-white/60 dark:border-slate-700/50">
-                <button
-                  type="button"
-                  onClick={() => handleNext(3)}
-                  className="px-6 py-3.5 bg-white/50 dark:bg-slate-800/50 border border-white/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-sm"
-                >
-                  Alter
-                </button>
-                 <button
-                      type="submit"
-                      disabled={loading}
-                      className={`flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg border border-transparent ${loading ? "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed" : "bg-gradient-to-r from-amber-500 to-orange-500 dark:from-orange-500 dark:to-red-500 hover:from-amber-400 hover:to-orange-400 dark:hover:from-orange-400 dark:hover:to-red-400 text-white shadow-amber-500/20 dark:shadow-orange-500/20 hover:shadow-amber-500/40 dark:hover:shadow-orange-500/40 hover:-translate-y-0.5 hover:border-white/20"}`}
-                    >
-                      {loading && (
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      )}
-                      {loading ? "Committing..." : "Finalize Protocol"}
-                  </button>
-              </div>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full flex items-center justify-center gap-2 py-3.5 sm:py-4 px-6 rounded-2xl font-bold uppercase tracking-wider text-xs sm:text-sm transition-all shadow-lg border border-transparent ${
+                  loading
+                    ? "bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
+                    : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-amber-500/20 hover:shadow-xl hover:-translate-y-0.5"
+                }`}
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>Submit Report</span>
+                  </>
+                )}
+              </button>
+
             </div>
-          )}
+          </div>
+
         </form>
       </div>
     </div>
   );
 };
+
 export default Occurrence;

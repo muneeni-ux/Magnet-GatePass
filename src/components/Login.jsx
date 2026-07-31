@@ -182,7 +182,7 @@ const Login = ({ onLogin }) => {
 
               <div className="space-y-2">
                 <label className="text-[10px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
-                  Security Key
+                  Password
                 </label>
                 <div className="relative group">
                   <input
@@ -222,7 +222,7 @@ const Login = ({ onLogin }) => {
                     Authenticating...
                   </>
                 ) : (
-                  "Initialize Session"
+                  "Sign In"
                 )}
               </button>
             </form>
@@ -230,7 +230,7 @@ const Login = ({ onLogin }) => {
                  <div className="mt-8 text-center flex flex-col items-center gap-2 border-t border-white/30 dark:border-slate-800 pt-6">
                      <ShieldCheck className="h-4 w-4 text-slate-400 dark:text-slate-500" />
                      <p className="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-widest font-extrabold font-mono">
-                         Restricted Access Terminal <br/> Authorized Personnel Only
+                          Welcome Back! Please Sign In
                      </p>
                      
                      <div className="mt-4 pt-4 border-t border-white/20 dark:border-slate-800/50 w-full flex justify-center">
@@ -239,7 +239,7 @@ const Login = ({ onLogin }) => {
                          onClick={() => setShowForgotModal(true)}
                          className="text-[10px] text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-emerald-400 transition-colors uppercase tracking-widest font-bold"
                        >
-                         Security Key Lost? <strong className="text-blue-600 dark:text-emerald-400 underline decoration-blue-500/30 underline-offset-4 pl-1">Initiate Recovery</strong>
+                          Forgot Password? <strong className="text-blue-600 dark:text-emerald-400 underline decoration-blue-500/30 underline-offset-4 pl-1">Reset Password</strong>
                        </button>
                      </div>
                  </div>
@@ -249,7 +249,7 @@ const Login = ({ onLogin }) => {
 
       {/* Footer Text */}
       <p className="mt-8 text-xs text-center text-slate-500 font-bold uppercase tracking-widest bg-white/40 dark:bg-slate-900/40 p-2 rounded-xl backdrop-blur-md shadow-sm border border-white/40 dark:border-slate-800/60 inline-flex items-center gap-2">
-        &copy; {new Date().getFullYear()} VisiTrack // Security Protocol
+        &copy; {new Date().getFullYear()} VisiTrack System
       </p>
 
       {/* Forgot Password Modal */}
@@ -268,12 +268,12 @@ const Login = ({ onLogin }) => {
             </div>
             
             <h3 className="text-3xl font-black text-slate-900 dark:text-white text-center mb-2 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Security Override
+              Password Reset
             </h3>
             <p className="text-slate-500 dark:text-slate-400 text-[10px] text-center mb-8 font-extrabold uppercase tracking-[0.2em]">
               {recoveryAttempts >= 3 
-                ? "Terminal Access Terminated" 
-                : "Verify Identity to Recover Access Key"}
+                ? "Access Restricted" 
+                : "Enter username and email to reset password"}
             </p>
 
             {recoveryAttempts >= 3 ? (
@@ -285,9 +285,9 @@ const Login = ({ onLogin }) => {
                   </div>
                 </div>
                 <div className="space-y-2 relative z-10">
-                  <h4 className="text-red-600 dark:text-red-500 font-black text-lg uppercase tracking-widest">Identity Restricted</h4>
+                  <h4 className="text-red-600 dark:text-red-500 font-black text-lg uppercase tracking-widest">Account Suspended</h4>
                   <p className="text-red-600/70 dark:text-red-400/80 text-[11px] leading-relaxed font-bold uppercase tracking-wider">
-                    Multiple mismatch detected. Terminal profile has been <span className="text-red-600 dark:text-red-500 font-black underline decoration-red-500/50 underline-offset-4">suspended</span>.
+                    Too many failed attempts. Account has been <span className="text-red-600 dark:text-red-500 font-black underline decoration-red-500/50 underline-offset-4">suspended</span>.
                   </p>
                 </div>
                 
@@ -307,14 +307,14 @@ const Login = ({ onLogin }) => {
                   }}
                   className="w-full py-4 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl transition-all border border-slate-700/50 shadow-lg active:scale-95 relative z-10"
                 >
-                  Exit Terminal
+                  Close
                 </button>
               </div>
             ) : (
               <form onSubmit={handleForgotSubmit} className="space-y-6 relative z-10">
                 <div className="space-y-4">
                   <div>
-                    <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Terminal Username</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Username</label>
                     <input
                       type="text"
                       required
@@ -325,7 +325,7 @@ const Login = ({ onLogin }) => {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Secure Registered Email</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Registered Email</label>
                     <input
                       type="email"
                       required

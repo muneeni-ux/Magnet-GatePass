@@ -140,10 +140,10 @@ export default function VisitorHistory() {
             </div>
             <div>
               <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                 VISITOR <span className="text-blue-600 dark:text-emerald-400">DATABASE</span>
+                 VISITOR <span className="text-blue-600 dark:text-emerald-400">HISTORY</span>
               </h2>
-              <p className="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono mt-1">
-                Active & Archived Access Records
+              <p className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">
+                View all past and currently checked-in visitors
               </p>
             </div>
           </div>
@@ -164,10 +164,10 @@ export default function VisitorHistory() {
             <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm" />
             <input
               type="text"
-              placeholder="Query Name or Designation..."
+              placeholder="Search by name or department..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white pl-11 pr-5 py-3.5 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-emerald-500 text-sm font-mono shadow-inner dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] placeholder-slate-400 dark:placeholder-slate-600 transition-all"
+              className="w-full bg-white/50 dark:bg-[#0a0f1c]/60 border border-white/60 dark:border-slate-700/60 text-slate-900 dark:text-white pl-11 pr-5 py-3 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-emerald-500 text-sm shadow-inner transition-all"
             />
           </div>
 
@@ -219,11 +219,11 @@ export default function VisitorHistory() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-white/40 dark:bg-slate-900/40 border-b border-white/60 dark:border-slate-700/50 text-[10px] text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-widest font-mono backdrop-blur-md">
-                  <th className="p-6">Identity / Comm</th>
-                  <th className="p-6">Vector / Dest</th>
-                  <th className="p-6">Log Info</th>
+                  <th className="p-6">Visitor / Contact</th>
+                  <th className="p-6">Department / Purpose</th>
+                  <th className="p-6">Gate & Vehicle</th>
                   <th className="p-6">Time Stamp</th>
-                  <th className="p-6 whitespace-nowrap">Status Control</th>
+                  <th className="p-6 whitespace-nowrap">Status Action</th>
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-white/60 dark:divide-slate-700/50">
@@ -234,7 +234,7 @@ export default function VisitorHistory() {
                         <div className="p-4 bg-slate-100/50 dark:bg-slate-800/50 rounded-2xl">
                            <FileText size={32} className="opacity-40" />
                         </div>
-                        <p className="text-[11px] font-extrabold uppercase tracking-widest font-mono">Database Query Zero Match</p>
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400">No visitor records found</p>
                       </div>
                     </td>
                   </tr>
@@ -311,15 +311,15 @@ export default function VisitorHistory() {
                               className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-slate-900 dark:text-white rounded-xl text-[10px] uppercase tracking-widest font-extrabold transition-all border border-slate-300/60 dark:border-slate-600 shadow-sm disabled:opacity-50 group/btn"
                             >
                               {loadingTimeout === v._id
-                                ? "Logging..."
-                                : "Log Exit"}
+                                ? "Checking out..."
+                                : "Check Out"}
                             </button>
                           </div>
                         ) : (
                           <div className="flex items-center gap-4">
                             <span className="inline-flex items-center justify-center min-w-[70px] gap-1.5 px-3 py-1.5 rounded-lg bg-slate-200/50 dark:bg-slate-800/50 border border-slate-300/50 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 text-[9px] uppercase font-extrabold tracking-widest shadow-inner">
                               <CheckCircle size={10} className="text-slate-400" />
-                              Closed
+                              Checked Out
                             </span>
                             <div className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-widest font-mono bg-white/40 dark:bg-slate-900/40 px-3 py-1.5 rounded-lg border border-white/60 dark:border-slate-800 shadow-inner">
                               OUT: {" "}

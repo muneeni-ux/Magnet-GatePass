@@ -91,10 +91,10 @@ const Profile = () => {
   };
 
   if (!user) return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] flex items-center justify-center text-slate-500 dark:text-slate-400 font-sans text-[11px] font-extrabold uppercase tracking-widest cyber-grid">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1c] flex items-center justify-center text-slate-500 dark:text-slate-400 font-sans text-xs font-bold uppercase tracking-wider cyber-grid">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 rounded-full border-2 border-slate-300 dark:border-slate-700 border-t-emerald-500 dark:border-t-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-spin"></div>
-          INITIALIZING PROFILE DATA...
+          <div className="w-8 h-8 rounded-full border-2 border-slate-300 dark:border-slate-700 border-t-emerald-500 animate-spin"></div>
+          Loading profile...
         </div>
       </div>
   );
@@ -128,15 +128,15 @@ const Profile = () => {
                  {user.isAdmin ? "Administrator" : "Staff Member"}
              </span>
 
-             <div className="w-full space-y-5 mt-auto border-t border-white/60 dark:border-slate-700/50 pt-8">
-                 <div className="flex justify-between items-center text-[11px] font-mono tracking-widest font-bold">
-                     <span className="text-slate-500 dark:text-slate-400 uppercase">Sys ID</span>
-                     <span className="text-slate-900 dark:text-white bg-white/50 dark:bg-slate-800/50 px-3 py-1 rounded-md border border-white/60 dark:border-slate-700">#{user.id?.slice(-6).toUpperCase() || "UNKX0"}</span>
+             <div className="w-full space-y-4 mt-auto border-t border-white/60 dark:border-slate-700/50 pt-6">
+                 <div className="flex justify-between items-center text-xs font-mono font-bold">
+                     <span className="text-slate-500 dark:text-slate-400 uppercase">User ID</span>
+                     <span className="text-slate-900 dark:text-white bg-white/50 dark:bg-slate-800/50 px-2.5 py-1 rounded-md border border-white/60 dark:border-slate-700">#{user.id?.slice(-6).toUpperCase() || "USER"}</span>
                  </div>
-                 <div className="flex justify-between items-center text-[11px] font-mono tracking-widest font-bold">
-                     <span className="text-slate-500 dark:text-slate-400 uppercase">Clearance</span>
-                     <span className="text-emerald-500 dark:text-emerald-400 flex items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-md border border-emerald-500/20">
-                         <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span> Authorized
+                 <div className="flex justify-between items-center text-xs font-mono font-bold">
+                     <span className="text-slate-500 dark:text-slate-400 uppercase">Status</span>
+                     <span className="text-emerald-500 dark:text-emerald-400 flex items-center gap-2 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Active
                      </span>
                  </div>
              </div>
@@ -150,10 +150,10 @@ const Profile = () => {
                     <Key className="text-blue-600 dark:text-emerald-400 h-6 w-6" />
                 </div>
                 <div>
-                    <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                        ACCOUNT <span className="text-blue-600 dark:text-emerald-400">SECURITY</span>
+                    <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                        MY <span className="text-blue-600 dark:text-emerald-400">PROFILE</span>
                     </h3>
-                    <p className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono mt-1">Manage Credentials & Contact Logs</p>
+                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">Manage Account & Security Settings</p>
                 </div>
             </div>
 
@@ -161,7 +161,7 @@ const Profile = () => {
                 
                 {/* Email Field */}
                 <div className="space-y-2">
-                    <label className="block text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono">Email Address Contact</label>
+                    <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Email Address</label>
                     <div className="relative group">
                         <input
                             type="email"
@@ -178,7 +178,7 @@ const Profile = () => {
                 {/* Password Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <label className="block text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono">Set New Password</label>
+                        <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">New Password</label>
                         <div className="relative group">
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -200,7 +200,7 @@ const Profile = () => {
                         {formData.password && (
                             <div className="mt-3 text-[10px] font-extrabold uppercase tracking-widest font-mono">
                               <div className="flex justify-between items-center mb-1.5">
-                                <span className="text-slate-500 dark:text-slate-400">Cipher Rating:</span>
+                                <span className="text-slate-500 dark:text-slate-400">Password Strength:</span>
                                 <span className={`${getPasswordStrength(formData.password).text === "Weak" ? "text-red-500" : getPasswordStrength(formData.password).text === "Fair" ? "text-orange-500" : "text-emerald-500"}`}>
                                   {getPasswordStrength(formData.password).text}
                                 </span>
@@ -216,7 +216,7 @@ const Profile = () => {
                     </div>
 
                     <div className="space-y-2">
-                         <label className="block text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono">Verify Password</label>
+                         <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Confirm New Password</label>
                          <div className="relative group">
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
@@ -249,7 +249,7 @@ const Profile = () => {
                         }`}
                     >
                         {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save className="h-4 w-4" />}
-                        {loading ? "Committing..." : "Finalize Changes"}
+                        {loading ? "Saving..." : "Save Changes"}
                     </button>
                 </div>
             </form>

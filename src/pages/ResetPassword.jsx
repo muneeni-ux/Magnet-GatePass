@@ -279,7 +279,7 @@ const ResetPassword = () => {
                 }`}
               >
                 <span className="relative z-10 flex items-center justify-center gap-3">
-                  {isLoading ? "Rewriting Protocol..." : "Secure Account Link"}
+                  {isLoading ? "Resetting Password..." : "Reset Password"}
                   {!isLoading && <ShieldCheck size={16} />}
                 </span>
                 
@@ -309,7 +309,7 @@ const ResetPassword = () => {
               <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 border border-white/20 px-3 py-1 rounded bg-white/5">TLS 1.3</div>
             </div>
             <p className="text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] flex items-center gap-2">
-              <Lock size={10} /> Visitrack Terminal Encryption Active
+              <Lock size={10} /> Secure Encrypted Connection
             </p>
           </motion.div>
         </div>

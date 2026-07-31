@@ -19,7 +19,7 @@ import AdminOccurrence from './Admin/AdminOccurrence';
 import AdminFAQs from './Admin/AdminFAQs';
 // User components
 import Home from './pages/Home';
-import About from './pages/About';
+// import About from './pages/About';
 import Occurrence from './pages/Occurrence';
 import NotFound from './pages/NotFound';
 import Form from './pages/VisitorForm';
@@ -32,6 +32,8 @@ import AdminNotifications from './Admin/AdminNotifications';
 import AdminLocations from './Admin/AdminLocations';
 import AdminEmergency from './Admin/AdminEmergency';
 import AdminReports from './Admin/AdminReports';
+
+import BottomTabBar from './components/BottomTabBar';
 
 const App = () => {
   const location = useLocation();
@@ -48,7 +50,7 @@ const App = () => {
                                  location.pathname.startsWith('/v/');
 
   return (
-    <div>
+    <div className="pb-24 md:pb-0 overflow-x-hidden min-h-screen">
       <ScrollToTop />
       <Toaster
         position="top-right"
@@ -88,7 +90,7 @@ const App = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/form" element={<Form />} />
             <Route path="/history" element={<History />} />
-            <Route path="/about" element={<About />} />
+            {/* <Route path="/about" element={<About />} /> */}
             <Route path="/occurrence" element={<Occurrence />} />
             <Route path="/faq" element={<FAQs />} />
             <Route path="/helpdesk" element={<HelpDesk />} />
@@ -122,6 +124,9 @@ const App = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      {/* Mobile Bottom Tab Bar */}
+      {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <BottomTabBar />}
 
       {/* Conditionally show Footer */}
       {!shouldHideNavAndFooter && isLoggedIn && !isAdmin && <Footer />}

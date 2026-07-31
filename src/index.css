@@ -5,8 +5,14 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+  }
+
   body {
-    @apply m-0 antialiased text-slate-800 bg-slate-50 dark:text-slate-200 dark:bg-slate-900 transition-colors duration-300;
+    @apply m-0 antialiased text-slate-800 bg-slate-50 dark:text-slate-200 dark:bg-[#090d16] transition-colors duration-300;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   }
 
@@ -23,48 +29,47 @@
   .cyber-grid {
     background-color: #f8fafc;
     background-image: 
-      linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
-    background-size: 32px 32px;
+      radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.04) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.04) 0px, transparent 50%),
+      linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
   }
   
   .dark .cyber-grid {
-    background-color: #0f172a;
+    background-color: #090d16;
     background-image: 
-      linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+      radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
   }
 
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-sm shadow-slate-200/50 dark:bg-slate-800/60 dark:border-slate-700/50 dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)];
+    @apply bg-white/80 backdrop-blur-xl border border-white/60 shadow-md shadow-slate-200/40 dark:bg-slate-900/80 dark:border-slate-800 dark:shadow-[0_10px_30px_rgb(0,0,0,0.5)];
   }
   .glass-panel-dark {
-    @apply bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-xl shadow-black/40;
+    @apply bg-slate-900/60 backdrop-blur-2xl border border-slate-800/80 shadow-2xl shadow-black/50;
   }
   
   .glow-emerald {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
   }
   .glow-cyan {
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
   }
 }
 
 @keyframes float {
   0% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(-20px) translateX(10px); }
+  50% { transform: translateY(-15px) translateX(8px); }
   100% { transform: translateY(0px) translateX(0px); }
 }
 
 @keyframes float-slow {
   0% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(-30px) translateX(-15px); }
-  100% { transform: translateY(0px) translateX(0px); }
-}
-
-@keyframes float-delayed {
-  0% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(25px) translateX(-20px); }
+  50% { transform: translateY(-25px) translateX(-12px); }
   100% { transform: translateY(0px) translateX(0px); }
 }
 
@@ -75,8 +80,3 @@
 .animate-float-slow {
   animation: float-slow 10s ease-in-out infinite;
 }
-
-.animate-float-delayed {
-  animation: float-delayed 8s ease-in-out infinite;
-}
-
