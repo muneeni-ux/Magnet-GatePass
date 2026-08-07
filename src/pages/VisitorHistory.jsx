@@ -10,6 +10,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const maskIdNumber = (id) => {
   if (!id) return "-";
   const str = id.toString().trim();
+  if (str.toUpperCase() === "N/A") return "N/A";
   if (str.length <= 4) {
     if (str.length <= 2) return str;
     return str[0] + "*".repeat(str.length - 2) + str[str.length - 1];
@@ -255,9 +256,20 @@ export default function VisitorHistory() {
                   >
                     {/* Visitor Info */}
                     <td className="p-4">
-                      <div className="font-extrabold text-slate-900 dark:text-slate-100">{v.name}</div>
-                      <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">ID: {maskIdNumber(v.idNumber)}</div>
-                      <div className="text-xs text-slate-400 dark:text-slate-500">Phone: {v.phone}</div>
+                      <div className="font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        {v.name}
+                        {v.isUnderage && (
+                          <span className="text-[10px] bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full font-bold">
+                            Underage
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">
+                        ID: {v.isUnderage || v.idNumber === "N/A" ? "N/A (Underage)" : maskIdNumber(v.idNumber)}
+                      </div>
+                      <div className="text-xs text-slate-400 dark:text-slate-500">
+                        {v.isUnderage ? "Guardian: " : "Phone: "}{v.phone}
+                      </div>
                       {v.vehicleReg && <div className="text-[11px] text-blue-500 font-bold uppercase mt-0.5">Veh: {v.vehicleReg}</div>}
                     </td>
 

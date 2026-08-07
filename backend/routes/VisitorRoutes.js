@@ -6,8 +6,12 @@ const { authenticate } = require("../middleware/AuthMiddleware");
 // CREATE - POST /api/visitors
 router.post("/", authenticate, async (req, res) => {
   try {
+    const payload = { ...req.body };
+    if (payload.isUnderage && (!payload.idNumber || payload.idNumber.trim() === "")) {
+      payload.idNumber = "N/A";
+    }
     const visitor = new Visitor({
-      ...req.body,
+      ...payload,
       checkedInBy: req.user.username // Record guard who checked in the visitor
     });
     const savedVisitor = await visitor.save();

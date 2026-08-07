@@ -1,6 +1,6 @@
 // src/pages/VisitorForm.jsx
 import React, { useState, useEffect } from "react";
-import { User, IdCard, Car, Phone, BookOpen, Users, CheckCircle } from "lucide-react";
+import { User, IdCard, Car, Phone, BookOpen, Users, CheckCircle, UserCheck } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { saveOfflineCheckin } from "../utils/offlineSync";
 
@@ -9,6 +9,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 export default function VisitorForm() {
   const [formData, setFormData] = useState({
     name: "",
+    isUnderage: false,
     idNumber: "",
     phone: "",
     vehicleReg: "",
@@ -81,7 +82,9 @@ export default function VisitorForm() {
         }
         break;
       case "idNumber":
-        if (value.trim().length === 0) {
+        if (formData.isUnderage) {
+          error = "";
+        } else if (value.trim().length === 0) {
           error = "ID Number is required.";
         } else if (!/^[A-Za-z0-9\s-]{4,12}$/.test(value)) {
           error = "ID must be between 4 and 12 characters (alphanumeric).";
@@ -89,7 +92,7 @@ export default function VisitorForm() {
         break;
       case "phone":
         if (value.trim().length === 0) {
-          error = "Phone number is required.";
+          error = formData.isUnderage ? "Guardian/Parent phone number is required." : "Phone number is required.";
         } else if (!/^\+?[0-9\s-]{9,13}$/.test(value)) {
           error = "Enter a valid phone number (9 to 13 digits).";
         }
@@ -179,6 +182,11 @@ export default function VisitorForm() {
     setFormData((prev) => {
       const updated = { ...prev, [name]: finalVal };
       
+      // Auto clear/reset ID number if isUnderage is toggled
+      if (name === "isUnderage" && finalVal) {
+        updated.idNumber = "";
+      }
+
       // Auto reset departments if Gate B is chosen
       if (name === "gate" && finalVal === "Gate B-mauzo") {
         updated.department = "";
@@ -196,6 +204,9 @@ export default function VisitorForm() {
     // Clear specific field errors
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name] : "" }));
+    }
+    if (name === "isUnderage" && finalVal) {
+      setErrors((prev) => ({ ...prev, idNumber: "" }));
     }
 
     // Frequent visitor suggestion matching
@@ -245,7 +256,8 @@ export default function VisitorForm() {
 
     const payload = {
       name: formData.name,
-      idNumber: formData.idNumber,
+      isUnderage: formData.isUnderage,
+      idNumber: formData.isUnderage ? "N/A" : formData.idNumber,
       phone: formData.phone,
       vehicleReg: formData.vehicleReg || "",
       gate: formData.gate,
@@ -325,6 +337,7 @@ export default function VisitorForm() {
   const resetForm = () => {
     setFormData({
       name: "",
+      isUnderage: false,
       idNumber: "",
       phone: "",
       vehicleReg: "",
@@ -438,47 +451,77 @@ export default function VisitorForm() {
                 )}
               </div>
 
-              {/* ID Number */}
-              <div className="relative">
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  ID / Passport Number
-                </label>
-                <div className="relative">
-                  <IdCard className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5.5 h-5.5" />
+              {/* Underage / Minor Checkbox */}
+              <div className="p-4 border border-slate-100 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-950/20">
+                <div className="flex items-center gap-3">
                   <input
-                    name="idNumber"
-                    value={formData.idNumber}
+                    id="isUnderage"
+                    type="checkbox"
+                    name="isUnderage"
+                    checked={formData.isUnderage}
                     onChange={handleChange}
-                    onBlur={(e) => setErrors(prev => ({ ...prev, idNumber: validateField("idNumber", e.target.value) }))}
-                    placeholder="Enter ID Number"
-                    autoComplete="off"
-                    required
-                    maxLength={12}
-                    className={`w-full pl-11 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border text-sm font-semibold focus:outline-none ${
-                      errors.idNumber ? "validation-error" : formData.idNumber && !errors.idNumber ? "validation-success" : "border-slate-200 dark:border-slate-800"
-                    }`}
+                    className="w-5 h-5 text-blue-600 rounded-md border-slate-300 focus:ring-blue-500 cursor-pointer"
                   />
+                  <label htmlFor="isUnderage" className="text-sm font-bold flex items-center gap-1.5 cursor-pointer">
+                    <UserCheck size={16} className="text-amber-500" />
+                    Visitor is Underage (Minor)
+                  </label>
                 </div>
-                {errors.idNumber && <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.idNumber}</p>}
-
-                {/* Suggestions Dropdown for ID */}
-                {activeInput === "idNumber" && suggestions.length > 0 && (
-                  <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl z-50 py-1.5">
-                    <p className="px-4 py-1 text-[10px] text-slate-400 font-bold uppercase tracking-wider">Frequent Visitors matching ID</p>
-                    {suggestions.map((item) => (
-                      <button
-                        key={item.idNumber}
-                        type="button"
-                        onClick={() => selectSuggestion(item)}
-                        className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-750 text-sm font-bold flex items-center justify-between border-t border-slate-50 dark:border-slate-850"
-                      >
-                        <span>ID: {item.idNumber}</span>
-                        <span className="text-xs text-blue-500 dark:text-blue-400 font-semibold">{item.name}</span>
-                      </button>
-                    ))}
-                  </div>
+                {formData.isUnderage && (
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mt-2 pl-8">
+                    * National ID/Passport is not required for minors. Guardian/Parent phone number will be recorded in Step 2.
+                  </p>
                 )}
               </div>
+
+              {/* ID Number (Conditional for adults) */}
+              {!formData.isUnderage ? (
+                <div className="relative">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                    ID / Passport Number
+                  </label>
+                  <div className="relative">
+                    <IdCard className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5.5 h-5.5" />
+                    <input
+                      name="idNumber"
+                      value={formData.idNumber}
+                      onChange={handleChange}
+                      onBlur={(e) => setErrors(prev => ({ ...prev, idNumber: validateField("idNumber", e.target.value) }))}
+                      placeholder="Enter ID Number"
+                      autoComplete="off"
+                      required
+                      maxLength={12}
+                      className={`w-full pl-11 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border text-sm font-semibold focus:outline-none ${
+                        errors.idNumber ? "validation-error" : formData.idNumber && !errors.idNumber ? "validation-success" : "border-slate-200 dark:border-slate-800"
+                      }`}
+                    />
+                  </div>
+                  {errors.idNumber && <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.idNumber}</p>}
+
+                  {/* Suggestions Dropdown for ID */}
+                  {activeInput === "idNumber" && suggestions.length > 0 && (
+                    <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl z-50 py-1.5">
+                      <p className="px-4 py-1 text-[10px] text-slate-400 font-bold uppercase tracking-wider">Frequent Visitors matching ID</p>
+                      {suggestions.map((item) => (
+                        <button
+                          key={item.idNumber}
+                          type="button"
+                          onClick={() => selectSuggestion(item)}
+                          className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-750 text-sm font-bold flex items-center justify-between border-t border-slate-50 dark:border-slate-850"
+                        >
+                          <span>ID: {item.idNumber}</span>
+                          <span className="text-xs text-blue-500 dark:text-blue-400 font-semibold">{item.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="p-3.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 text-xs font-semibold text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                  <IdCard className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>ID / Passport records exempt for underage visitors (Saved as <strong>N/A</strong>).</span>
+                </div>
+              )}
 
               <button
                 type="button"
@@ -497,8 +540,13 @@ export default function VisitorForm() {
               
               {/* Phone */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Phone Number
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
+                  <span>{formData.isUnderage ? "Guardian / Parent Phone Number" : "Phone Number"}</span>
+                  {formData.isUnderage && (
+                    <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold bg-amber-100 dark:bg-amber-950/40 px-2 py-0.5 rounded-md">
+                      Underage Contact
+                    </span>
+                  )}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5.5 h-5.5" />
@@ -508,7 +556,7 @@ export default function VisitorForm() {
                     value={formData.phone}
                     onChange={handleChange}
                     onBlur={(e) => setErrors(prev => ({ ...prev, phone: validateField("phone", e.target.value) }))}
-                    placeholder="e.g. 0712345678"
+                    placeholder={formData.isUnderage ? "Parent/Guardian phone e.g. 0712345678" : "e.g. 0712345678"}
                     required
                     className={`w-full pl-11 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border text-sm font-semibold focus:outline-none ${
                       errors.phone ? "validation-error" : formData.phone && !errors.phone ? "validation-success" : "border-slate-200 dark:border-slate-800"
@@ -722,14 +770,23 @@ export default function VisitorForm() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm font-semibold">
                   <div>
                     <span className="text-slate-400 block text-xs uppercase font-bold tracking-wider">Full Name</span>
-                    <span className="text-base font-extrabold">{formData.name}</span>
+                    <span className="text-base font-extrabold flex items-center gap-2">
+                      {formData.name}
+                      {formData.isUnderage && (
+                        <span className="text-[10px] bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full font-bold">
+                          Underage Minor
+                        </span>
+                      )}
+                    </span>
                   </div>
                   <div>
                     <span className="text-slate-400 block text-xs uppercase font-bold tracking-wider">ID Number</span>
-                    <span className="text-base font-extrabold">{formData.idNumber}</span>
+                    <span className="text-base font-extrabold">{formData.isUnderage ? "N/A (Underage)" : formData.idNumber}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-xs uppercase font-bold tracking-wider">Phone</span>
+                    <span className="text-slate-400 block text-xs uppercase font-bold tracking-wider">
+                      {formData.isUnderage ? "Guardian Phone" : "Phone"}
+                    </span>
                     <span>{formData.phone}</span>
                   </div>
                   <div>

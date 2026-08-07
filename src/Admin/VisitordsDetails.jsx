@@ -88,6 +88,7 @@ const customStyles = {
 const maskIdNumber = (id) => {
   if (!id) return "-";
   const str = id.toString().trim();
+  if (str.toUpperCase() === "N/A") return "N/A";
   if (str.length <= 4) {
     if (str.length <= 2) return str;
     return str[0] + "*".repeat(str.length - 2) + str[str.length - 1];
@@ -173,13 +174,27 @@ const VisitorsDetails = () => {
   );
 
   const columns = [
-    { name: "Name", selector: (row) => row.name, sortable: true },
+    {
+      name: "Name",
+      selector: (row) => row.name,
+      cell: (row) => (
+        <div className="flex items-center gap-1.5 font-bold">
+          <span>{row.name}</span>
+          {row.isUnderage && (
+            <span className="text-[10px] bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded font-bold">
+              Minor
+            </span>
+          )}
+        </div>
+      ),
+      sortable: true,
+    },
     {
       name: "ID Number",
-      selector: (row) => row.idNumber,
+      selector: (row) => (row.isUnderage || row.idNumber === "N/A" ? "N/A" : row.idNumber),
       cell: (row) => (
         <span title={row.idNumber} className="cursor-help font-mono font-bold tracking-wider text-slate-700 dark:text-slate-350">
-          {maskIdNumber(row.idNumber)}
+          {row.isUnderage || row.idNumber === "N/A" ? "N/A (Underage)" : maskIdNumber(row.idNumber)}
         </span>
       ),
       sortable: true,
